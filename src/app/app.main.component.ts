@@ -21,7 +21,6 @@ import {MessageService} from "primeng/api";
             transition('hidden => visible', animate('400ms cubic-bezier(0.86, 0, 0.07, 1)'))
         ])
     ],
-    providers: [MessageService]
 })
 export class AppMainComponent implements AfterViewInit, OnDestroy, OnInit {
 

@@ -14,17 +14,16 @@ import {UserAuthService} from "../service/user-auth.service";
 import {MessageService} from "primeng/api";
 import {UserService} from "../service/user.service";
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
 
-    private apiServerUrl = environment.apiBaseUrl;
-    private project = environment.project;
+@Injectable({
+    providedIn: 'root'
+})
+export class AuthInterceptor implements HttpInterceptor {
 
     constructor(
         private userAuthService: UserAuthService,
         private router: Router,
-        private messageService: MessageService,
-        private userService: UserService
+        public messageService: MessageService,
     ) {
     }
 
@@ -48,7 +47,7 @@ export class AuthInterceptor implements HttpInterceptor {
                             detail: 'Please log in again'
                         });
                         this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-                            this.router.navigate(['/login']));
+                            this.router.navigate(['/pages/login']));
                     } else if (err.status === 403) {
                         this.router.navigate(['/forbidden']);
                     } else {

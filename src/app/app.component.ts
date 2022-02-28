@@ -10,7 +10,6 @@ import {AppConfig} from "./api/appconfig";
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    providers: [MessageService]
 })
 export class AppComponent {
 
@@ -43,6 +42,12 @@ export class AppComponent {
             let params = new HttpParams();
             params = params.append('jwtToken', this.userAuthService.getToken());
             this.userService.checkJWTExpiry(params).subscribe({
+                next: value => {
+                    if (value['data']['status'] === "expired") {
+                        this.userAuthService.clear();
+                        this.router.navigate(['/pages/login']);
+                    }
+                },
                 error: (error) => {
                     this.messageService.add({severity: 'error', summary: 'Error', detail: error.message});
                 }
@@ -50,7 +55,7 @@ export class AppComponent {
         }
     }
 
-    checkSettings(theme:string, dark:boolean) {
+    checkSettings(theme: string, dark: boolean) {
         let themeElement = document.getElementById('theme-css');
         // console.log(theme);
         themeElement.setAttribute('href', 'assets/theme/' + 'tailwind-light' + '/theme.css');

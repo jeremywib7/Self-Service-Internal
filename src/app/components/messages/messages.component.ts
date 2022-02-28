@@ -13,7 +13,6 @@ import { Message, MessageService } from 'primeng/api';
             z-index:99999;
         }
     `],
-    providers: [MessageService]
 })
 export class MessagesComponent {
 

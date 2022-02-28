@@ -3,7 +3,6 @@ import { MessageService } from 'primeng/api';
 
 @Component({
     templateUrl: './file.component.html',
-    providers: [MessageService]
 })
 export class FileComponent {
 
