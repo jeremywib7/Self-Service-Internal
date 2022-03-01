@@ -5,8 +5,10 @@
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
-                        <button pButton pRipple label="Add User" icon="pi pi-plus"
-                                class="p-button-success mr-2"></button>
+                        <button
+                            (click)="openAddOrEditProductDialog(false)"
+                            pButton pRipple label="Add User" icon="pi pi-plus"
+                            class="p-button-success mr-2"></button>
                         <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
 
                                 [disabled]="!selectedUsers || !selectedUsers.length"></button>
@@ -57,23 +59,23 @@
                         <td>
                             <p-tableCheckbox [value]="user"></p-tableCheckbox>
                         </td>
-                        <td style="width:14%; min-width:10rem;">
+                        <td style="min-width:10rem;">
                             <span class="p-column-title">Username</span>
                             {{user.username}}
                         </td>
-                        <td style="width:14%; min-width:10rem;"><span class="p-column-title">Image</span>
+                        <td style="min-width:10rem;"><span class="p-column-title">Image</span>
                             <img [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' + user?.imageUrl  "
                                  [alt]="user.imageUrl" width="100"
                                  class="shadow-4"/>
                         </td>
-                        <td style="width:14%; min-width:10rem;">
+                        <td style="min-width:10rem;">
                             <span class="p-column-title">Role</span>
                             {{user.role.roleName}}
                         </td>
-                        <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Status</span>
+                        <td style="min-width: 10rem;"><span class="p-column-title">Status</span>
                             <span
                                 [class]="user.active === true ? 'user-badge status-active' :'user-badge status-inactive'">
-                                {{user.active === true ? "Active" :"Inactive"}}</span>
+                                {{user.active === true ? "Active" : "Inactive"}}</span>
                         </td>
                         <td>
                             <div class="flex">
@@ -93,16 +95,37 @@
 
         </div>
 
-        <p-dialog [(visible)]="deleteUserDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+        <p-dialog [(visible)]="showAddOrEditProductDialog" [style]="{width: '450px'}"
+                  header="{{editMode ? 'Edit' : 'Add'}} User"
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <form *ngIf="reactiveForm" [formGroup]="reactiveForm" (ngSubmit)="submit()">
+                    <img
+                        [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' +
+                         this.reactiveForm.value.imageUrl  "
+                        [alt]="this.reactiveForm.value" width="150" class="mt-0 mx-auto mb-5 block shadow-2"
+                        *ngIf="this.reactiveForm.value.imageUrl">
+                </form>
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple (click)="showAddOrEditProductDialog = false" label="Cancel" icon="pi pi-times"
+                        class="p-button-text"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="showDeleteUserDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="user">Are you sure you want to delete <b>{{user.username}}</b>?</span>
+                <span *ngIf="user">Are you sure you want to delete user <b>{{user.username}}</b>?</span>
             </div>
             <ng-template pTemplate="footer">
                 <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                        (click)="deleteUserDialog = false"></button>
+                        (click)="showDeleteUserDialog = false"></button>
                 <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
-                        ></button>
+                ></button>
             </ng-template>
         </p-dialog>
     </div>
