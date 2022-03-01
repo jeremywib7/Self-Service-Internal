@@ -21,6 +21,8 @@ export class UserComponent implements OnInit {
 
     cols: any[];
 
+    statusDropdown: any[];
+
     reactiveForm: FormGroup;
 
     constructor(
@@ -44,6 +46,11 @@ export class UserComponent implements OnInit {
             {field: 'username', header: 'Username'},
             {field: 'role.roleName', header: 'Role'},
         ];
+
+        this.statusDropdown = [
+            {label: 'ACTIVE', value: true},
+            {label: 'INACTIVE', value: false},
+        ];
     }
 
     public getUsers(): void {
@@ -57,54 +64,58 @@ export class UserComponent implements OnInit {
     initForm() {
         this.reactiveForm = this.fb.group({
             username: new FormControl(
-                this.user === null ? null : this.user?.username, {
+                '', {
                     validators: [Validators.required, Validators.compose(
                         [Validators.minLength(3)])]
                 }),
-            userFirstName: new FormControl(this.user === null ? null : this.user?.userFirstName, {
+            userFirstName: new FormControl('', {
                 validators: [Validators.required, Validators.compose(
                     [Validators.pattern('[a-zA-z]*'), Validators.minLength(3)])]
             }),
-            userLastName: new FormControl(this.user === null ? null : this.user?.userLastName, {
+            userLastName: new FormControl('', {
                 validators: [Validators.required, Validators.compose(
                     [Validators.pattern('[a-zA-z]*'), Validators.minLength(2)])]
             }),
-            userPassword: new FormControl(this.user === null ? null : this.user?.userPassword, {}),
-            email: new FormControl(this.user === null ? null : this.user?.email, {
+            active: new FormControl('',
+                {
+                    validators: [Validators.required]
+                }),
+            userPassword: new FormControl({}),
+            email: new FormControl('', {
                 validators: [Validators.required, Validators.compose(
                     [Validators.pattern('^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$')])]
             }),
             role: this.fb.group({
-                roleName: new FormControl(this.user === null ? null : this.user?.role.roleName, {
+                roleName: new FormControl('', {
                     validators: [Validators.required]
                 }),
-                roleDescription: new FormControl(this.user?.role.roleDescription, {}),
+                roleDescription: new FormControl('', {}),
             }),
-            gender: new FormControl(this.user === null ? null : this.user?.gender, {
+            gender: new FormControl('', {
                 validators: [Validators.required]
             }),
-            dateJoined: new FormControl(this.user === null ? null : this.user?.dateJoined,
+            dateJoined: new FormControl('',
                 {
                     validators: [Validators.required]
                 }),
-            phoneNumber: new FormControl(this.user === null ? null : this.user?.phoneNumber,
+            phoneNumber: new FormControl('',
                 {
                     validators: [Validators.required, Validators.compose(
                         [Validators.pattern('[0-9+ ]*'), Validators.min(12345),
                             Validators.max(123456789)])]
                 }),
-            address: new FormControl(this.user === null ? null : this.user?.address,
+            address: new FormControl('',
                 {
                     validators: [Validators.required]
                 }),
-            userCode: new FormControl(this.user === null ? null : this.user?.userCode,
+            userCode: new FormControl('',
                 {}),
             imageUrl: new FormControl(null,
                 {
                     validators: this.user ? [] : [Validators.required]
                 }
             ),
-            bankAccount: new FormControl(this.user === null ? null : this.user?.bankAccount,
+            bankAccount: new FormControl('',
                 {
                     validators: [Validators.required, Validators.compose(
                         [Validators.pattern('[0-9+ ]*'), Validators.min(12345),
@@ -113,6 +124,22 @@ export class UserComponent implements OnInit {
             ),
         }, {updateOn: 'change'})
 
+    }
+
+    setSelectedDropdownStatus(status: boolean, badge: boolean): string {
+        if (badge) {
+            if (status === true) {
+                return 'user-badge status-active';
+            } else {
+                return 'user-badge status-inactive';
+            }
+        } else {
+            if (status === true) {
+                return 'Active';
+            } else {
+                return 'Inactive';
+            }
+        }
     }
 
     deleteUser(user: User) {
@@ -124,15 +151,18 @@ export class UserComponent implements OnInit {
 
         if (editMode) {
             this.editMode = true;
+            this.reactiveForm.patchValue(user);
         } else {
             this.editMode = false;
+            this.reactiveForm.reset();
+            this.reactiveForm.patchValue(null);
         }
 
         this.showAddOrEditProductDialog = true;
     }
 
     submit() {
-
+        console.log(this.reactiveForm.value);
     }
 
     // deleteSelectedUsers() {
