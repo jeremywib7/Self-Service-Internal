@@ -105,8 +105,7 @@
                     <img
                         [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' +
                          this.reactiveForm.value.imageUrl  "
-                        [alt]="this.reactiveForm.value" width="150" class="mt-0 mx-auto mb-5 block shadow-2"
-                        *ngIf="this.reactiveForm.value.imageUrl">
+                        [alt]="this.reactiveForm.value" width="150" class="mt-0 mx-auto mb-5 block shadow-2">
                     <div class="field p-fluid">
                         <label for="username">Username</label>
                         <input type="text" pInputText id="username" formControlName="username"
@@ -165,8 +164,25 @@
                         </div>
 
                         <div class="field col-12">
+                            <label class="mb-3">Gender</label>
+                            <div class="formgrid grid">
+                                <div class="field-radiobutton col-12">
+                                    <p-radioButton id="category1" name="gender" formControlName="gender"
+                                                   value="Male"></p-radioButton>
+                                    <label for="category1">Male</label>
+                                </div>
+                                <div class="field-radiobutton col-12">
+                                    <p-radioButton id="category2" name="gender" formControlName="gender"
+                                                   value="Female"></p-radioButton>
+                                    <label for="category2">Female</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field col-12">
                             <label for="active">Status</label>
                             <p-dropdown id="active" [options]="statusDropdown" [showClear]="true"
+                                        appendTo="body"
                                         formControlName="active" placeholder="Select a Status">
                                 <ng-template pTemplate="selectedItem">
                                     <span
@@ -181,22 +197,15 @@
                         </div>
 
                         <div class="field col-12">
-                            <label for="firstName" class="mb-3">Gender</label>
-                            <div class="formgrid grid">
-                                <div class="field-radiobutton col-12">
-                                    <p-radioButton id="category1" name="gender" formControlName="gender"
-                                                   value="Male"></p-radioButton>
-                                    <label for="category1">Male</label>
-                                </div>
-                                <div class="field-radiobutton col-12">
-                                    <p-radioButton id="category2" name="gender" formControlName="gender"
-                                                   value="Female"></p-radioButton>
-                                    <label for="category2">Female</label>
-                                </div>
+                            <label for="role">Role</label>
+                            <div formGroupName="role">
+                                <p-dropdown id="role" [options]="roleDropdown"
+                                            formControlName="roleName"
+                                            appendTo="body"
+                                            placeholder="Select a Role"
+                                            [showClear]="true"></p-dropdown>
                             </div>
-
                         </div>
-
                     </div>
                 </form>
 

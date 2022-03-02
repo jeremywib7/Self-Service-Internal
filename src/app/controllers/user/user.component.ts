@@ -22,6 +22,7 @@ export class UserComponent implements OnInit {
     cols: any[];
 
     statusDropdown: any[];
+    roleDropdown: any[];
 
     reactiveForm: FormGroup;
 
@@ -51,6 +52,13 @@ export class UserComponent implements OnInit {
             {label: 'ACTIVE', value: true},
             {label: 'INACTIVE', value: false},
         ];
+
+        this.roleDropdown = [
+            {label: 'Admin', value: 'Admin'},
+            {label: 'User', value: 'User'},
+            {label: 'Customer', value: 'Customer'}
+
+        ]
     }
 
     public getUsers(): void {
