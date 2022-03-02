@@ -168,22 +168,85 @@
                             <div class="formgrid grid">
                                 <div class="field-radiobutton col-12">
                                     <p-radioButton id="category1" name="gender" formControlName="gender"
+                                                   [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.gender.errors && (reactiveForm.controls.gender.touched ||
+                           reactiveForm.controls.gender.dirty)}"
                                                    value="Male"></p-radioButton>
                                     <label for="category1">Male</label>
                                 </div>
                                 <div class="field-radiobutton col-12">
                                     <p-radioButton id="category2" name="gender" formControlName="gender"
+                                                   [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.gender.errors && (reactiveForm.controls.gender.touched ||
+                           reactiveForm.controls.gender.dirty)}"
                                                    value="Female"></p-radioButton>
                                     <label for="category2">Female</label>
+                                </div>
+                            </div>
+                            <div *ngIf="reactiveForm.controls.gender.errors && (reactiveForm.controls.gender.touched ||
+                           reactiveForm.controls.gender.dirty) ">
+                                <div *ngIf="reactiveForm.hasError('required','gender')">
+                                    <small class="p-error">Gender is not selected</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field col-12 md:col-6">
+                            <label for="dateJoined">Date Joined</label>
+                            <p-calendar id="dateJoined" formControlName="dateJoined" dateFormat="dd/mm/yy"
+                                        appendTo="body"
+                                        [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.dateJoined.errors && (reactiveForm.controls.dateJoined.touched ||
+                           reactiveForm.controls.dateJoined.dirty)}"></p-calendar>
+                            <div *ngIf="reactiveForm.controls.dateJoined.errors && (reactiveForm.controls.dateJoined.touched ||
+                           reactiveForm.controls.dateJoined.dirty) " style="color: red">
+                                <div *ngIf="reactiveForm.hasError('required','dateJoined')">
+                                    <small class="p-error">Date is required</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field col-12 md:col-6">
+                            <label for="email">Email</label>
+                            <input type="text" pInputText id="email" formControlName="email"
+                                   [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty)}"/>
+                            <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty) ">
+                                <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty) " style="color: red">
+                                    <div *ngIf="reactiveForm.hasError('required','email')">
+                                        <small class="p-error">Email is required</small>
+                                    </div>
+                                    <div *ngIf="reactiveForm.hasError('pattern','email')">
+                                        <small class="p-error">Email format is invalid</small>
+                                    </div>
+                                    <div *ngIf="reactiveForm.hasError('minlength','email')">
+                                        <small class="p-error">Email must be 3 characters or more</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="field col-12">
+                            <label for="address">Address</label>
+                            <input type="text" pInputText id="address" formControlName="address"
+                                   [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.address.errors && (reactiveForm.controls.address.touched ||
+                           reactiveForm.controls.address.dirty)}"/>
+                            <div *ngIf="reactiveForm.controls.address.errors && (reactiveForm.controls.address.touched ||
+                           reactiveForm.controls.address.dirty) ">
+                                <div *ngIf="reactiveForm.hasError('required','address')">
+                                    <small class="p-error">Address is required</small>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="field col-12 md:col-6">
                             <label for="active">Status</label>
                             <p-dropdown id="active" [options]="statusDropdown" [showClear]="true"
                                         appendTo="body"
-                                        formControlName="active" placeholder="Select a Status">
+                                        formControlName="active" placeholder="Select a Status"
+                                        [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.active.errors &&
+                                           (reactiveForm.controls.active.touched ||
+                           reactiveForm.controls.active.dirty)}">
                                 <ng-template pTemplate="selectedItem">
                                     <span
                                         [class]="setSelectedDropdownStatus(this.reactiveForm.value.active, true)">
@@ -194,17 +257,90 @@
                                         [class]="'user-badge status-' + status.label.toLowerCase()">{{status.label}}</span>
                                 </ng-template>
                             </p-dropdown>
+
+                            <div *ngIf="reactiveForm.controls.active.errors && (reactiveForm.controls.active.touched ||
+                           reactiveForm.controls.active.dirty) ">
+                                <div *ngIf="reactiveForm.hasError('required','active')">
+                                    <small class="p-error">Status is required</small>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="field col-12">
+                        <div class="field col-12 md:col-6">
                             <label for="role">Role</label>
                             <div formGroupName="role">
                                 <p-dropdown id="role" [options]="roleDropdown"
+                                            [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.get('role.roleName').errors && (reactiveForm.get('role.roleName').touched ||
+                           reactiveForm.get('role.roleName').dirty)}"
                                             formControlName="roleName"
                                             appendTo="body"
                                             placeholder="Select a Role"
                                             [showClear]="true"></p-dropdown>
                             </div>
+                            <div *ngIf="reactiveForm.get('role.roleName').errors && (reactiveForm.get('role.roleName').touched ||
+                           reactiveForm.get('role.roleName').dirty) ">
+                                <div *ngIf="reactiveForm.hasError('required', 'role.roleName')">
+                                    <small class="p-error">Role is required</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field col-12 md:col-6">
+                            <label for="bankAccount">Bank Account</label>
+                            <p-inputNumber id="bankAccount" formControlName="bankAccount" [useGrouping]="false"
+                                           [min]="0" [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.email.errors &&
+                                           (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty)}"></p-inputNumber>
+                            <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty) ">
+                                <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty) " style="color: red">
+                                    <div *ngIf="reactiveForm.hasError('required','email')">
+                                        <small class="p-error">Email is required</small>
+                                    </div>
+                                    <div *ngIf="reactiveForm.hasError('pattern','email')">
+                                        <small class="p-error">Email format is invalid</small>
+                                    </div>
+                                    <div *ngIf="reactiveForm.hasError('minlength','email')">
+                                        <small class="p-error">Email must be 3 characters or more</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field col-12 md:col-6">
+                            <label for="phoneNumber">Phone Number</label>
+                            <p-inputNumber id="phoneNumber" formControlName="phoneNumber" [useGrouping]="false"
+                                           [min]="0" [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.email.errors &&
+                                           (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty)}"></p-inputNumber>
+                            <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty) ">
+                                <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
+                           reactiveForm.controls.email.dirty) " style="color: red">
+                                    <div *ngIf="reactiveForm.hasError('required','email')">
+                                        <small class="p-error">Email is required</small>
+                                    </div>
+                                    <div *ngIf="reactiveForm.hasError('pattern','email')">
+                                        <small class="p-error">Email format is invalid</small>
+                                    </div>
+                                    <div *ngIf="reactiveForm.hasError('minlength','email')">
+                                        <small class="p-error">Email must be 3 characters or more</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field col-12">
+                            <label for="phoneNumber">User Image</label>
+                            <p-fileUpload customUpload="true" (uploadHandler)="uploadUserImage($event)" accept="image/*"
+                                          maxFileSize="1000000">
+                                <ng-template pTemplate="content">
+                                    <ul *ngIf="uploadedFiles.length">
+                                        <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                                    </ul>
+                                </ng-template>
+                            </p-fileUpload>
                         </div>
                     </div>
                 </form>

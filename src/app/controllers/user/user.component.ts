@@ -3,15 +3,20 @@ import {User} from "../../model/User";
 import {UserService} from "../../service/user.service";
 import {environment} from "../../../environments/environment";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {DatePipe} from "@angular/common";
+import {MessageService} from "primeng/api";
 
 @Component({
     selector: 'app-user',
     templateUrl: './user.component.html',
-    styleUrls: ['./user.component.scss']
+    styleUrls: ['./user.component.scss'],
+    providers: [DatePipe]
 })
 export class UserComponent implements OnInit {
 
     selectedUsers: User[];
+
+    uploadedFiles: any[] = [];
 
     showAddOrEditProductDialog: boolean = false;
 
@@ -29,6 +34,8 @@ export class UserComponent implements OnInit {
     constructor(
         private userService: UserService,
         private fb: FormBuilder,
+        public datepipe: DatePipe,
+        private messageService: MessageService
     ) {
     }
 
@@ -71,6 +78,7 @@ export class UserComponent implements OnInit {
 
     initForm() {
         this.reactiveForm = this.fb.group({
+            userCode: new FormControl({}),
             username: new FormControl(
                 '', {
                     validators: [Validators.required, Validators.compose(
@@ -116,8 +124,6 @@ export class UserComponent implements OnInit {
                 {
                     validators: [Validators.required]
                 }),
-            userCode: new FormControl('',
-                {}),
             imageUrl: new FormControl(null,
                 {
                     validators: this.user ? [] : [Validators.required]
@@ -132,6 +138,10 @@ export class UserComponent implements OnInit {
             ),
         }, {updateOn: 'change'})
 
+    }
+
+    uploadUserImage(event) {
+        console.log(event.files);
     }
 
     setSelectedDropdownStatus(status: boolean, badge: boolean): string {
@@ -163,14 +173,28 @@ export class UserComponent implements OnInit {
         } else {
             this.editMode = false;
             this.reactiveForm.reset();
-            this.reactiveForm.patchValue(null);
         }
 
         this.showAddOrEditProductDialog = true;
     }
 
     submit() {
-        console.log(this.reactiveForm.value);
+
+        if (this.reactiveForm.valid) {
+            this.reactiveForm.patchValue({
+                dateJoined: this.reactiveForm.value.dateJoined.length === 10 ?
+                    this.reactiveForm.value.dateJoined :
+                    this.datepipe.transform(this.reactiveForm.value.dateJoined,
+                        'dd/MM/yyyy'),
+                role: {
+                    roleDescription: this.reactiveForm.value.role.roleName + " role"
+                }
+            });
+        } else {
+
+        }
+        console.log(this.reactiveForm?.value);
+
     }
 
     // deleteSelectedUsers() {
