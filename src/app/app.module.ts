@@ -147,6 +147,7 @@ import {AuthGuard} from "./_auth/auth.guard";
 import {AuthInterceptor} from "./_auth/auth.interceptor";
 import {Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadImageModule} from "ng-lazyload-image";
 import {UserAuthService} from "./service/user-auth.service";
+import {BlockUIModule} from "primeng/blockui";
 
 @NgModule({
     imports: [
@@ -239,6 +240,7 @@ import {UserAuthService} from "./service/user-auth.service";
         StyleClassModule,
         LazyLoadImageModule,
         ReactiveFormsModule,
+        BlockUIModule,
     ],
     declarations: [
         AppComponent,

@@ -102,11 +102,26 @@
                   [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
                 <form *ngIf="reactiveForm" [formGroup]="reactiveForm" (ngSubmit)="submit()">
-                    <img
-                        [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' +
+                    <img *ngIf="editMode"
+                         [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' +
                          this.reactiveForm.value.imageUrl  "
-                        [alt]="this.reactiveForm.value" width="150" class="mt-0 mx-auto mb-5 block shadow-2">
-                    <div class="field p-fluid">
+                         [alt]="this.reactiveForm.value" width="150" class="mt-0 mx-auto mb-3 block shadow-2" src="">
+                    <p-fileUpload accept="image/*" [showCancelButton]="false" [showUploadButton]="false"
+                                  maxFilfeSize="1000000" class="text-center" previewWidth="80"
+                                  (onRemove)="onRemoveImage()"
+                                  (onSelect)="onSelectedImage($event)"
+                                  chooseLabel="{{this.reactiveForm.value.imageUrl ? 'Change':'Choose'}} User Picture">
+                    </p-fileUpload>
+                    <div *ngIf="reactiveForm.controls.imageUrl.errors && (reactiveForm.controls.imageUrl.touched ||
+                           reactiveForm.controls.imageUrl.dirty) ">
+                        <div *ngIf="reactiveForm.hasError('required','imageUrl')">
+                            <div class="text-center p-2 border-round" style="background-color: #FBE8E6">
+                                <small class="p-error">Image is required.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field p-fluid mt-4">
                         <label for="username">Username</label>
                         <input type="text" pInputText id="username" formControlName="username"
                                [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.username.errors &&
@@ -288,22 +303,22 @@
                         <div class="field col-12 md:col-6">
                             <label for="bankAccount">Bank Account</label>
                             <p-inputNumber id="bankAccount" formControlName="bankAccount" [useGrouping]="false"
-                                           [min]="0" [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.email.errors &&
-                                           (reactiveForm.controls.email.touched ||
-                           reactiveForm.controls.email.dirty)}"></p-inputNumber>
-                            <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
-                           reactiveForm.controls.email.dirty) ">
-                                <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
-                           reactiveForm.controls.email.dirty) " style="color: red">
-                                    <div *ngIf="reactiveForm.hasError('required','email')">
-                                        <small class="p-error">Email is required</small>
-                                    </div>
-                                    <div *ngIf="reactiveForm.hasError('pattern','email')">
-                                        <small class="p-error">Email format is invalid</small>
-                                    </div>
-                                    <div *ngIf="reactiveForm.hasError('minlength','email')">
-                                        <small class="p-error">Email must be 3 characters or more</small>
-                                    </div>
+                                           [min]="0" [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.bankAccount.errors &&
+                                           (reactiveForm.controls.bankAccount.touched ||
+                           reactiveForm.controls.bankAccount.dirty)}"></p-inputNumber>
+                            <div *ngIf="reactiveForm.controls.bankAccount.errors && (reactiveForm.controls.bankAccount.touched ||
+                           reactiveForm.controls.bankAccount.dirty) " style="color: red">
+                                <div *ngIf="reactiveForm.hasError('required','bankAccount')">
+                                    <small class="p-error">Bank Account is required</small>
+                                </div>
+                                <div *ngIf="reactiveForm.hasError('pattern','bankAccount')">
+                                    <small class="p-error">Bank Account must be a number</small>
+                                </div>
+                                <div *ngIf="reactiveForm.hasError('min','bankAccount')">
+                                    <small class="p-error">Bank Account minimum is 5 characters</small>
+                                </div>
+                                <div *ngIf="reactiveForm.hasError('max','bankAccount')">
+                                    <small class="p-error">Bank Account maximum is 10 characters</small>
                                 </div>
                             </div>
                         </div>
@@ -311,39 +326,31 @@
                         <div class="field col-12 md:col-6">
                             <label for="phoneNumber">Phone Number</label>
                             <p-inputNumber id="phoneNumber" formControlName="phoneNumber" [useGrouping]="false"
-                                           [min]="0" [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.email.errors &&
-                                           (reactiveForm.controls.email.touched ||
+                                           [min]="0" [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.phoneNumber.errors &&
+                                           (reactiveForm.controls.phoneNumber.touched ||
                            reactiveForm.controls.email.dirty)}"></p-inputNumber>
-                            <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
-                           reactiveForm.controls.email.dirty) ">
-                                <div *ngIf="reactiveForm.controls.email.errors && (reactiveForm.controls.email.touched ||
-                           reactiveForm.controls.email.dirty) " style="color: red">
-                                    <div *ngIf="reactiveForm.hasError('required','email')">
-                                        <small class="p-error">Email is required</small>
-                                    </div>
-                                    <div *ngIf="reactiveForm.hasError('pattern','email')">
-                                        <small class="p-error">Email format is invalid</small>
-                                    </div>
-                                    <div *ngIf="reactiveForm.hasError('minlength','email')">
-                                        <small class="p-error">Email must be 3 characters or more</small>
-                                    </div>
+                            <div *ngIf="reactiveForm.controls.phoneNumber.errors && (reactiveForm.controls.phoneNumber.touched ||
+                           reactiveForm.controls.phoneNumber.dirty) " style="color: red">
+                                <div *ngIf="reactiveForm.hasError('required','phoneNumber')">
+                                    <small class="p-error">Phone number is required</small>
+                                </div>
+                                <div *ngIf="reactiveForm.hasError('pattern','phoneNumber')">
+                                    <small class="p-error">Phone number format is invalid</small>
+                                </div>
+                                <div *ngIf="reactiveForm.hasError('minlength','phoneNumber')">
+                                    <small class="p-error">Phone number must be between 10 and 14 characters</small>
+                                </div>
+                                <div *ngIf="reactiveForm.hasError('maxlength','phoneNumber')">
+                                    <small class="p-error">Phone number must be between 10 and 14 characters</small>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="field col-12">
-                            <label for="phoneNumber">User Image</label>
-                            <p-fileUpload customUpload="true" (uploadHandler)="uploadUserImage($event)" accept="image/*"
-                                          maxFileSize="1000000">
-                                <ng-template pTemplate="content">
-                                    <ul *ngIf="uploadedFiles.length">
-                                        <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
-                                    </ul>
-                                </ng-template>
-                            </p-fileUpload>
-                        </div>
                     </div>
                 </form>
+
+                <button pButton pRipple *ngIf="editMode" label="Reset Password"
+                        icon="pi pi-refresh"
+                        class="p-button-danger"></button>
 
             </ng-template>
 

@@ -16,7 +16,7 @@ export class UserComponent implements OnInit {
 
     selectedUsers: User[];
 
-    uploadedFiles: any[] = [];
+    uploadedFiles: File;
 
     showAddOrEditProductDialog: boolean = false;
 
@@ -28,6 +28,8 @@ export class UserComponent implements OnInit {
 
     statusDropdown: any[];
     roleDropdown: any[];
+
+    viewBrowseButton: boolean = false;
 
     reactiveForm: FormGroup;
 
@@ -178,6 +180,15 @@ export class UserComponent implements OnInit {
         this.showAddOrEditProductDialog = true;
     }
 
+    onSelectedImage(event) {
+        this.uploadedFiles = event.currentFiles[0];
+        this.reactiveForm.get('imageUrl').setValue(event.currentFiles[0].name);
+    }
+
+    onRemoveImage() {
+        this.reactiveForm.controls['imageUrl'].reset();
+    }
+
     submit() {
 
         if (this.reactiveForm.valid) {
@@ -190,15 +201,73 @@ export class UserComponent implements OnInit {
                     roleDescription: this.reactiveForm.value.role.roleName + " role"
                 }
             });
-        } else {
 
+            this.reactiveForm.patchValue({
+                userPassword: this.reactiveForm.value.userPassword,
+                dateJoined: this.reactiveForm.value.dateJoined.length === 10 ?
+                    this.reactiveForm.value.dateJoined :
+                    this.datepipe.transform(this.reactiveForm.value.dateJoined,
+                        'dd/MM/yyyy'),
+                role: {
+                    roleDescription: this.reactiveForm.value.role.roleName + " role"
+                }
+            });
+
+
+            if (this.editMode === true) {
+
+                this.reactiveForm.patchValue({
+                    imageUrl: this.user ? this.user.imageUrl : null,
+                });
+
+                this.userService.updateUser(this.reactiveForm.value, this.uploadedFiles).subscribe(
+                    (response: User) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'User updated'
+                        });
+                    },
+                );
+            } else {
+
+                this.reactiveForm.patchValue({
+                    userPassword: "1234",
+                });
+
+                this.userService.addUser(this.reactiveForm.value, this.uploadedFiles).subscribe(
+                    (response: User) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'User registered'
+                        });
+                    },
+                );
+
+            }
+        } else {
+            this.validateFormFields(this.reactiveForm);
         }
         console.log(this.reactiveForm?.value);
 
     }
 
-    // deleteSelectedUsers() {
-    //     this.deleteUserDialog = true;
-    // }
+    public validateFormFields(formGroup: FormGroup) {
+
+        Object.keys(formGroup.controls).forEach(field => {
+            const control = formGroup.get(field);
+            let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'));
+            console.log(field);
+            if ((invalidFields).length !== -1) {
+                invalidFields[1].focus();
+            }
+            if (control instanceof FormControl) {
+                control.markAsTouched({onlySelf: true});
+            } else if (control instanceof FormGroup) {
+                this.validateFormFields(control);
+            }
+        })
+    }
 
 }

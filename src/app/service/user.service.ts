@@ -37,6 +37,8 @@ export class UserService implements OnInit {
     public addUser(user: User, selectedImage?: File): Observable<User> {
         let observable = of({});
 
+        // console.log(selectedImage);
+
         const str = user.imageUrl;
         const dotIndex = str.lastIndexOf('.');
         const ext = str.substring(dotIndex);
