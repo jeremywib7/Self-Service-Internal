@@ -71,24 +71,22 @@ export class UserService implements OnInit {
     public updateUser(user: User, selectedImage?: File): Observable<User> {
         let observable = of({});
 
-        const str = user.imageUrl;
-        const dotIndex = str.lastIndexOf('.');
-        const ext = str.substring(dotIndex);
-
         if (selectedImage) {
+            //get file extension
+            const ext = selectedImage.type.replace('image/', '');
+
             observable = observable.pipe(
                 switchMap(() => {
+                    user.imageUrl = user.username + ext;
 
                     const formData: FormData = new FormData();
                     formData.append('file', selectedImage);
-                    formData.append('username', user.username); // set file name with username
-                    // formData.append('username', user.imgUrl); // set file name with original file name
 
-                    user.imageUrl = user.username + ext;
+                    let params = new HttpParams();
+                    params = params.append('name', user.imageUrl);
 
-                    return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload/`, formData, {
-                        responseType: 'text'
-                    });
+                    return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload/`, formData,
+                        {params});
                 })
             )
         }

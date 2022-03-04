@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {User} from "../../model/User";
 import {UserService} from "../../service/user.service";
 import {environment} from "../../../environments/environment";
@@ -33,11 +33,14 @@ export class UserComponent implements OnInit {
 
     reactiveForm: FormGroup;
 
+    userImgUrl: string;
+
     constructor(
         private userService: UserService,
         private fb: FormBuilder,
         public datepipe: DatePipe,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private el: ElementRef
     ) {
     }
 
@@ -80,7 +83,11 @@ export class UserComponent implements OnInit {
 
     initForm() {
         this.reactiveForm = this.fb.group({
-            userCode: new FormControl({}),
+            imageUrl: new FormControl(null,
+                {
+                    validators: this.user ? [] : [Validators.required]
+                }
+            ),
             username: new FormControl(
                 '', {
                     validators: [Validators.required, Validators.compose(
@@ -94,21 +101,6 @@ export class UserComponent implements OnInit {
                 validators: [Validators.required, Validators.compose(
                     [Validators.pattern('[a-zA-z]*'), Validators.minLength(2)])]
             }),
-            active: new FormControl('',
-                {
-                    validators: [Validators.required]
-                }),
-            userPassword: new FormControl({}),
-            email: new FormControl('', {
-                validators: [Validators.required, Validators.compose(
-                    [Validators.pattern('^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$')])]
-            }),
-            role: this.fb.group({
-                roleName: new FormControl('', {
-                    validators: [Validators.required]
-                }),
-                roleDescription: new FormControl('', {}),
-            }),
             gender: new FormControl('', {
                 validators: [Validators.required]
             }),
@@ -116,21 +108,31 @@ export class UserComponent implements OnInit {
                 {
                     validators: [Validators.required]
                 }),
-            phoneNumber: new FormControl('',
-                {
-                    validators: [Validators.required, Validators.compose(
-                        [Validators.pattern('[0-9+ ]*'), Validators.min(12345),
-                            Validators.max(123456789)])]
-                }),
+            email: new FormControl('', {
+                validators: [Validators.required, Validators.compose(
+                    [Validators.pattern('^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$')])]
+            }),
             address: new FormControl('',
                 {
                     validators: [Validators.required]
                 }),
-            imageUrl: new FormControl(null,
+            active: new FormControl('',
                 {
-                    validators: this.user ? [] : [Validators.required]
-                }
-            ),
+                    validators: [Validators.required]
+                }),
+            role: this.fb.group({
+                roleName: new FormControl('', {
+                    validators: [Validators.required]
+                }),
+                roleDescription: new FormControl('', {}),
+            }),
+            userPassword: new FormControl({}),
+            phoneNumber: new FormControl('',
+                {
+                    validators: [Validators.required, Validators.compose(
+                        [Validators.pattern('[0-9+ ]*'), Validators.min(12345),
+                            Validators.max(1234567891020)])]
+                }),
             bankAccount: new FormControl('',
                 {
                     validators: [Validators.required, Validators.compose(
@@ -140,10 +142,6 @@ export class UserComponent implements OnInit {
             ),
         }, {updateOn: 'change'})
 
-    }
-
-    uploadUserImage(event) {
-        console.log(event.files);
     }
 
     setSelectedDropdownStatus(status: boolean, badge: boolean): string {
@@ -172,6 +170,7 @@ export class UserComponent implements OnInit {
         if (editMode) {
             this.editMode = true;
             this.reactiveForm.patchValue(user);
+            this.userImgUrl = user.imageUrl;
         } else {
             this.editMode = false;
             this.reactiveForm.reset();
@@ -192,6 +191,7 @@ export class UserComponent implements OnInit {
     submit() {
 
         if (this.reactiveForm.valid) {
+
             this.reactiveForm.patchValue({
                 dateJoined: this.reactiveForm.value.dateJoined.length === 10 ?
                     this.reactiveForm.value.dateJoined :
@@ -201,73 +201,77 @@ export class UserComponent implements OnInit {
                     roleDescription: this.reactiveForm.value.role.roleName + " role"
                 }
             });
-
-            this.reactiveForm.patchValue({
-                userPassword: this.reactiveForm.value.userPassword,
-                dateJoined: this.reactiveForm.value.dateJoined.length === 10 ?
-                    this.reactiveForm.value.dateJoined :
-                    this.datepipe.transform(this.reactiveForm.value.dateJoined,
-                        'dd/MM/yyyy'),
-                role: {
-                    roleDescription: this.reactiveForm.value.role.roleName + " role"
-                }
-            });
-
 
             if (this.editMode === true) {
-
-                this.reactiveForm.patchValue({
-                    imageUrl: this.user ? this.user.imageUrl : null,
-                });
-
-                this.userService.updateUser(this.reactiveForm.value, this.uploadedFiles).subscribe(
-                    (response: User) => {
+                // showAddOrEditProductDialog
+                this.userService.updateUser(this.reactiveForm.value, this.uploadedFiles).subscribe({
+                    next: (userResponse: User) => {
+                        let index = this.users.findIndex(user => user['username'] === userResponse['data']['username']);
+                        this.users[index] = userResponse['data'];
+                    },
+                    complete: () => {
+                        this.showAddOrEditProductDialog = false;
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Success',
                             detail: 'User updated'
                         });
-                    },
-                );
+                    }
+                });
             } else {
 
                 this.reactiveForm.patchValue({
                     userPassword: "1234",
                 });
 
-                this.userService.addUser(this.reactiveForm.value, this.uploadedFiles).subscribe(
-                    (response: User) => {
+                this.userService.addUser(this.reactiveForm.value, this.uploadedFiles).subscribe({
+                    next: (response: User) => {
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Success',
                             detail: 'User registered'
                         });
                     },
-                );
+                    complete: () => {
+                        this.showAddOrEditProductDialog = false;
+                    }
+                });
 
             }
         } else {
             this.validateFormFields(this.reactiveForm);
         }
-        console.log(this.reactiveForm?.value);
 
     }
 
-    public validateFormFields(formGroup: FormGroup) {
 
-        Object.keys(formGroup.controls).forEach(field => {
-            const control = formGroup.get(field);
-            let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'));
-            console.log(field);
-            if ((invalidFields).length !== -1) {
-                invalidFields[1].focus();
+    public validateFormFields(formGroup: FormGroup) {
+        formGroup.markAllAsTouched();
+
+        for (const key of Object.keys(formGroup.controls)) {
+
+            if (formGroup.controls[key].invalid) {
+                if (key === "imageUrl") {
+                    (document.getElementById('imageUrl') as HTMLFormElement).focus();
+                    break;
+                } else {
+                    // option 1
+                    const invalidControl = this.el.nativeElement.querySelector('[formcontrolname="' + key + '"]');
+                    if (invalidControl) {
+                        invalidControl.focus();
+                    }
+                    break;
+
+                    // option 2
+                    // let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'));
+                    // if ((invalidFields).length != 0) {
+                    //     invalidFields[1].focus();
+                    // break;
+                    // }
+
+                }
             }
-            if (control instanceof FormControl) {
-                control.markAsTouched({onlySelf: true});
-            } else if (control instanceof FormGroup) {
-                this.validateFormFields(control);
-            }
-        })
+        }
     }
 
 }

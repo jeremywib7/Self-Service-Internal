@@ -66,7 +66,7 @@
                         <td style="min-width:10rem;"><span class="p-column-title">Image</span>
                             <img [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' + user?.imageUrl  "
                                  [alt]="user.imageUrl" width="100"
-                                 class="shadow-4"/>
+                                 class="shadow-4" src=""/>
                         </td>
                         <td style="min-width:10rem;">
                             <span class="p-column-title">Role</span>
@@ -98,7 +98,7 @@
         </div>
 
         <p-dialog [(visible)]="showAddOrEditProductDialog" [style]="{width: '450px'}"
-                  header="{{editMode ? 'Edit' : 'Add'}} User"
+                  header="{{editMode ? 'Edit' : 'Add'}} User" (onHide)="reactiveForm.reset()"
                   [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
                 <form *ngIf="reactiveForm" [formGroup]="reactiveForm" (ngSubmit)="submit()">
@@ -106,8 +106,9 @@
                          [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' +
                          this.reactiveForm.value.imageUrl  "
                          [alt]="this.reactiveForm.value" width="150" class="mt-0 mx-auto mb-3 block shadow-2" src="">
-                    <p-fileUpload accept="image/*" [showCancelButton]="false" [showUploadButton]="false"
-                                  maxFilfeSize="1000000" class="text-center" previewWidth="80"
+                    <p-fileUpload tabindex="1" id="imageUrl" accept="image/*" [showCancelButton]="false"
+                                  [showUploadButton]="false"
+                                  maxFileSize="1000000" class="text-center" previewWidth="80"
                                   (onRemove)="onRemoveImage()"
                                   (onSelect)="onSelectedImage($event)"
                                   chooseLabel="{{this.reactiveForm.value.imageUrl ? 'Change':'Choose'}} User Picture">
@@ -116,7 +117,7 @@
                            reactiveForm.controls.imageUrl.dirty) ">
                         <div *ngIf="reactiveForm.hasError('required','imageUrl')">
                             <div class="text-center p-2 border-round" style="background-color: #FBE8E6">
-                                <small class="p-error">Image is required.</small>
+                                <small id="imageRequiredMsg" class="p-error">Image is required.</small>
                             </div>
                         </div>
                     </div>
@@ -141,8 +142,8 @@
                     </div>
                     <div class="formgrid grid">
                         <div class="field col-12 md:col-6">
-                            <label for="firstName">First Name</label>
-                            <input type="text" pInputText id="firstName" formControlName="userFirstName"
+                            <label for="userFirstName">First Name</label>
+                            <input type="text" pInputText id="userFirstName" formControlName="userFirstName"
                                    [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.userFirstName.errors &&
                                    (reactiveForm.controls.userFirstName.touched ||reactiveForm.controls.userFirstName.dirty)}"/>
                             <div *ngIf="reactiveForm.controls.userFirstName.errors && (reactiveForm.controls.userFirstName.touched ||
@@ -179,10 +180,10 @@
                         </div>
 
                         <div class="field col-12">
-                            <label class="mb-3">Gender</label>
+                            <label for="gender" class="mb-3">Gender</label>
                             <div class="formgrid grid">
                                 <div class="field-radiobutton col-12">
-                                    <p-radioButton id="category1" name="gender" formControlName="gender"
+                                    <p-radioButton id="gender" name="gender" formControlName="gender"
                                                    [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.gender.errors && (reactiveForm.controls.gender.touched ||
                            reactiveForm.controls.gender.dirty)}"
                                                    value="Male"></p-radioButton>
@@ -330,18 +331,18 @@
                                            (reactiveForm.controls.phoneNumber.touched ||
                            reactiveForm.controls.email.dirty)}"></p-inputNumber>
                             <div *ngIf="reactiveForm.controls.phoneNumber.errors && (reactiveForm.controls.phoneNumber.touched ||
-                           reactiveForm.controls.phoneNumber.dirty) " style="color: red">
+                           reactiveForm.controls.phoneNumber.dirty) ">
                                 <div *ngIf="reactiveForm.hasError('required','phoneNumber')">
                                     <small class="p-error">Phone number is required</small>
                                 </div>
                                 <div *ngIf="reactiveForm.hasError('pattern','phoneNumber')">
                                     <small class="p-error">Phone number format is invalid</small>
                                 </div>
-                                <div *ngIf="reactiveForm.hasError('minlength','phoneNumber')">
-                                    <small class="p-error">Phone number must be between 10 and 14 characters</small>
+                                <div *ngIf="reactiveForm.hasError('min','phoneNumber')">
+                                    <small class="p-error">Phone number cannot be less than 5 characters</small>
                                 </div>
-                                <div *ngIf="reactiveForm.hasError('maxlength','phoneNumber')">
-                                    <small class="p-error">Phone number must be between 10 and 14 characters</small>
+                                <div *ngIf="reactiveForm.hasError('max','phoneNumber')">
+                                    <small class="p-error">Phone number maximum characters reached</small>
                                 </div>
                             </div>
                         </div>
