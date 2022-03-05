@@ -34,41 +34,7 @@ export class UserService implements OnInit {
             loginData, {headers: this.requestHeader});
     }
 
-    public addUser(user: User, selectedImage?: File): Observable<User> {
-        let observable = of({});
-
-        // console.log(selectedImage);
-
-        const str = user.imageUrl;
-        const dotIndex = str.lastIndexOf('.');
-        const ext = str.substring(dotIndex);
-
-        if (selectedImage) {
-            observable = observable.pipe(
-                switchMap(() => {
-
-                    const formData: FormData = new FormData();
-                    formData.append('file', selectedImage);
-                    formData.append('username', user.username); // set file name with username
-                    // formData.append('username', user.imgUrl); // set file name with original file name
-
-                    user.imageUrl = user.username + ext;
-
-                    return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload`, formData, {
-                        responseType: 'text'
-                    });
-                })
-            )
-        }
-
-        return observable.pipe(
-            switchMap(() => {
-                return this.httpClient.post<User>(`${this.apiServerUrl}/${this.project}/user/register`, user);
-            })
-        );
-    }
-
-    public updateUser(user: User, selectedImage?: File): Observable<User> {
+    public addOrUpdateUser(user: User, mode: string, selectedImage?: File): Observable<User> {
         let observable = of({});
 
         if (selectedImage) {
@@ -93,7 +59,11 @@ export class UserService implements OnInit {
 
         return observable.pipe(
             switchMap(() => {
-                return this.httpClient.put<User>(`${this.apiServerUrl}/${this.project}/user/update`, user);
+                if (mode === "edit") {
+                    return this.httpClient.put<User>(`${this.apiServerUrl}/${this.project}/user/update`, user);
+                } else {
+                    return this.httpClient.post<User>(`${this.apiServerUrl}/${this.project}/user/register`, user);
+                }
             })
         );
 

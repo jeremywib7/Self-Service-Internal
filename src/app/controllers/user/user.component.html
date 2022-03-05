@@ -104,7 +104,7 @@
                 <form *ngIf="reactiveForm" [formGroup]="reactiveForm" (ngSubmit)="submit()">
                     <img *ngIf="editMode"
                          [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' +
-                         this.reactiveForm.value.imageUrl  "
+                         userImgUrl "
                          [alt]="this.reactiveForm.value" width="150" class="mt-0 mx-auto mb-3 block shadow-2" src="">
                     <p-fileUpload tabindex="1" id="imageUrl" accept="image/*" [showCancelButton]="false"
                                   [showUploadButton]="false"
@@ -187,7 +187,7 @@
                                                    [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.gender.errors && (reactiveForm.controls.gender.touched ||
                            reactiveForm.controls.gender.dirty)}"
                                                    value="Male"></p-radioButton>
-                                    <label for="category1">Male</label>
+                                    <label for="gender">Male</label>
                                 </div>
                                 <div class="field-radiobutton col-12">
                                     <p-radioButton id="category2" name="gender" formControlName="gender"
@@ -329,7 +329,7 @@
                             <p-inputNumber id="phoneNumber" formControlName="phoneNumber" [useGrouping]="false"
                                            [min]="0" [ngClass]="{'ng-invalid ng-dirty' : reactiveForm.controls.phoneNumber.errors &&
                                            (reactiveForm.controls.phoneNumber.touched ||
-                           reactiveForm.controls.email.dirty)}"></p-inputNumber>
+                           reactiveForm.controls.phoneNumber.dirty)}"></p-inputNumber>
                             <div *ngIf="reactiveForm.controls.phoneNumber.errors && (reactiveForm.controls.phoneNumber.touched ||
                            reactiveForm.controls.phoneNumber.dirty) ">
                                 <div *ngIf="reactiveForm.hasError('required','phoneNumber')">

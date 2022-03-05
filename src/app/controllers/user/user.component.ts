@@ -49,6 +49,7 @@ export class UserComponent implements OnInit {
 
     users: User[] = [];
     user: User;
+    private mode: string;
 
     ngOnInit(): void {
         this.getUsers();
@@ -127,12 +128,6 @@ export class UserComponent implements OnInit {
                 roleDescription: new FormControl('', {}),
             }),
             userPassword: new FormControl({}),
-            phoneNumber: new FormControl('',
-                {
-                    validators: [Validators.required, Validators.compose(
-                        [Validators.pattern('[0-9+ ]*'), Validators.min(12345),
-                            Validators.max(1234567891020)])]
-                }),
             bankAccount: new FormControl('',
                 {
                     validators: [Validators.required, Validators.compose(
@@ -140,6 +135,13 @@ export class UserComponent implements OnInit {
                             Validators.max(1234567891)])]
                 }
             ),
+            phoneNumber: new FormControl('',
+                {
+                    updateOn: 'change',
+                    validators: [Validators.required, Validators.compose(
+                        [Validators.pattern('[0-9+ ]*'), Validators.min(12345),
+                            Validators.max(1234567891020)])]
+                }),
         }, {updateOn: 'change'})
 
     }
@@ -203,41 +205,41 @@ export class UserComponent implements OnInit {
             });
 
             if (this.editMode === true) {
-                // showAddOrEditProductDialog
-                this.userService.updateUser(this.reactiveForm.value, this.uploadedFiles).subscribe({
-                    next: (userResponse: User) => {
+                this.mode = 'edit';
+            } else {
+                this.mode = 'add';
+                this.reactiveForm.get('userPassword').setValue("1234");
+            }
+
+            this.userService.addOrUpdateUser(this.reactiveForm.value, this.mode, this.uploadedFiles).subscribe({
+                next: (userResponse: User) => {
+                    if (this.editMode) {
                         let index = this.users.findIndex(user => user['username'] === userResponse['data']['username']);
                         this.users[index] = userResponse['data'];
-                    },
-                    complete: () => {
-                        this.showAddOrEditProductDialog = false;
+
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Success',
                             detail: 'User updated'
                         });
-                    }
-                });
-            } else {
+                    } else {
+                        // this.users.push(userResponse['data']);
+                        this.users = [...this.users, userResponse['data']]; // insert row
+                        this.users.sort((a, b) => (a.username > b.username) ? 1 : -1);
 
-                this.reactiveForm.patchValue({
-                    userPassword: "1234",
-                });
+                        // this.users = this.users.filter( item => item.value !== 1 ); // delete row
 
-                this.userService.addUser(this.reactiveForm.value, this.uploadedFiles).subscribe({
-                    next: (response: User) => {
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Success',
                             detail: 'User registered'
                         });
-                    },
-                    complete: () => {
-                        this.showAddOrEditProductDialog = false;
                     }
-                });
 
-            }
+                    this.showAddOrEditProductDialog = false;
+                },
+            });
+
         } else {
             this.validateFormFields(this.reactiveForm);
         }

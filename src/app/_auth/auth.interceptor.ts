@@ -51,7 +51,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     } else if (err.status === 403) {
                         this.router.navigate(['/forbidden']);
                     } else {
-                        this.messageService.add({severity: 'error', summary: 'Error', detail: err.message});
+                        this.messageService.add({severity: 'error', summary: 'Error', detail: err.error.message});
                     }
                     return EMPTY;
                 }
