@@ -36,6 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
         req = this.addToken(req, token);
 
+
         return next.handle(req).pipe(
             catchError(
                 (err: HttpErrorResponse) => {
@@ -46,8 +47,7 @@ export class AuthInterceptor implements HttpInterceptor {
                             summary: 'Session Expired',
                             detail: 'Please log in again'
                         });
-                        this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-                            this.router.navigate(['/pages/login']));
+                        this.router.navigate(['/pages/login'])
                     } else if (err.status === 403) {
                         this.router.navigate(['/forbidden']);
                     } else {

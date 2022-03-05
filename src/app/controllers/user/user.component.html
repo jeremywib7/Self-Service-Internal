@@ -6,7 +6,7 @@
                 <ng-template pTemplate="left">
                     <div class="my-2">
                         <button
-                            (click)="openAddOrEditProductDialog(false)"
+                            (click)="openAddOrEditUserDialog(false)"
                             pButton pRipple label="Add User" icon="pi pi-plus"
                             class="p-button-success mr-2"></button>
                         <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
@@ -80,14 +80,13 @@
                         <td>
                             <div class="flex">
                                 <button pButton pRipple
-                                        (click)="openAddOrEditProductDialog(true, user)"
+                                        (click)="openAddOrEditUserDialog(true, user)"
                                         icon="pi pi-pencil"
                                         class="p-button-rounded p-button-success mr-2"
                                 ></button>
-                                <button
-                                    *ngIf="user.username.toString() != 'Admin'"
-                                    (click)="deleteUser(user)"
-                                    pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                <button pButton pRipple *ngIf="user.username.toString() != 'Admin'"
+                                        (click)="openDeleteUserDialog(user.username)"
+                                        icon="pi pi-trash" class="p-button-rounded p-button-warning"
                                 ></button>
                             </div>
                         </td>
@@ -364,19 +363,17 @@
             </ng-template>
         </p-dialog>
 
-        <p-dialog [(visible)]="showDeleteUserDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
-            <div class="flex align-items-center justify-content-center">
-                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="user">Are you sure you want to delete user <b>{{user.username}}</b>?</span>
-            </div>
+        <p-confirmDialog #cd [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '450px'}"
+            icon="pi pi-exclamation-triangle">
             <ng-template pTemplate="footer">
                 <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                        (click)="showDeleteUserDialog = false"></button>
+                        (click)="cd.reject()"></button>
                 <button pButton pRipple
-                        (click)="submit()"
+                        (click)="cd.accept()"
                         icon="pi pi-check" class="p-button-text" label="Yes"
                 ></button>
             </ng-template>
-        </p-dialog>
+        </p-confirmDialog>
+
     </div>
 </div>

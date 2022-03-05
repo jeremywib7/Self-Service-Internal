@@ -4,7 +4,7 @@ import {UserService} from "../../service/user.service";
 import {environment} from "../../../environments/environment";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {DatePipe} from "@angular/common";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 @Component({
     selector: 'app-user',
@@ -19,8 +19,6 @@ export class UserComponent implements OnInit {
     uploadedFiles: File;
 
     showAddOrEditProductDialog: boolean = false;
-
-    showDeleteUserDialog: boolean = false;
 
     editMode: boolean = false;
 
@@ -39,6 +37,7 @@ export class UserComponent implements OnInit {
         private userService: UserService,
         private fb: FormBuilder,
         public datepipe: DatePipe,
+        private confirmationService: ConfirmationService,
         private messageService: MessageService,
         private el: ElementRef
     ) {
@@ -162,12 +161,9 @@ export class UserComponent implements OnInit {
         }
     }
 
-    deleteUser(user: User) {
-        this.user = user;
-        this.showDeleteUserDialog = true;
-    }
+    // open dialog method
 
-    openAddOrEditProductDialog(editMode?: boolean, user?: User) {
+    openAddOrEditUserDialog(editMode?: boolean, user?: User) {
 
         if (editMode) {
             this.editMode = true;
@@ -181,6 +177,30 @@ export class UserComponent implements OnInit {
         this.showAddOrEditProductDialog = true;
     }
 
+    openDeleteUserDialog(username: string) {
+        this.confirmationService.confirm({
+            message: `Are you sure you want to delete user <b> ${username} </b>?`,
+            header: 'Delete User',
+            accept: () => {
+                this.userService.deleteUser(username).subscribe({
+                    next: value => {
+                        let itemIndex = this.users.findIndex(item => item['username'] === username);
+                        this.users = this.users.slice(0, itemIndex).concat(this.users.slice(itemIndex + 1));
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'Delete user success!'
+                        });
+                    },
+                });
+            },
+        });
+    }
+
+    //
+
+    //on action method
+
     onSelectedImage(event) {
         this.uploadedFiles = event.currentFiles[0];
         this.reactiveForm.get('imageUrl').setValue(event.currentFiles[0].name);
@@ -189,6 +209,8 @@ export class UserComponent implements OnInit {
     onRemoveImage() {
         this.reactiveForm.controls['imageUrl'].reset();
     }
+
+    //
 
     submit() {
 
@@ -223,11 +245,8 @@ export class UserComponent implements OnInit {
                             detail: 'User updated'
                         });
                     } else {
-                        // this.users.push(userResponse['data']);
                         this.users = [...this.users, userResponse['data']]; // insert row
-                        this.users.sort((a, b) => (a.username > b.username) ? 1 : -1);
-
-                        // this.users = this.users.filter( item => item.value !== 1 ); // delete row
+                        this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
 
                         this.messageService.add({
                             severity: 'success',

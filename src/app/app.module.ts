@@ -142,7 +142,7 @@ import {AccessComponent} from './components/access/access.component';
 import {ProductComponent} from './controllers/product/product.component';
 import {UserComponent} from './controllers/user/user.component';
 import {LoginComponent} from "./controllers/login/login.component";
-import {MessageService} from "primeng/api";
+import {ConfirmationService, MessageService} from "primeng/api";
 import {AuthGuard} from "./_auth/auth.guard";
 import {AuthInterceptor} from "./_auth/auth.interceptor";
 import {Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadImageModule} from "ng-lazyload-image";
@@ -295,6 +295,7 @@ import {BlockUIModule} from "primeng/blockui";
             useClass: AuthInterceptor,
             multi: true
         },
+        ConfirmationService,
         MessageService,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
