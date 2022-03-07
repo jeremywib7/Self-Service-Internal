@@ -1,10 +1,19 @@
-import { Component, AfterViewInit, OnDestroy, Renderer2, OnInit } from '@angular/core';
+import {
+    Component,
+    AfterViewInit,
+    OnDestroy,
+    Renderer2,
+    OnInit,
+    ChangeDetectorRef,
+    AfterContentChecked
+} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AppComponent } from './app.component';
 import { ConfigService } from './service/app.config.service';
 import { AppConfig } from './api/appconfig';
 import { Subscription } from 'rxjs';
 import {MessageService} from "primeng/api";
+import {LoaderService} from "./service/loader.service";
 
 @Component({
     selector: 'app-main',
@@ -22,7 +31,7 @@ import {MessageService} from "primeng/api";
         ])
     ],
 })
-export class AppMainComponent implements AfterViewInit, OnDestroy, OnInit {
+export class AppMainComponent implements AfterViewInit, AfterContentChecked, OnDestroy, OnInit {
 
     public menuInactiveDesktop: boolean;
 
@@ -54,14 +63,21 @@ export class AppMainComponent implements AfterViewInit, OnDestroy, OnInit {
 
     subscription: Subscription;
 
-    constructor(public renderer: Renderer2, public app: AppComponent, public configService: ConfigService) { }
+    constructor(public renderer: Renderer2, public app: AppComponent, public configService: ConfigService,
+                public loaderService: LoaderService, private cdr: ChangeDetectorRef) { }
 
     ngOnInit() {
         this.config = this.configService.config;
         this.subscription = this.configService.configUpdate$.subscribe(config => this.config = config);
     }
 
+    ngAfterContentChecked() {
+        //Detect changes for progress bar  in top of screen
+        this.cdr.detectChanges();
+    }
+
     ngAfterViewInit() {
+
         // hides the overlay menu and top menu if outside is clicked
         this.documentClickListener = this.renderer.listen('body', 'click', (event) => {
             if (!this.isDesktop()) {

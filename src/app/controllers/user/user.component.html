@@ -21,7 +21,7 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="users" [columns]="cols" responsiveLayout="scroll"
+            <p-table #dt [value]="users" [columns]="cols" responsiveLayout="scroll" [loading]="tableUserLoading"
                      [globalFilterFields]="['username','role.roleName','active']" [rows]="10"
                      [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -64,9 +64,11 @@
                             {{user.username}}
                         </td>
                         <td style="min-width:10rem;"><span class="p-column-title">Image</span>
-                            <img [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' + user?.imageUrl  "
-                                 [alt]="user.imageUrl" width="100"
-                                 class="shadow-4" src=""/>
+                            <img
+                                defaultImage="/assets/demo/images/galleria/spinner.gif"
+                                [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download/' + user?.imageUrl  "
+                                [alt]="user.imageUrl" width="100"
+                                class="shadow-4" src=""/>
                         </td>
                         <td style="min-width:10rem;">
                             <span class="p-column-title">Role</span>
@@ -364,7 +366,7 @@
         </p-dialog>
 
         <p-confirmDialog #cd [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '450px'}"
-            icon="pi pi-exclamation-triangle">
+                         icon="pi pi-exclamation-triangle">
             <ng-template pTemplate="footer">
                 <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
                         (click)="cd.reject()"></button>

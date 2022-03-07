@@ -29,6 +29,8 @@ export class UserComponent implements OnInit {
 
     viewBrowseButton: boolean = false;
 
+    tableUserLoading: boolean = false;
+
     reactiveForm: FormGroup;
 
     userImgUrl: string;
@@ -74,9 +76,14 @@ export class UserComponent implements OnInit {
     }
 
     public getUsers(): void {
-        this.userService.getUsers().subscribe(
-            (response: User[]) => {
-                this.users = response;
+        this.tableUserLoading = true;
+        this.userService.getUsers().subscribe({
+                next: (response: User[]) => {
+                    this.users = response;
+                },
+                complete: () => {
+                    this.tableUserLoading = false;
+                }
             }
         );
     }
@@ -210,6 +217,10 @@ export class UserComponent implements OnInit {
         this.reactiveForm.controls['imageUrl'].reset();
     }
 
+    onLoadedUserImage() {
+        console.log("loaded");
+    }
+
     //
 
     submit() {
@@ -217,10 +228,8 @@ export class UserComponent implements OnInit {
         if (this.reactiveForm.valid) {
 
             this.reactiveForm.patchValue({
-                dateJoined: this.reactiveForm.value.dateJoined.length === 10 ?
-                    this.reactiveForm.value.dateJoined :
-                    this.datepipe.transform(this.reactiveForm.value.dateJoined,
-                        'dd/MM/yyyy'),
+                dateJoined: this.datepipe.transform(this.reactiveForm.value.dateJoined,
+                    'dd/MM/yyyy'),
                 role: {
                     roleDescription: this.reactiveForm.value.role.roleName + " role"
                 }

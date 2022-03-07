@@ -19,7 +19,6 @@ export class AppComponent {
 
     config: AppConfig;
 
-
     constructor(
         private primengConfig: PrimeNGConfig,
         private userAuthService: UserAuthService,
@@ -31,6 +30,7 @@ export class AppComponent {
 
     ngOnInit() {
         this.checkRole();
+        // this.checkSettings('lara-dark-indigo', true);
         this.primengConfig.ripple = true;
         document.documentElement.style.fontSize = '14px';
     }
@@ -48,7 +48,7 @@ export class AppComponent {
         if (el.style.zIndex !== requiredZIndex) el.style.zIndex = requiredZIndex;
     }
 
-    private static tokenExpired(token: string) {
+    public static tokenExpired(token: string) {
         const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
         return (Math.floor((new Date).getTime() / 1000)) >= expiry;
     }
@@ -68,7 +68,7 @@ export class AppComponent {
     checkSettings(theme: string, dark: boolean) {
         let themeElement = document.getElementById('theme-css');
         // console.log(theme);
-        themeElement.setAttribute('href', 'assets/theme/' + 'tailwind-light' + '/theme.css');
+        themeElement.setAttribute('href', 'assets/theme/' + theme + '/theme.css');
         this.configService.updateConfig({...this.config, ...{theme, dark}});
     }
 }

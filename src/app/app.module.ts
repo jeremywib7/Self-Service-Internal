@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {ChangeDetectorRef, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
@@ -148,6 +148,7 @@ import {AuthInterceptor} from "./_auth/auth.interceptor";
 import {Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadImageModule} from "ng-lazyload-image";
 import {UserAuthService} from "./service/user-auth.service";
 import {BlockUIModule} from "primeng/blockui";
+import {Router} from "@angular/router";
 
 @NgModule({
     imports: [
@@ -289,7 +290,9 @@ import {BlockUIModule} from "primeng/blockui";
     ],
     providers: [
         AuthGuard,
-        {provide: LAZYLOAD_IMAGE_HOOKS, useClass: AppModule},
+        {
+            provide: LAZYLOAD_IMAGE_HOOKS,
+            useClass: AppModule},
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
@@ -305,12 +308,37 @@ import {BlockUIModule} from "primeng/blockui";
 })
 export class AppModule extends IntersectionObserverHooks {
 
-    constructor(private userAuthService: UserAuthService) {
+    constructor(
+        private userAuthService: UserAuthService,
+        public messageService: MessageService,
+        private router: Router) {
         super();
+    }
+
+    imageToBeLoaded = new Map<string, Attributes>();
+
+    onAttributeChange(newAttributes: Attributes) {
+        // console.log(`New attributes: ${newAttributes}`);
+        this.imageToBeLoaded.set(newAttributes.id, newAttributes);
+    }
+
+    onDestroy(attributes: Attributes) {
+        this.imageToBeLoaded.delete(attributes.id);
     }
 
     //to load image with token
     override loadImage({imagePath}: Attributes): Promise<string> {
+
+        if (AppComponent.tokenExpired(this.userAuthService.getToken())) {
+            this.userAuthService.clear();
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Session Expired',
+                detail: 'Please log in again'
+            });
+            this.router.navigate(['/pages/login']);
+        }
+
         return fetch(imagePath, {
             headers: {
                 Authorization: 'Bearer ' + this.userAuthService.getToken(),
