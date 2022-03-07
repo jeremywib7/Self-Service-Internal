@@ -29,19 +29,19 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        this.service_count++; // increment the count for each intercepted http request.
-        this.loaderService.value.next(0);
-        this.loaderService.isLoading.next(true);
-
-        let interval = setInterval(() => {
-            this.loaderService.value.next(this.loaderService.value.value + Math.floor(Math.random() * 10) + 1);
-            if (this.loaderService.value.value >= 50) {
-                clearInterval(interval);
-            }
-        }, 100);
+        // this.service_count++; // increment the count for each intercepted http request.
+        // this.loaderService.value.next(0);
+        // this.loaderService.isLoading.next(true);
+        //
+        // let interval = setInterval(() => {
+        //     this.loaderService.value.next(this.loaderService.value.value + Math.floor(Math.random() * 10) + 1);
+        //     if (this.loaderService.value.value >= 50) {
+        //         clearInterval(interval);
+        //     }
+        // }, 100);
 
         if (req.headers.get('No-Auth') === 'True') {
-            this.onFinishLoad();
+            // this.onFinishLoad();
             return next.handle(req.clone());
         }
 
@@ -52,7 +52,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
         return next.handle(req).pipe(
             finalize(() => {
-                this.onFinishLoad();
+                // this.onFinishLoad();
             }),
             catchError(
                 (err: HttpErrorResponse) => {
@@ -75,15 +75,15 @@ export class AuthInterceptor implements HttpInterceptor {
         );
     }
 
-    private onFinishLoad() {
-        this.service_count--;
-        if (this.service_count === 0) {
-            this.loaderService.value.next(100);
-            setTimeout(() => {
-                this.loaderService.isLoading.next(false)
-            }, 1000);
-        }
-    }
+    // private onFinishLoad() {
+    //     this.service_count--;
+    //     if (this.service_count === 0) {
+    //         this.loaderService.value.next(100);
+    //         setTimeout(() => {
+    //             this.loaderService.isLoading.next(false);
+    //         }, 1000);
+    //     }
+    // }
 
     private addToken(request: HttpRequest<any>, token: string) {
         return request.clone(

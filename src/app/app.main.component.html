@@ -6,10 +6,11 @@
                                 'layout-static-sidebar-inactive': staticMenuInactive,
                                 'layout-mobile-sidebar-active':menuActiveMobile,
                                 'p-ripple-disabled': !config.ripple, 'p-input-filled': config.inputStyle === 'filled'}">
-    <div *ngIf="loaderService.isLoading | async" class="loader">
-        <p-progressBar [value]="loaderService.value.value" [style]="{'height': '6px'}"
-            [showValue]="false"></p-progressBar>
-    </div>
+    <!--    <div *ngIf="loaderService.isLoading | async" class="loader">-->
+    <!--        <p-progressBar [value]="loaderService.value.value" [style]="{'height': '6px'}"-->
+    <!--            [showValue]="false"></p-progressBar>-->
+    <!--    </div>-->
+    <ngx-loading-bar height="6px" color="var(--primary-color)"></ngx-loading-bar>
     <app-topbar></app-topbar>
     <div class="layout-sidebar">
         <app-menu></app-menu>

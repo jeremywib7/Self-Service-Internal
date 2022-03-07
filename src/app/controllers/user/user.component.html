@@ -10,7 +10,7 @@
                             pButton pRipple label="Add User" icon="pi pi-plus"
                             class="p-button-success mr-2"></button>
                         <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
-
+                                (click)="onDeleteSelectedUsers()"
                                 [disabled]="!selectedUsers || !selectedUsers.length"></button>
                     </div>
                 </ng-template>
@@ -25,7 +25,7 @@
                      [globalFilterFields]="['username','role.roleName','active']" [rows]="10"
                      [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                     [(selection)]="selectedUsers" selectionMode="multiple" [rowHover]="true" dataKey="username">
+                     [(selection)]="selectedUsers" (selectionChange)="onAllSelect()" selectionMode="multiple" [rowHover]="true" dataKey="username">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <h5 class="m-0">Manage Users</h5>
@@ -57,7 +57,7 @@
                 <ng-template pTemplate="body" let-user>
                     <tr>
                         <td>
-                            <p-tableCheckbox [value]="user"></p-tableCheckbox>
+                            <p-tableCheckbox [value]="user" *ngIf="user.username != 'Admin'"></p-tableCheckbox>
                         </td>
                         <td style="min-width:10rem;">
                             <span class="p-column-title">Username</span>
@@ -87,7 +87,7 @@
                                         class="p-button-rounded p-button-success mr-2"
                                 ></button>
                                 <button pButton pRipple *ngIf="user.username.toString() != 'Admin'"
-                                        (click)="openDeleteUserDialog(user.username)"
+                                        (click)="openDeleteUserDialog(user)"
                                         icon="pi pi-trash" class="p-button-rounded p-button-warning"
                                 ></button>
                             </div>

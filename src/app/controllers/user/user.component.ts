@@ -5,6 +5,7 @@ import {environment} from "../../../environments/environment";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {DatePipe} from "@angular/common";
 import {ConfirmationService, MessageService} from "primeng/api";
+import {HttpParams} from "@angular/common/http";
 
 @Component({
     selector: 'app-user',
@@ -184,15 +185,15 @@ export class UserComponent implements OnInit {
         this.showAddOrEditProductDialog = true;
     }
 
-    openDeleteUserDialog(username: string) {
+    openDeleteUserDialog(user: User) {
+        this.user = {...user};
         this.confirmationService.confirm({
-            message: `Are you sure you want to delete user <b> ${username} </b>?`,
+            message: `Are you sure you want to delete user <b> ${user.username} </b>?`,
             header: 'Delete User',
             accept: () => {
-                this.userService.deleteUser(username).subscribe({
-                    next: value => {
-                        let itemIndex = this.users.findIndex(item => item['username'] === username);
-                        this.users = this.users.slice(0, itemIndex).concat(this.users.slice(itemIndex + 1));
+                this.userService.deleteUser(user.username).subscribe({
+                    next: () => {
+                        this.users = this.users.filter(val => val.username !== this.user.username);
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Success',
@@ -208,6 +209,10 @@ export class UserComponent implements OnInit {
 
     //on action method
 
+    onAllSelect() {
+        this.selectedUsers = this.selectedUsers.filter(val => val.username !== 'Admin');
+    }
+
     onSelectedImage(event) {
         this.uploadedFiles = event.currentFiles[0];
         this.reactiveForm.get('imageUrl').setValue(event.currentFiles[0].name);
@@ -217,8 +222,29 @@ export class UserComponent implements OnInit {
         this.reactiveForm.controls['imageUrl'].reset();
     }
 
-    onLoadedUserImage() {
-        console.log("loaded");
+    onDeleteSelectedUsers() {
+        let params = new HttpParams();
+
+        this.selectedUsers.forEach((value, index, array) => {
+            params = params.append("username", value.username.toString());
+        });
+
+        this.confirmationService.confirm({
+            message: `Are you sure you want to delete selected users </b>?`,
+            header: 'Delete Selected Users',
+            accept: () => {
+                this.userService.deleteSelectedUsers(params).subscribe({
+                    next: value => {
+                        this.users = this.users.filter(val => !this.selectedUsers.includes(val));
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'Delete selected users success!'
+                        });
+                    },
+                });
+            },
+        });
     }
 
     //

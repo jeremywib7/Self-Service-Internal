@@ -149,6 +149,8 @@ import {Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadIma
 import {UserAuthService} from "./service/user-auth.service";
 import {BlockUIModule} from "primeng/blockui";
 import {Router} from "@angular/router";
+import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
+import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
 
 @NgModule({
     imports: [
@@ -242,6 +244,8 @@ import {Router} from "@angular/router";
         LazyLoadImageModule,
         ReactiveFormsModule,
         BlockUIModule,
+        // loading bar http progress bar:
+        LoadingBarHttpClientModule,
     ],
     declarations: [
         AppComponent,
@@ -292,11 +296,16 @@ import {Router} from "@angular/router";
         AuthGuard,
         {
             provide: LAZYLOAD_IMAGE_HOOKS,
-            useClass: AppModule},
+            useClass: AppModule
+        },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
             multi: true
+        },
+        {
+            provide: LOADING_BAR_CONFIG,
+            useValue: {latencyThreshold: 0}
         },
         ConfirmationService,
         MessageService,
