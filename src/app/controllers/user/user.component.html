@@ -23,9 +23,11 @@
 
             <p-table #dt [value]="users" [columns]="cols" responsiveLayout="scroll" [loading]="tableUserLoading"
                      [globalFilterFields]="['username','role.roleName','active']" [rows]="10"
-                     [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                     stateStorage="session" stateKey="filter_table_user" [paginator]="true"
+                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                     [(selection)]="selectedUsers" (selectionChange)="onAllSelect()" selectionMode="multiple" [rowHover]="true" dataKey="username">
+                     [(selection)]="selectedUsers" (selectionChange)="onAllSelect()" selectionMode="multiple"
+                     [rowHover]="true" dataKey="username">
                 <ng-template pTemplate="caption">
                     <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
                         <h5 class="m-0">Manage Users</h5>
@@ -50,6 +52,36 @@
                         </th>
                         <th pSortableColumn="active">Status
                             <p-sortIcon field="active"></p-sortIcon>
+                        </th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>
+                            <p-columnFilter type="text" field="username"></p-columnFilter>
+                        </th>
+                        <th></th>
+                        <th>
+                            <p-columnFilter type="text" field="role.roleName"></p-columnFilter>
+                        </th>
+                        <th>
+                            <p-columnFilter field="active" matchMode="equals" display="menu">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-dropdown [ngModel]="value" [options]="statusDropdown"
+                                                (onChange)="filter($event.value)"
+                                                placeholder="Any">
+                                        <ng-template pTemplate="selectedItem">
+                                             <span
+                                                 [class]="setSelectedDropdownStatus(value, true)">
+                                        {{setSelectedDropdownStatus(value, false)}}</span>
+                                        </ng-template>
+                                        <ng-template let-option pTemplate="item">
+                                            <span
+                                                [class]="'user-badge status-' + option.label.toLowerCase()">{{option.label}}</span>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </ng-template>
+                            </p-columnFilter>
                         </th>
                         <th></th>
                     </tr>

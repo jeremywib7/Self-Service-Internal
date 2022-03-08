@@ -70,6 +70,9 @@ export class UserComponent implements OnInit {
 
         this.roleDropdown = [
             {label: 'Admin', value: 'Admin'},
+            {label: 'Cashier', value: 'Cashier'},
+            {label: 'Chef', value: 'Chef'},
+            {label: 'Staff', value: 'Staff'},
             {label: 'User', value: 'User'},
             {label: 'Customer', value: 'Customer'}
 
@@ -230,7 +233,7 @@ export class UserComponent implements OnInit {
         });
 
         this.confirmationService.confirm({
-            message: `Are you sure you want to delete selected users </b>?`,
+            message: `Are you sure you want to delete selected users?`,
             header: 'Delete Selected Users',
             accept: () => {
                 this.userService.deleteSelectedUsers(params).subscribe({
