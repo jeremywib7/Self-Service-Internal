@@ -22,7 +22,11 @@
     "@angular/router": "~13.0.0",
     "@ngx-loading-bar/core": "^6.0.2",
     "@ngx-loading-bar/http-client": "^6.0.2",
+    "@types/jspdf": "^2.0.0",
     "chart.js": "^3.3.2",
+    "file-saver": "^2.0.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.23",
     "ng-lazyload-image": "^9.1.2",
     "ngx-progressbar": "^8.0.0",
     "primeflex": "^3.1.0",
@@ -32,6 +36,7 @@
     "rxjs": "~7.4.0",
     "tslib": "^2.3.0",
     "web-animations-js": "^2.3.2",
+    "xlsx": "^0.18.3",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

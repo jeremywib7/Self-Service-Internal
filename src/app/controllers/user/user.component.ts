@@ -6,6 +6,11 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {DatePipe} from "@angular/common";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {HttpParams} from "@angular/common/http";
+import {Table} from "primeng/table";
+import * as FileSaver from 'file-saver';
+import "jspdf-autotable";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable"
 
 @Component({
     selector: 'app-user',
@@ -26,6 +31,7 @@ export class UserComponent implements OnInit {
     cols: any[];
 
     statusDropdown: any[];
+
     roleDropdown: any[];
 
     viewBrowseButton: boolean = false;
@@ -57,7 +63,7 @@ export class UserComponent implements OnInit {
         this.getUsers();
         this.initForm();
 
-        //for csv export
+        //csv column settings
         this.cols = [
             {field: 'username', header: 'Username'},
             {field: 'role.roleName', header: 'Role'},
@@ -75,9 +81,21 @@ export class UserComponent implements OnInit {
             {label: 'Staff', value: 'Staff'},
             {label: 'User', value: 'User'},
             {label: 'Customer', value: 'Customer'}
-
         ]
+
     }
+
+    //pdf column settings
+    pdfColumns = [
+        {title: "Username", dataKey: "username"},
+        {title: "Firstname", dataKey: "userFirstName"},
+        {title: "Lastname", dataKey: "userLastName"},
+        {title: "Active", dataKey: "active"},
+        {title: "Role", dataKey: "role", displayProperty: "roleName"},
+        {title: "Date Joined", dataKey: "dateJoined"},
+    ];
+
+    pdfTable = [];
 
     public getUsers(): void {
         this.tableUserLoading = true;
@@ -172,6 +190,59 @@ export class UserComponent implements OnInit {
         }
     }
 
+    exportPdf() {
+        this.pdfTable = this.users;
+
+        const doc = new jsPDF('p', 'pt');
+        autoTable(doc, {
+            tableWidth: "auto",
+            columns: this.pdfColumns,
+            margin: {horizontal: 15},
+            styles: {overflow: "linebreak"},
+            bodyStyles: {valign: "top"},
+            theme: "striped",
+            showHead: "everyPage",
+            body: this.pdfTable,
+            didParseCell: function (data) {
+                if (data.column.raw['displayProperty']) {
+                    var prop = data.column.raw['displayProperty'];
+                    var text = data.cell.raw[prop];
+                    if (text && text.length > 0) {
+                        data.cell.text = text;
+                    }
+
+                }
+            },
+            didDrawPage: function (data) {
+                // Header
+                doc.setFontSize(15);
+                doc.setTextColor(40);
+                doc.text("Users Data", data.settings.margin.left, 22);
+            }
+        });
+        doc.save('Users Data.pdf');
+        this.pdfTable = [];
+
+    }
+
+    exportExcel() {
+        import("xlsx").then(xlsx => {
+            const worksheet = xlsx.utils.json_to_sheet(this.users);
+            const workbook = {Sheets: {'data': worksheet}, SheetNames: ['data']};
+            const excelBuffer: any = xlsx.write(workbook, {bookType: 'xlsx', type: 'array'});
+            this.saveAsExcelFile(excelBuffer, "users");
+        });
+    }
+
+    saveAsExcelFile(buffer: any, fileName: string): void {
+        let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        let EXCEL_EXTENSION = '.xlsx';
+        const data: Blob = new Blob([buffer], {
+            type: EXCEL_TYPE
+        });
+        FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+    }
+
     // open dialog method
 
     openAddOrEditUserDialog(editMode?: boolean, user?: User) {
@@ -223,6 +294,10 @@ export class UserComponent implements OnInit {
 
     onRemoveImage() {
         this.reactiveForm.controls['imageUrl'].reset();
+    }
+
+    onClearTable(table: Table) {
+        table.clear();
     }
 
     onDeleteSelectedUsers() {

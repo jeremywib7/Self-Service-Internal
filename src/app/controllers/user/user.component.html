@@ -16,27 +16,44 @@
                 </ng-template>
 
                 <ng-template pTemplate="right">
-                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
-                            (click)="dt.exportCSV()"></button>
+                    <button type="button" pButton pRipple icon="pi pi-file" (click)="dt.exportCSV()" class="mr-2"
+                            pTooltip="CSV" tooltipPosition="bottom"></button>
+                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                    <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"
+                            class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
                 </ng-template>
             </p-toolbar>
 
             <p-table #dt [value]="users" [columns]="cols" responsiveLayout="scroll" [loading]="tableUserLoading"
-                     [globalFilterFields]="['username','role.roleName','active']" [rows]="10"
-                     stateStorage="session" stateKey="filter_table_user" [paginator]="true"
+                     [globalFilterFields]="['username','role.roleName','active']" [rows]="10" [paginator]="true"
                      [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                     [exportHeader]="'customExportHeader'"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                      [(selection)]="selectedUsers" (selectionChange)="onAllSelect()" selectionMode="multiple"
                      [rowHover]="true" dataKey="username">
                 <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                    <div class="flex p-2">
                         <h5 class="m-0">Manage Users</h5>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
-                                   placeholder="Search..."/>
-                        </span>
                     </div>
+                    <!--                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">-->
+                    <!--                        <div class="grid">-->
+                    <!--                            <div class="col">-->
+                    <!--                                <h5 class="m-0">Manage Users</h5>-->
+                    <!--                            </div>-->
+                    <!--                            <div class="col">-->
+                    <!--                                <h5 class="m-0">-->
+                    <!--                                    <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"-->
+                    <!--                                            (click)="onClearTable(dt)"></button>-->
+                    <!--                                </h5>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                        <span class="block mt-2 md:mt-0 p-input-icon-left">-->
+                    <!--                            <i class="pi pi-search"></i>-->
+                    <!--                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"-->
+                    <!--                                   placeholder="Search..."/>-->
+                    <!--                        </span>-->
+                    <!--                    </div>-->
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
