@@ -73,7 +73,7 @@ export class ProductService {
     }
 
     loadAllProducts(params: HttpParams) {
-        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/product/all`, {params})
+        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/product/all/table`, {params})
             .pipe(map((data) => data || []))
     }
 
