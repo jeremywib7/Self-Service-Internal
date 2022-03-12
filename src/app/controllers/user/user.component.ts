@@ -24,7 +24,7 @@ export class UserComponent implements OnInit {
 
     uploadedFiles: File;
 
-    showAddOrEditProductDialog: boolean = false;
+    showAddOrEditUserDialog: boolean = false;
 
     editMode: boolean = false;
 
@@ -256,7 +256,7 @@ export class UserComponent implements OnInit {
             this.reactiveForm.reset();
         }
 
-        this.showAddOrEditProductDialog = true;
+        this.showAddOrEditUserDialog = true;
     }
 
     openDeleteUserDialog(user: User) {
@@ -368,7 +368,7 @@ export class UserComponent implements OnInit {
                         });
                     }
 
-                    this.showAddOrEditProductDialog = false;
+                    this.showAddOrEditUserDialog = false;
                 },
             });
 

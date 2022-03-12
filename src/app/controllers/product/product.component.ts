@@ -17,6 +17,8 @@ export class ProductComponent implements OnInit {
 
     dataTblProducts: Product[];
 
+    showAddOrEditProductDialog: boolean = false;
+
     cols: any[];
 
     tblProductLoading: boolean = false;
@@ -40,6 +42,10 @@ export class ProductComponent implements OnInit {
 
         let params = new HttpParams();
         params = params.append("page", event.first / event.rows);
+        if (event.sortField) {
+            params = params.append("sortedFieldName", event.sortField);
+        }
+        params = params.append("order", event.sortOrder);
         params = params.append("size", event.rows);
 
         setTimeout(() => {

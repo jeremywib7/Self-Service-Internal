@@ -36,6 +36,7 @@
                         <h5 class="m-0">Manage Users</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
+                            <!--suppress TypeScriptUnresolvedVariable -->
                             <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
                                    placeholder="Search..."/>
                         </span>
@@ -133,7 +134,7 @@
 
         </div>
 
-        <p-dialog [(visible)]="showAddOrEditProductDialog" [style]="{width: '450px'}"
+        <p-dialog [(visible)]="showAddOrEditUserDialog" [style]="{width: '450px'}"
                   header="{{editMode ? 'Edit' : 'Add'}} User" (onHide)="reactiveForm.reset()"
                   [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
@@ -392,7 +393,7 @@
             </ng-template>
 
             <ng-template pTemplate="footer">
-                <button pButton pRipple (click)="showAddOrEditProductDialog = false" label="Cancel" icon="pi pi-times"
+                <button pButton pRipple (click)="showAddOrEditUserDialog = false" label="Cancel" icon="pi pi-times"
                         class="p-button-text"></button>
                 <button pButton pRipple
                         (click)="submit()"

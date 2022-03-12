@@ -36,6 +36,7 @@
                         <h5 class="m-0">Manage Products</h5>
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
+                            <!--suppress TypeScriptUnresolvedVariable -->
                             <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
                                    placeholder="Search..."/>
                         </span>
@@ -56,6 +57,7 @@
                         <th pSortableColumn="unitPrice">Unit Price
                             <p-sortIcon field="unitPrice"></p-sortIcon>
                         </th>
+                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product>
@@ -72,34 +74,29 @@
                                 defaultImage="/assets/demo/images/galleria/spinner.gif"
                                 [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download/' +  product?.images[0]?.imageName  "
                                 width="100"
-                                class="shadow-4" src=""/>
+                                class="shadow-4" src="" [alt]="product?.images[0]?.imageName"/>
                         </td>
                         <td style="min-width:10rem;">
                             <span class="p-column-title">Description</span>
                             {{product.description}}
                         </td>
+                        <!--suppress TypeScriptUnresolvedFunction -->
                         <td style="min-width:10rem;">
                             <span class="p-column-title">Price</span>
-                            {{product.unitPrice}}
+                            {{product.unitPrice | currency:'Rp. ':'symbol':'3.0'}}
                         </td>
-                        <!--                        <td style="min-width: 10rem;"><span class="p-column-title">Status</span>-->
-                        <!--                            <span-->
-                        <!--                                [class]="user.active === true ? 'user-badge status-active' :'user-badge status-inactive'">-->
-                        <!--                                {{user.active === true ? "Active" : "Inactive"}}</span>-->
-                        <!--                        </td>-->
-                        <!--                        <td>-->
-                        <!--                            <div class="flex">-->
-                        <!--                                <button pButton pRipple-->
-                        <!--                                        (click)="openAddOrEditUserDialog(true, user)"-->
-                        <!--                                        icon="pi pi-pencil"-->
-                        <!--                                        class="p-button-rounded p-button-success mr-2"-->
-                        <!--                                ></button>-->
-                        <!--                                <button pButton pRipple *ngIf="user.username.toString() != 'Admin'"-->
-                        <!--                                        (click)="openDeleteUserDialog(user)"-->
-                        <!--                                        icon="pi pi-trash" class="p-button-rounded p-button-warning"-->
-                        <!--                                ></button>-->
-                        <!--                            </div>-->
-                        <!--                        </td>-->
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple
+
+                                        icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-success mr-2"
+                                ></button>
+                                <button pButton pRipple
+                                        icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                ></button>
+                            </div>
+                        </td>
                     </tr>
                 </ng-template>
 

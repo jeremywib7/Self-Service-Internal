@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, NgModule} from '@angular/core';
+import {ChangeDetectorRef, LOCALE_ID, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
-import {LocationStrategy, HashLocationStrategy} from '@angular/common';
+import {LocationStrategy, HashLocationStrategy, CommonModule, CurrencyPipe} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AppRoutingModule} from './app-routing.module';
 
@@ -156,6 +156,7 @@ import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
     imports: [
         BrowserModule,
         FormsModule,
+        CommonModule,
         AppRoutingModule,
         HttpClientModule,
         BrowserAnimationsModule,
