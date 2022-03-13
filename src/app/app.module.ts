@@ -151,6 +151,7 @@ import {BlockUIModule} from "primeng/blockui";
 import {Router} from "@angular/router";
 import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
+import {RxFormBuilder, RxReactiveFormsModule} from "@rxweb/reactive-form-validators";
 
 @NgModule({
     imports: [
@@ -215,6 +216,7 @@ import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
         RadioButtonModule,
         RatingModule,
         RippleModule,
+        RxReactiveFormsModule,
         ScrollPanelModule,
         ScrollTopModule,
         SelectButtonModule,
@@ -310,6 +312,7 @@ import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
         },
         ConfirmationService,
         MessageService,
+        RxFormBuilder,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, ConfigService

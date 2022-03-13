@@ -6,11 +6,13 @@ import {HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
 import {debounceTime, distinctUntilChanged, Observable, Subject} from "rxjs";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormGroupExtension, NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 
 @Component({
     selector: 'app-product',
     templateUrl: './product.component.html',
-    styleUrls: ['./product.component.scss']
+    styleUrls: ['./product.component.scss'],
 })
 export class ProductComponent implements OnInit {
 
@@ -22,7 +24,11 @@ export class ProductComponent implements OnInit {
 
     cols: any[];
 
+    statusDropdown: any[];
+
     tblProductLoading: boolean = false;
+
+    editMode: boolean = false;
 
     totalTblProduct: number = 0;
 
@@ -30,13 +36,110 @@ export class ProductComponent implements OnInit {
 
     @ViewChild('dt') inputSearch;
 
+    searchFormGroup: FormGroup;
+
+    productFg: FormGroup;
+
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
 
-    constructor(private productService: ProductService) {
+    constructor(
+        private productService: ProductService,
+        private fb: FormBuilder,
+        private rxFormBuilder: RxFormBuilder) {
     }
 
     ngOnInit(): void {
+        this.initForm();
+
+        this.statusDropdown = [
+            {label: 'ACTIVE', value: true},
+            {label: 'INACTIVE', value: false},
+        ];
+    }
+
+    initForm() {
+        //form search
+        this.searchFormGroup = this.fb.group({
+            searchInput: new FormControl()
+        });
+
+        // init search input debounce
+        this.searchFormGroup.get('searchInput')
+            .valueChanges
+            .pipe(debounceTime(1000))
+            .subscribe(dataValue => {
+                this.inputSearch.filterGlobal(dataValue, 'contains')
+            });
+
+        // form add or edit product
+        this.productFg = this.rxFormBuilder.group({
+            id: [''],
+            name: ['',
+                [
+                    RxwebValidators.required(),
+                    RxwebValidators.minLength({value: 3}),
+                    RxwebValidators.maxLength({value: 10})
+                ]
+            ],
+            active: ['', [RxwebValidators.required()]],
+            totalCalories: ['',
+                [
+                    RxwebValidators.required(),
+                    RxwebValidators.numeric({
+                        acceptValue: NumericValueType.PositiveNumber,
+                        allowDecimal: false
+                    }),
+                    RxwebValidators.maxNumber({value: 10000})
+                ]
+            ],
+            category: this.rxFormBuilder.group({
+                id: ['']
+            }),
+            unitPrice: ['',
+                [
+                    RxwebValidators.required(),
+                    RxwebValidators.numeric({
+                        acceptValue: NumericValueType.PositiveNumber, allowDecimal: false
+                    }),
+                    RxwebValidators.maxNumber({value: 1000000}),
+                    RxwebValidators.minNumber({value: 1}),
+                    RxwebValidators.greaterThan({fieldName: 'discountedPrice'})
+                ],
+            ],
+            discount: [''],
+            discountedPrice:
+                [
+                    RxwebValidators.required(),
+                    RxwebValidators.lessThan({fieldName: 'unitPrice'})
+                ],
+            description: ['',
+                [
+                    RxwebValidators.required(),
+                    RxwebValidators.minLength({value: 20})
+                ]
+            ],
+            images: this.rxFormBuilder.array([{
+                initialValue: [],
+            }])
+        });
+
+    }
+
+    setSelectedDropdownStatus(status: boolean, badge: boolean): string {
+        if (badge) {
+            if (status === true) {
+                return 'product-badge status-active';
+            } else {
+                return 'product-badge status-inactive';
+            }
+        } else {
+            if (status === true) {
+                return 'Active';
+            } else {
+                return 'Inactive';
+            }
+        }
     }
 
     loadProducts(event: LazyLoadEvent) {
@@ -63,7 +166,6 @@ export class ProductComponent implements OnInit {
                     this.dataTblProducts = data['data']['content'];
                     this.totalTblProduct = data['data']['totalElements'];
                     this.tblProductLoading = false;
-                    console.log(event);
                 },
             });
         }, 1000);
@@ -71,7 +173,19 @@ export class ProductComponent implements OnInit {
     }
 
     openAddOrEditProductDialog(editMode?: boolean, product?: Product) {
+        if (editMode) {
 
+        } else {
+            this.productFg.reset();
+            this.productFg.markAsPristine();
+            this.productFg.markAsUntouched();
+        }
+        this.showAddOrEditProductDialog = true;
+    }
+
+    submit() {
+        console.log("submited");
+        this.productFg.markAllAsTouched();
     }
 
 //   ON ACTION METHOD
@@ -80,21 +194,4 @@ export class ProductComponent implements OnInit {
 
     }
 
-    searchChangeObserver;
-
-    onSearchProduct(searchValue: string) {
-        if (!this.searchChangeObserver) {
-            new Observable(observer => {
-                this.searchChangeObserver = observer;
-            }).pipe(debounceTime(2000)) // wait 300ms after the last event before emitting last event
-                .pipe(distinctUntilChanged()) // only emit if value is different from previous value
-                .subscribe(console.log);
-        }
-
-        this.searchChangeObserver.next(this.inputSearch.filterGlobal(searchValue, 'contains'));
-    }
-
-    // onSearchProduct(searchValue : string) {
-    //     this.inputSearch.filterGlobal(searchValue, 'contains');
-    // }
 }

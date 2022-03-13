@@ -32,14 +32,16 @@
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                      [(selection)]="selectedProducts">
                 <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Manage Products</h5>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <div [formGroup]="searchFormGroup">
+                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                            <h5 class="m-0">Manage Products</h5>
+                            <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <!--suppress TypeScriptUnresolvedVariable -->
-                            <input pInputText type="text" (input)="onSearchProduct($event.target.value)"
+                                <!--suppress TypeScriptUnresolvedVariable -->
+                            <input pInputText formControlName="searchInput"
                                    placeholder="Search..."/>
                         </span>
+                        </div>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
@@ -99,9 +101,78 @@
                         </td>
                     </tr>
                 </ng-template>
-
-
             </p-table>
         </div>
+
+        <p-dialog [(visible)]="showAddOrEditProductDialog" [style]="{width: '450px'}"
+                  header="{{editMode ? 'Edit' : 'Add'}} Product"
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <form [formGroup]="productFg" (ngSubmit)="submit()">
+                    <div class="field">
+                        <label for="name">Name</label>
+                        <input type="text" pInputText id="name" formControlName="name"
+                               [ngClass]="{'ng-invalid ng-dirty' : productFg.controls.name.errors &&
+                                (productFg.controls.name.touched || productFg.controls.name.dirty)}"/>
+                        <div *ngIf="productFg.controls.name.errors && (productFg.controls.name.touched ||
+                           productFg.controls.name.dirty) ">
+                            <div *ngIf="productFg.hasError('required','name')">
+                                <small class="p-error">Name is required.</small>
+                            </div>
+                            <div *ngIf="productFg.hasError('minLength','name')">
+                                <small class="p-error">Name must be 3 characters or more.</small>
+                            </div>
+                            <div *ngIf="productFg.hasError('maxLength','name')">
+                                <small class="p-error">Name characters exceeded</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="formgrid grid">
+                        <div class="field col-12 md:col-6">
+                            <label for="active">Status</label>
+                            <p-dropdown id="active" [options]="statusDropdown" [showClear]="true"
+                                        appendTo="body"
+                                        formControlName="active" placeholder="Select a Status"
+                                        [ngClass]="{'ng-invalid ng-dirty' : productFg.controls.active.errors &&
+                                           (productFg.controls.active.touched ||
+                           productFg.controls.active.dirty)}">
+                                <ng-template pTemplate="selectedItem">
+                                    <span
+                                        [class]="setSelectedDropdownStatus(this.productFg.value.active, true)">
+                                        {{setSelectedDropdownStatus(this.productFg.value.active, false)}}</span>
+                                </ng-template>
+                                <ng-template let-status pTemplate="status">
+                                    <span
+                                        [class]="'product-badge status-' + status.label.toLowerCase()">{{status.label}}</span>
+                                </ng-template>
+                            </p-dropdown>
+
+                            <div *ngIf="productFg.controls.active.errors && (productFg.controls.active.touched ||
+                           productFg.controls.active.dirty) ">
+                                <div *ngIf="productFg.hasError('required','active')">
+                                    <small class="p-error">Active Status is required</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+                <button pButton pRipple *ngIf="editMode" label="Reset Password"
+                        icon="pi pi-refresh"
+                        class="p-button-danger"></button>
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple (click)="showAddOrEditProductDialog = false" label="Cancel" icon="pi pi-times"
+                        class="p-button-text"></button>
+                <button pButton pRipple
+                        (click)="submit()"
+                        label="Save" icon="pi pi-check" class="p-button-text"></button>
+            </ng-template>
+        </p-dialog>
+
     </div>
 </div>
