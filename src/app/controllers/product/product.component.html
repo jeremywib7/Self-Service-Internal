@@ -37,7 +37,7 @@
                         <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
                             <!--suppress TypeScriptUnresolvedVariable -->
-                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                            <input pInputText type="text" (input)="onSearchProduct($event.target.value)"
                                    placeholder="Search..."/>
                         </span>
                     </div>
