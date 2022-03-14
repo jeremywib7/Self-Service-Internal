@@ -8,6 +8,7 @@ import {environment} from "../../../environments/environment";
 import {debounceTime, distinctUntilChanged, Observable, Subject} from "rxjs";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormGroupExtension, NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
+import {ProductCategory} from "../../model/ProductCategory";
 
 @Component({
     selector: 'app-product',
@@ -24,7 +25,11 @@ export class ProductComponent implements OnInit {
 
     cols: any[];
 
+    categoryDropdown: any[] = [];
+
     statusDropdown: any[];
+
+    availableDropdown: any[];
 
     tblProductLoading: boolean = false;
 
@@ -51,10 +56,16 @@ export class ProductComponent implements OnInit {
 
     ngOnInit(): void {
         this.initForm();
+        this.loadCategories();
 
         this.statusDropdown = [
             {label: 'ACTIVE', value: true},
             {label: 'INACTIVE', value: false},
+        ];
+
+        this.availableDropdown = [
+            {label: 'AVAILABLE', value: true},
+            {label: 'NOT AVAILABLE', value: false},
         ];
     }
 
@@ -83,6 +94,16 @@ export class ProductComponent implements OnInit {
                 ]
             ],
             active: ['', [RxwebValidators.required()]],
+            category: this.rxFormBuilder.group({
+                id: ['', [RxwebValidators.required()]]
+            }),
+            description: ['',
+                [
+                    RxwebValidators.required(),
+                    RxwebValidators.minLength({value: 20}),
+                    RxwebValidators.maxLength({value: 100})
+                ]
+            ],
             totalCalories: ['',
                 [
                     RxwebValidators.required(),
@@ -93,9 +114,7 @@ export class ProductComponent implements OnInit {
                     RxwebValidators.maxNumber({value: 10000})
                 ]
             ],
-            category: this.rxFormBuilder.group({
-                id: ['']
-            }),
+            discount: ['', [RxwebValidators.required()]],
             unitPrice: ['',
                 [
                     RxwebValidators.required(),
@@ -107,16 +126,10 @@ export class ProductComponent implements OnInit {
                     RxwebValidators.greaterThan({fieldName: 'discountedPrice'})
                 ],
             ],
-            discount: [''],
-            discountedPrice:
+            discountedPrice: ['',
                 [
                     RxwebValidators.required(),
                     RxwebValidators.lessThan({fieldName: 'unitPrice'})
-                ],
-            description: ['',
-                [
-                    RxwebValidators.required(),
-                    RxwebValidators.minLength({value: 20})
                 ]
             ],
             images: this.rxFormBuilder.array([{
@@ -126,21 +139,21 @@ export class ProductComponent implements OnInit {
 
     }
 
-    setSelectedDropdownStatus(status: boolean, badge: boolean): string {
-        if (badge) {
-            if (status === true) {
-                return 'product-badge status-active';
-            } else {
-                return 'product-badge status-inactive';
-            }
-        } else {
-            if (status === true) {
-                return 'Active';
-            } else {
-                return 'Inactive';
-            }
-        }
-    }
+    // setSelectedDropdownStatus(status: boolean, badge: boolean): string {
+    //     if (badge) {
+    //         if (status === true) {
+    //             return 'item-badge status-true';
+    //         } else {
+    //             return 'item-badge status-false';
+    //         }
+    //     } else {
+    //         if (status === true) {
+    //             return 'Active';
+    //         } else {
+    //             return 'Inactive';
+    //         }
+    //     }
+    // }
 
     loadProducts(event: LazyLoadEvent) {
 
@@ -172,6 +185,17 @@ export class ProductComponent implements OnInit {
 
     }
 
+    loadCategories() {
+        this.productService.loadProductCategories().subscribe({
+                next: (data: ProductCategory[]) => {
+                    data['data'].forEach((value) => {
+                        this.categoryDropdown.push({label: value.categoryName, value: value.id})
+                    });
+                },
+            }
+        );
+    }
+
     openAddOrEditProductDialog(editMode?: boolean, product?: Product) {
         if (editMode) {
 
@@ -184,7 +208,7 @@ export class ProductComponent implements OnInit {
     }
 
     submit() {
-        console.log("submited");
+        console.log(this.productFg.value);
         this.productFg.markAllAsTouched();
     }
 

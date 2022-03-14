@@ -15,7 +15,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 img.ng-lazyloaded {
     animation: fadein 2.5s;
 }
+
 @keyframes fadein {
     from { opacity: 0; }
     to   { opacity: 1; }
 }
+
+.item-badge {
+    border-radius: var(--border-radius);
+    padding: .25em .5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: .3px;
+
+    &.status-true {
+        background: #C8E6C9;
+        color: #256029;
+    }
+
+    &.status-false {
+        background: #FFCDD2;
+        color: #C63737;
+    }
+}
+
