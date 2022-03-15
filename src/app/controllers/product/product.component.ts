@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {User} from "../../model/User";
 import {Product} from "../../model/Product";
-import {LazyLoadEvent} from "primeng/api";
+import {LazyLoadEvent, MenuItem} from "primeng/api";
 import {HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
@@ -16,6 +16,8 @@ import {ProductCategory} from "../../model/ProductCategory";
     styleUrls: ['./product.component.scss'],
 })
 export class ProductComponent implements OnInit {
+
+    items: MenuItem[];
 
     selectedProducts: Product[];
 
@@ -66,6 +68,25 @@ export class ProductComponent implements OnInit {
         this.availableDropdown = [
             {label: 'AVAILABLE', value: true},
             {label: 'NOT AVAILABLE', value: false},
+        ];
+
+        this.items = [
+            {
+                label: 'Detail',
+                routerLink: 'personal'
+            },
+            {
+                label: 'Pricing',
+                routerLink: 'seat'
+            },
+            {
+                label: 'Image',
+                routerLink: 'payment'
+            },
+            {
+                label: 'Confirmation',
+                routerLink: 'confirmation'
+            }
         ];
     }
 
