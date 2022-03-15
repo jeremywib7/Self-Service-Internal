@@ -30,6 +30,9 @@ import {AccessComponent} from './components/access/access.component';
 import {ProductComponent} from "./controllers/product/product.component";
 import {UserComponent} from "./controllers/user/user.component";
 import {LoginComponent} from "./controllers/login/login.component";
+import {ProductDetailComponent} from "./controllers/product/Steps/product-detail/product-detail.component";
+import {ProductPriceComponent} from "./controllers/product/Steps/product-price/product-price.component";
+import {ProductFormComponent} from "./controllers/product/Form/product-form/product-form.component";
 
 @NgModule({
     imports: [
@@ -37,13 +40,36 @@ import {LoginComponent} from "./controllers/login/login.component";
             {
                 path: '', component: AppMainComponent,
                 children: [
-                    {path: '', component: DashboardComponent},
+                    {
+                        path: '',
+                        data: {breadcrumb: 'Dashboard'},
+                        component: DashboardComponent
+                    },
 
                     //user
-                    {path: 'pages/user', component: UserComponent},
+                    {path: 'pages/user', data: {breadcrumb: 'User'}, component: UserComponent},
 
                     //product
-                    {path: 'pages/product', component: ProductComponent},
+                    {
+                        path: 'pages/product',
+                        data: {breadcrumb: 'Product'},
+                        component: ProductComponent,
+                        children: [
+                            {
+                                path: 'crud', data: {breadcrumb: 'Crud'}, component: ProductFormComponent, children: [
+                                    {path: '', data: {breadcrumb: 'Detail'}, redirectTo: 'detail', pathMatch: 'full'},
+                                    {path: 'detail', data: {breadcrumb: 'Detail'}, component: ProductDetailComponent},
+                                    {path: 'price', data: {breadcrumb: 'Price'}, component: ProductPriceComponent},
+                                    // {path: 'seat', component: SeatDemo},
+                                    // {path: 'payment', component: PaymentDemo}
+                                ]
+                            },
+                            {path: 'detail', data: {breadcrumb: 'Detail'}, component: ProductDetailComponent},
+                            {path: 'price', data: {breadcrumb: 'Price'}, component: ProductPriceComponent},
+                            // {path: 'seat', component: SeatDemo},
+                            // {path: 'payment', component: PaymentDemo}
+                        ]
+                    },
 
 
                     {path: 'uikit/formlayout', component: FormLayoutComponent},

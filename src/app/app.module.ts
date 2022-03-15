@@ -152,6 +152,10 @@ import {Router} from "@angular/router";
 import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
 import {RxFormBuilder, RxReactiveFormsModule} from "@rxweb/reactive-form-validators";
+import { ProductDetailComponent } from './controllers/product/Steps/product-detail/product-detail.component';
+import {Product} from "./model/Product";
+import { ProductPriceComponent } from './controllers/product/Steps/product-price/product-price.component';
+import { ProductFormComponent } from './controllers/product/Form/product-form/product-form.component';
 
 @NgModule({
     imports: [
@@ -294,6 +298,9 @@ import {RxFormBuilder, RxReactiveFormsModule} from "@rxweb/reactive-form-validat
         AccessComponent,
         ProductComponent,
         UserComponent,
+        ProductDetailComponent,
+        ProductPriceComponent,
+        ProductFormComponent,
     ],
     providers: [
         AuthGuard,
@@ -312,6 +319,7 @@ import {RxFormBuilder, RxReactiveFormsModule} from "@rxweb/reactive-form-validat
         },
         ConfirmationService,
         MessageService,
+        Product,
         RxFormBuilder,
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,

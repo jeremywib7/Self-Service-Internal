@@ -1,14 +1,15 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {User} from "../../model/User";
 import {Product} from "../../model/Product";
-import {LazyLoadEvent, MenuItem} from "primeng/api";
+import {LazyLoadEvent, MenuItem, MessageService} from "primeng/api";
 import {HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
-import {debounceTime, distinctUntilChanged, Observable, Subject} from "rxjs";
+import {debounceTime, distinctUntilChanged, Observable, Subject, Subscription} from "rxjs";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormGroupExtension, NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ProductCategory} from "../../model/ProductCategory";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-product',
@@ -16,6 +17,8 @@ import {ProductCategory} from "../../model/ProductCategory";
     styleUrls: ['./product.component.scss'],
 })
 export class ProductComponent implements OnInit {
+
+    subscription: Subscription;
 
     items: MenuItem[];
 
@@ -52,6 +55,9 @@ export class ProductComponent implements OnInit {
 
     constructor(
         private productService: ProductService,
+        public productModel: Product,
+        private router: Router,
+        private messageService: MessageService,
         private fb: FormBuilder,
         private rxFormBuilder: RxFormBuilder) {
     }
@@ -60,34 +66,26 @@ export class ProductComponent implements OnInit {
         this.initForm();
         this.loadCategories();
 
-        this.statusDropdown = [
-            {label: 'ACTIVE', value: true},
-            {label: 'INACTIVE', value: false},
-        ];
-
         this.availableDropdown = [
             {label: 'AVAILABLE', value: true},
             {label: 'NOT AVAILABLE', value: false},
         ];
 
-        this.items = [
-            {
-                label: 'Detail',
-                routerLink: 'personal'
-            },
-            {
-                label: 'Pricing',
-                routerLink: 'seat'
-            },
-            {
-                label: 'Image',
-                routerLink: 'payment'
-            },
-            {
-                label: 'Confirmation',
-                routerLink: 'confirmation'
-            }
-        ];
+
+
+        this.subscription = this.productModel.addOrEditComplete$.subscribe((productInformation) => {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Order submitted',
+                detail: 'Good Job'
+            });
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     initForm() {
@@ -160,6 +158,15 @@ export class ProductComponent implements OnInit {
 
     }
 
+    isChildComponentActive(): boolean {
+        if (this.router.url.includes("/crud")) {
+            return false;
+        } else {
+            return true;
+        }
+        // return this.router.url === '/';
+    }
+
     // setSelectedDropdownStatus(status: boolean, badge: boolean): string {
     //     if (badge) {
     //         if (status === true) {
@@ -221,11 +228,12 @@ export class ProductComponent implements OnInit {
         if (editMode) {
 
         } else {
-            this.productFg.reset();
-            this.productFg.markAsPristine();
-            this.productFg.markAsUntouched();
+            // this.productFg.reset();
+            // this.productFg.markAsPristine();
+            // this.productFg.markAsUntouched();
         }
-        this.showAddOrEditProductDialog = true;
+        this.router.navigate(['pages/product/crud']);
+        // this.showAddOrEditProductDialog = true;
     }
 
     submit() {

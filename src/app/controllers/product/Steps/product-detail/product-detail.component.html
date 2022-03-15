@@ -1,0 +1,128 @@
+<div class="stepsdemo-content">
+    <p-card>
+        <ng-template pTemplate="title">
+            Product Information
+        </ng-template>
+        <ng-template pTemplate="subtitle">
+            Enter product information
+        </ng-template>
+        <ng-template pTemplate="content">
+            <form [formGroup]="productFg" (ngSubmit)="nextPage()">
+                <div class="field col-12">
+                    <label for="name">Name</label>
+                    <input type="text" pInputText id="name" formControlName="name"
+                           [ngClass]="{'ng-invalid ng-dirty' : productFg.controls.name.errors &&
+                                            (productFg.controls.name.touched || productFg.controls.name.dirty)}"/>
+                    <div *ngIf="productFg.controls.name.errors && (productFg.controls.name.touched ||
+                                       productFg.controls.name.dirty) ">
+                        <div *ngIf="productFg.hasError('required','name')">
+                            <small class="p-error">Name is required.</small>
+                        </div>
+                        <div *ngIf="productFg.hasError('minLength','name')">
+                            <small class="p-error">Name must be 3 characters or more.</small>
+                        </div>
+                        <div *ngIf="productFg.hasError('maxLength','name')">
+                            <small class="p-error">Name characters exceeded</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formgrid grid">
+                    <div class="field col-12 md:col-4">
+                        <label for="active">Active Status</label>
+                        <p-dropdown id="active" [options]="statusDropdown" [showClear]="true"
+                                    appendTo="body"
+                                    formControlName="active" placeholder="Choose..."
+                                    [ngClass]="{'ng-invalid ng-dirty' : productFg.controls.active.errors &&
+                                                       (productFg.controls.active.touched ||
+                                       productFg.controls.active.dirty)}">
+                            <ng-template pTemplate="selectedItem">
+                                                <span
+                                                    [class]="this.productFg.value.active ? 'item-badge status-true': 'item-badge status-false'">
+                                                    {{this.productFg.value.active ? 'Active' : 'Inactive'}}</span>
+                            </ng-template>
+                            <ng-template let-status pTemplate="status">
+                                                <span
+                                                    [class]="'item-badge status-' + status.value">{{status.label}}</span>
+                            </ng-template>
+                        </p-dropdown>
+
+                        <div *ngIf="productFg.controls.active.errors && (productFg.controls.active.touched ||
+                                       productFg.controls.active.dirty) ">
+                            <div *ngIf="productFg.hasError('required','active')">
+                                <small class="p-error">Active Status is required</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field col-12 md:col-4" formGroupName="category">
+                        <label for="active">Categories</label>
+                        <p-dropdown [options]="categoryDropdown" [showClear]="true"
+                                    appendTo="body"
+                                    formControlName="id" placeholder="Choose..."
+                                    [ngClass]="{'ng-invalid ng-dirty' : productFg.get('category.id').errors &&
+                                                       (productFg.get('category.id').touched || productFg.get('category.id').dirty)}">
+                            <ng-template let-category>
+                                <span>{{category?.categoryName}}</span>
+                            </ng-template>
+                        </p-dropdown>
+
+                        <div *ngIf="productFg.get('category.id').errors && (productFg.get('category.id').touched ||
+                                       productFg.get('category.id').dirty) ">
+                            <div *ngIf="productFg.hasError('required','category.id')">
+                                <small class="p-error">Category is required</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field col-12 md:col-4">
+                        <label for="totalCalories">Total Calories</label>
+                        <p-inputNumber id="totalCalories" [useGrouping]="false" [min]="0"
+                                       formControlName="totalCalories" suffix=" Cals"
+                                       [ngClass]="{'ng-invalid ng-dirty' : productFg.get('totalCalories').errors &&
+                                                       (productFg.get('totalCalories').touched || productFg.get('totalCalories').dirty)}">
+                        </p-inputNumber>
+
+                        <div *ngIf="productFg.get('totalCalories').errors &&
+                                                       (productFg.get('totalCalories').touched || productFg.get('totalCalories').dirty)">
+                            <div *ngIf="productFg.hasError('required','totalCalories')">
+                                <small class="p-error">Total calories is required</small>
+                            </div>
+                            <div *ngIf="productFg.hasError('maxNumber','totalCalories')">
+                                <small class="p-error">Maximum total calories 10000</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field col-12">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="5" cols="30" pInputTextarea
+                                  formControlName="description"
+                                  [ngClass]="{'ng-invalid ng-dirty' : productFg.get('description').errors &&
+                                                       (productFg.get('description').touched || productFg.get('description').dirty)}">
+                                        </textarea>
+
+                        <div *ngIf="productFg.get('description').errors &&
+                                                       (productFg.get('description').touched || productFg.get('description').dirty)">
+                            <div *ngIf="productFg.hasError('required','description')">
+                                <small class="p-error">Product description is required</small>
+                            </div>
+                            <div *ngIf="productFg.hasError('minLength','description')">
+                                <small class="p-error">Product description minimum length is 20 characters</small>
+                            </div>
+                            <div *ngIf="productFg.hasError('maxLength','description')">
+                                <small class="p-error">Product description maximum length is 100 characters</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="grid grid-nogutter justify-content-end">
+                <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+            </div>
+        </ng-template>
+    </p-card>
+
+</div>
