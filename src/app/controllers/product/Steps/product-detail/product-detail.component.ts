@@ -17,7 +17,7 @@ export class ProductDetailComponent implements OnInit {
 
     statusDropdown: any[];
 
-    categoryDropdown: any[] = [];
+    dataLoaded = false;
 
     productFg: FormGroup;
 
@@ -27,6 +27,7 @@ export class ProductDetailComponent implements OnInit {
     }
 
     ngOnInit(): void {
+
         this.initForm();
         this.loadProductCategory();
 
@@ -34,7 +35,6 @@ export class ProductDetailComponent implements OnInit {
             {label: 'ACTIVE', value: true},
             {label: 'INACTIVE', value: false},
         ];
-
 
     }
 
@@ -84,6 +84,18 @@ export class ProductDetailComponent implements OnInit {
                         })
                     });
                 },
+                complete: () => {
+                    // this.productFg.patchValue(this.productModel.productInformation.detailInformation);
+                    this.productFg.patchValue({
+                        name: 'Pasta',
+                        description: 'A pasta made with love',
+                        active: true,
+                        totalCalories: 150,
+                        category: {
+                            id: '35b2bcea-02a4-4881-954b-eaf9f9953b02'
+                        }
+                    })
+                }
             }
         );
     }
@@ -91,9 +103,8 @@ export class ProductDetailComponent implements OnInit {
     nextPage() {
 
         if (this.productFg.valid) {
-            this.router.navigate(['pages/product/price']);
             this.productModel.productInformation.detailInformation = this.productFg.value;
-            console.log(this.productModel.productInformation.detailInformation);
+            this.router.navigate(['pages/product/add/price']);
         } else {
             this.productFg.markAllAsTouched();
             this.validateFormFields(this.productFg);

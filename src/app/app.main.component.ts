@@ -7,13 +7,14 @@ import {
     ChangeDetectorRef,
     AfterContentChecked
 } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { AppComponent } from './app.component';
-import { ConfigService } from './service/app.config.service';
-import { AppConfig } from './api/appconfig';
-import { Subscription } from 'rxjs';
+import {trigger, state, style, transition, animate} from '@angular/animations';
+import {AppComponent} from './app.component';
+import {ConfigService} from './service/app.config.service';
+import {AppConfig} from './api/appconfig';
+import {Subscription} from 'rxjs';
 import {MessageService} from "primeng/api";
 import {LoaderService} from "./service/loader.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-main',
@@ -64,7 +65,8 @@ export class AppMainComponent implements AfterViewInit, AfterContentChecked, OnD
     subscription: Subscription;
 
     constructor(public renderer: Renderer2, public app: AppComponent, public configService: ConfigService,
-                public loaderService: LoaderService, private cdr: ChangeDetectorRef) { }
+                private router: Router, public loaderService: LoaderService, private cdr: ChangeDetectorRef) {
+    }
 
     ngOnInit() {
         this.config = this.configService.config;
@@ -88,12 +90,11 @@ export class AppMainComponent implements AfterViewInit, AfterContentChecked, OnD
                 if (!this.topMenuButtonClick) {
                     this.hideTopMenu();
                 }
-            }
-            else {
+            } else {
                 if (!this.menuClick && this.isOverlay()) {
                     this.menuInactiveDesktop = true;
                 }
-                if (!this.menuClick){
+                if (!this.menuClick) {
                     this.overlayMenuActive = false;
                 }
             }
@@ -108,23 +109,31 @@ export class AppMainComponent implements AfterViewInit, AfterContentChecked, OnD
         });
     }
 
+    breadcrumbAllowed(): boolean {
+        if (this.router.url === "/") {
+            return false;
+        } else {
+            return true;
+        }
+        // return !(this.router.url.includes("/"));
+        // return this.router.url === '/';
+    }
+
     toggleMenu(event: Event) {
         this.menuClick = true;
 
         if (this.isDesktop()) {
             if (this.app.menuMode === 'overlay') {
-                if(this.menuActiveMobile === true) {
+                if (this.menuActiveMobile === true) {
                     this.overlayMenuActive = true;
                 }
 
                 this.overlayMenuActive = !this.overlayMenuActive;
                 this.menuActiveMobile = false;
-            }
-            else if (this.app.menuMode === 'static') {
+            } else if (this.app.menuMode === 'static') {
                 this.staticMenuInactive = !this.staticMenuInactive;
             }
-        }
-        else {
+        } else {
             this.menuActiveMobile = !this.menuActiveMobile;
             this.topMenuActive = false;
         }
@@ -178,7 +187,7 @@ export class AppMainComponent implements AfterViewInit, AfterContentChecked, OnD
         return window.innerWidth > 992;
     }
 
-    isMobile(){
+    isMobile() {
         return window.innerWidth < 1024;
     }
 

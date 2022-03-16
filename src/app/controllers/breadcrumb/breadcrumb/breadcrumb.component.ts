@@ -23,7 +23,6 @@ export class BreadcrumbComponent implements OnInit {
     ngOnInit(): void {
         // create breadcrumb on init or refresh
         this.menuItems = this.createBreadcrumbs(this.activatedRoute.root);
-        console.log(this.activatedRoute.root);
 
         this.router.events
             .pipe(filter(event => event instanceof NavigationEnd))

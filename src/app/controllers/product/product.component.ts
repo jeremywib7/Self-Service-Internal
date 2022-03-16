@@ -159,29 +159,13 @@ export class ProductComponent implements OnInit {
     }
 
     isChildComponentActive(): boolean {
-        if (this.router.url.includes("/crud") || this.router.url.includes("/price") ) {
+        if (this.router.url.includes("/add") ) {
             return false;
         } else {
             return true;
         }
         // return this.router.url === '/';
     }
-
-    // setSelectedDropdownStatus(status: boolean, badge: boolean): string {
-    //     if (badge) {
-    //         if (status === true) {
-    //             return 'item-badge status-true';
-    //         } else {
-    //             return 'item-badge status-false';
-    //         }
-    //     } else {
-    //         if (status === true) {
-    //             return 'Active';
-    //         } else {
-    //             return 'Inactive';
-    //         }
-    //     }
-    // }
 
     loadProducts(event: LazyLoadEvent) {
 
@@ -221,7 +205,7 @@ export class ProductComponent implements OnInit {
             // this.productFg.markAsPristine();
             // this.productFg.markAsUntouched();
         }
-        this.router.navigate(['pages/product/crud']);
+        this.router.navigate(['pages/product/add']);
         // this.showAddOrEditProductDialog = true;
     }
 

@@ -28,6 +28,7 @@ export class Product {
             name: '',
             category: {
                 id: '',
+                categoryName:''
             },
             totalCalories: '',
             description: ''

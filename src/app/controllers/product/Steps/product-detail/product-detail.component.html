@@ -56,12 +56,11 @@
                     </div>
 
                     <div class="field col-12 md:col-4" formGroupName="category">
-                        <label for="active">Categories</label>
-                        <p-dropdown [options]="this.productModel.categoryDropdown.category" [showClear]="true"
-                                    appendTo="body"
-                                    formControlName="id" placeholder="Choose..."
+                        <label for="active">Category</label>
+                        <p-dropdown id="id" [options]="this.productModel.categoryDropdown.category" [showClear]="true"
+                                    appendTo="body" formControlName="id" placeholder="Choose..."
                                     [ngClass]="{'ng-invalid ng-dirty' : productFg.get('category.id').errors &&
-                                                       (productFg.get('category.id').touched || productFg.get('category.id').dirty)}">
+                                     (productFg.get('category.id').touched || productFg.get('category.id').dirty)}">
                             <ng-template let-category>
                                 <span>{{category?.categoryName}}</span>
                             </ng-template>
@@ -76,7 +75,7 @@
                     </div>
 
                     <div class="field col-12 md:col-4">
-                        <label for="totalCalories">Total Calories</label>
+                        <label for="totalCalories">Total Calorie</label>
                         <p-inputNumber id="totalCalories" [useGrouping]="false" [min]="0"
                                        formControlName="totalCalories" suffix=" Cals"
                                        [ngClass]="{'ng-invalid ng-dirty' : productFg.get('totalCalories').errors &&

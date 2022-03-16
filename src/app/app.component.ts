@@ -2,8 +2,6 @@ import {Component, ViewChild} from '@angular/core';
 import {MessageService, PrimeNGConfig} from 'primeng/api';
 import {UserAuthService} from "./service/user-auth.service";
 import {Router} from "@angular/router";
-import {HttpParams} from "@angular/common/http";
-import {UserService} from "./service/user.service";
 import {ConfigService} from "./service/app.config.service";
 import {AppConfig} from "./api/appconfig";
 import {Toast} from "primeng/toast";
@@ -71,4 +69,6 @@ export class AppComponent {
         themeElement.setAttribute('href', 'assets/theme/' + theme + '/theme.css');
         this.configService.updateConfig({...this.config, ...{theme, dark}});
     }
+
+
 }

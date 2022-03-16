@@ -249,6 +249,7 @@ export class UserComponent implements OnInit {
 
         if (editMode) {
             this.editMode = true;
+            console.log(user);
             this.reactiveForm.patchValue(user);
             this.userImgUrl = user.imageUrl;
         } else {

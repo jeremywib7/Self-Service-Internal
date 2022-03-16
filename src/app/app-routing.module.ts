@@ -54,19 +54,23 @@ import {ProductFormComponent} from "./controllers/product/Form/product-form/prod
                         path: 'pages/product', data: {breadcrumb: 'Product'}, component: ProductComponent,
                         children: [
                             {
-                                path: 'crud', data: {breadcrumb: 'Crud'}, component: ProductFormComponent,
+                                path: 'add', data: {breadcrumb: 'Add Product'}, component: ProductFormComponent,
                                 children: [
-                                    {path: '', data: {breadcrumb: 'Detail'}, redirectTo: 'detail', pathMatch: 'full'},
-                                    {path: 'detail', data: {breadcrumb: 'Detail'}, component: ProductDetailComponent},
-                                    {path: 'price', data: {breadcrumb: 'Price'}, component: ProductPriceComponent},
+                                    {path: '', redirectTo: 'detail', pathMatch: 'full'},
+                                    {path: 'detail', component: ProductDetailComponent},
+                                    {path: 'price', component: ProductPriceComponent},
                                     // {path: 'seat', component: SeatDemo},
                                     // {path: 'payment', component: PaymentDemo}
-                                ]
+                                ],
                             },
-                            {path: 'detail', data: {breadcrumb: 'Detail'}, component: ProductDetailComponent},
-                            {path: 'price', data: {breadcrumb: 'Price'}, component: ProductPriceComponent},
-                            // {path: 'seat', component: SeatDemo},
-                            // {path: 'payment', component: PaymentDemo}
+                            {
+                                path: 'edit', data: {breadcrumb: 'Edit Product'}, component: ProductFormComponent,
+                                children: [
+                                    {path: '', redirectTo: 'detail', pathMatch: 'full'},
+                                    {path: 'detail', component: ProductDetailComponent},
+                                    {path: 'price', component: ProductPriceComponent},
+                                ],
+                            },
                         ]
                     },
 
