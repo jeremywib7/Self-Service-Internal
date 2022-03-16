@@ -9,7 +9,7 @@ import {debounceTime, distinctUntilChanged, Observable, Subject, Subscription} f
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormGroupExtension, NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ProductCategory} from "../../model/ProductCategory";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-product',
@@ -20,6 +20,7 @@ export class ProductComponent implements OnInit {
 
     subscription: Subscription;
 
+    //for steps
     items: MenuItem[];
 
     selectedProducts: Product[];
@@ -57,6 +58,7 @@ export class ProductComponent implements OnInit {
         private productService: ProductService,
         public productModel: Product,
         private router: Router,
+        private activatedRoute: ActivatedRoute,
         private messageService: MessageService,
         private fb: FormBuilder,
         private rxFormBuilder: RxFormBuilder) {
@@ -64,13 +66,11 @@ export class ProductComponent implements OnInit {
 
     ngOnInit(): void {
         this.initForm();
-        this.loadCategories();
 
         this.availableDropdown = [
             {label: 'AVAILABLE', value: true},
             {label: 'NOT AVAILABLE', value: false},
         ];
-
 
 
         this.subscription = this.productModel.addOrEditComplete$.subscribe((productInformation) => {
@@ -159,7 +159,7 @@ export class ProductComponent implements OnInit {
     }
 
     isChildComponentActive(): boolean {
-        if (this.router.url.includes("/crud")) {
+        if (this.router.url.includes("/crud") || this.router.url.includes("/price") ) {
             return false;
         } else {
             return true;
@@ -211,17 +211,6 @@ export class ProductComponent implements OnInit {
             });
         }, 1000);
 
-    }
-
-    loadCategories() {
-        this.productService.loadProductCategories().subscribe({
-                next: (data: ProductCategory[]) => {
-                    data['data'].forEach((value) => {
-                        this.categoryDropdown.push({label: value.categoryName, value: value.id})
-                    });
-                },
-            }
-        );
     }
 
     openAddOrEditProductDialog(editMode?: boolean, product?: Product) {

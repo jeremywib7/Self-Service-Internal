@@ -3,6 +3,7 @@ import {Subject} from "rxjs";
 
 @Injectable()
 export class Product {
+
     id: string;
     name: string;
     discount: boolean;
@@ -19,7 +20,7 @@ export class Product {
     createdOn: Date;
 
 
-    //for steps
+    // for steps
 
     productInformation = {
         detailInformation: {
@@ -47,6 +48,13 @@ export class Product {
     complete() {
         this.addOrEditComplete.next(this.productInformation);
     }
+
+    // array of categories
+
+    categoryDropdown = {
+        category: []
+    }
+
 }
 
 export interface Image {

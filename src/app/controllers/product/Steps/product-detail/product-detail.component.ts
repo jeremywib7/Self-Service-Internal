@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
-import {FormGroup} from "@angular/forms";
+import {FormArray, FormGroup} from "@angular/forms";
 import {Product} from "../../../../model/Product";
 import {Router} from "@angular/router";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
@@ -21,7 +21,7 @@ export class ProductDetailComponent implements OnInit {
 
     productFg: FormGroup;
 
-    constructor(private productModel: Product, private router: Router, private rxFormBuilder: RxFormBuilder,
+    constructor(public productModel: Product, private router: Router, private rxFormBuilder: RxFormBuilder,
                 private el: ElementRef, private productService: ProductService
     ) {
     }
@@ -74,10 +74,14 @@ export class ProductDetailComponent implements OnInit {
     }
 
     loadProductCategory() {
+        this.productModel.categoryDropdown.category = [];
         this.productService.loadProductCategories().subscribe({
                 next: (data: ProductCategory[]) => {
                     data['data'].forEach((value) => {
-                        this.categoryDropdown.push({label: value.categoryName, value: value.id})
+                        this.productModel.categoryDropdown.category.push({
+                            label: value.categoryName,
+                            value: value.id
+                        })
                     });
                 },
             }
@@ -85,13 +89,13 @@ export class ProductDetailComponent implements OnInit {
     }
 
     nextPage() {
-        this.productFg.markAllAsTouched();
-        this.productModel.productInformation.detailInformation = this.productFg.value;
-        this.router.navigate(['pages/product/price']);
 
         if (this.productFg.valid) {
             this.router.navigate(['pages/product/price']);
+            this.productModel.productInformation.detailInformation = this.productFg.value;
+            console.log(this.productModel.productInformation.detailInformation);
         } else {
+            this.productFg.markAllAsTouched();
             this.validateFormFields(this.productFg);
         }
     }

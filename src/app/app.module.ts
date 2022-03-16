@@ -142,7 +142,7 @@ import {AccessComponent} from './components/access/access.component';
 import {ProductComponent} from './controllers/product/product.component';
 import {UserComponent} from './controllers/user/user.component';
 import {LoginComponent} from "./controllers/login/login.component";
-import {ConfirmationService, MessageService} from "primeng/api";
+import {ConfirmationService, MessageService, SharedModule} from "primeng/api";
 import {AuthGuard} from "./_auth/auth.guard";
 import {AuthInterceptor} from "./_auth/auth.interceptor";
 import {Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadImageModule} from "ng-lazyload-image";
@@ -152,10 +152,11 @@ import {Router} from "@angular/router";
 import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
 import {RxFormBuilder, RxReactiveFormsModule} from "@rxweb/reactive-form-validators";
-import { ProductDetailComponent } from './controllers/product/Steps/product-detail/product-detail.component';
+import {ProductDetailComponent} from './controllers/product/Steps/product-detail/product-detail.component';
 import {Product} from "./model/Product";
-import { ProductPriceComponent } from './controllers/product/Steps/product-price/product-price.component';
-import { ProductFormComponent } from './controllers/product/Form/product-form/product-form.component';
+import {ProductPriceComponent} from './controllers/product/Steps/product-price/product-price.component';
+import {ProductFormComponent} from './controllers/product/Form/product-form/product-form.component';
+import {BreadcrumbComponent} from './controllers/breadcrumb/breadcrumb/breadcrumb.component';
 
 @NgModule({
     imports: [
@@ -263,6 +264,7 @@ import { ProductFormComponent } from './controllers/product/Form/product-form/pr
         AppMenuComponent,
         AppMenuitemComponent,
         DashboardComponent,
+        UserComponent,
         FormLayoutComponent,
         FloatLabelComponent,
         InvalidStateComponent,
@@ -297,10 +299,10 @@ import { ProductFormComponent } from './controllers/product/Form/product-form/pr
         NotfoundComponent,
         AccessComponent,
         ProductComponent,
-        UserComponent,
         ProductDetailComponent,
         ProductPriceComponent,
         ProductFormComponent,
+        BreadcrumbComponent,
     ],
     providers: [
         AuthGuard,

@@ -8,26 +8,26 @@
         </ng-template>
         <ng-template pTemplate="content">
             <form [formGroup]="productFg" (ngSubmit)="nextPage()">
-                <div class="field col-12">
-                    <label for="name">Name</label>
-                    <input type="text" pInputText id="name" formControlName="name"
-                           [ngClass]="{'ng-invalid ng-dirty' : productFg.controls.name.errors &&
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12">
+                        <label for="name">Name</label>
+                        <input type="text" pInputText id="name" formControlName="name"
+                               [ngClass]="{'ng-invalid ng-dirty' : productFg.controls.name.errors &&
                                             (productFg.controls.name.touched || productFg.controls.name.dirty)}"/>
-                    <div *ngIf="productFg.controls.name.errors && (productFg.controls.name.touched ||
+                        <div *ngIf="productFg.controls.name.errors && (productFg.controls.name.touched ||
                                        productFg.controls.name.dirty) ">
-                        <div *ngIf="productFg.hasError('required','name')">
-                            <small class="p-error">Name is required.</small>
-                        </div>
-                        <div *ngIf="productFg.hasError('minLength','name')">
-                            <small class="p-error">Name must be 3 characters or more.</small>
-                        </div>
-                        <div *ngIf="productFg.hasError('maxLength','name')">
-                            <small class="p-error">Name characters exceeded</small>
+                            <div *ngIf="productFg.hasError('required','name')">
+                                <small class="p-error">Name is required.</small>
+                            </div>
+                            <div *ngIf="productFg.hasError('minLength','name')">
+                                <small class="p-error">Name must be 3 characters or more.</small>
+                            </div>
+                            <div *ngIf="productFg.hasError('maxLength','name')">
+                                <small class="p-error">Name characters exceeded</small>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="formgrid grid">
                     <div class="field col-12 md:col-4">
                         <label for="active">Active Status</label>
                         <p-dropdown id="active" [options]="statusDropdown" [showClear]="true"
@@ -57,7 +57,7 @@
 
                     <div class="field col-12 md:col-4" formGroupName="category">
                         <label for="active">Categories</label>
-                        <p-dropdown [options]="categoryDropdown" [showClear]="true"
+                        <p-dropdown [options]="this.productModel.categoryDropdown.category" [showClear]="true"
                                     appendTo="body"
                                     formControlName="id" placeholder="Choose..."
                                     [ngClass]="{'ng-invalid ng-dirty' : productFg.get('category.id').errors &&

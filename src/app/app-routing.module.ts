@@ -51,12 +51,11 @@ import {ProductFormComponent} from "./controllers/product/Form/product-form/prod
 
                     //product
                     {
-                        path: 'pages/product',
-                        data: {breadcrumb: 'Product'},
-                        component: ProductComponent,
+                        path: 'pages/product', data: {breadcrumb: 'Product'}, component: ProductComponent,
                         children: [
                             {
-                                path: 'crud', data: {breadcrumb: 'Crud'}, component: ProductFormComponent, children: [
+                                path: 'crud', data: {breadcrumb: 'Crud'}, component: ProductFormComponent,
+                                children: [
                                     {path: '', data: {breadcrumb: 'Detail'}, redirectTo: 'detail', pathMatch: 'full'},
                                     {path: 'detail', data: {breadcrumb: 'Detail'}, component: ProductDetailComponent},
                                     {path: 'price', data: {breadcrumb: 'Price'}, component: ProductPriceComponent},
