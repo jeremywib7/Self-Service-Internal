@@ -35,6 +35,8 @@ export class Product {
         },
         priceInformation: {
             unitPrice: '',
+            discountPercent: '',
+            sliderPercent: '',
             discountedPrice: '',
         },
         imageInformation: {
