@@ -1,4 +1,4 @@
-import {RouterModule} from '@angular/router';
+import {RouterModule, Routes} from '@angular/router';
 import {NgModule} from '@angular/core';
 import {DashboardComponent} from './components/dashboard/dashboard.component';
 import {FormLayoutComponent} from './components/formlayout/formlayout.component';
@@ -34,6 +34,12 @@ import {ProductDetailComponent} from "./controllers/product/Steps/product-detail
 import {ProductPriceComponent} from "./controllers/product/Steps/product-price/product-price.component";
 import {ProductFormComponent} from "./controllers/product/Form/product-form/product-form.component";
 
+const routes: Routes = [
+    {path: '', redirectTo: 'detail', pathMatch: 'full'},
+    {path: 'detail', component: ProductDetailComponent},
+    {path: 'price', component: ProductPriceComponent},
+];
+
 @NgModule({
     imports: [
         RouterModule.forRoot([
@@ -55,21 +61,11 @@ import {ProductFormComponent} from "./controllers/product/Form/product-form/prod
                         children: [
                             {
                                 path: 'add', data: {breadcrumb: 'Add Product'}, component: ProductFormComponent,
-                                children: [
-                                    {path: '', redirectTo: 'detail', pathMatch: 'full'},
-                                    {path: 'detail', component: ProductDetailComponent},
-                                    {path: 'price', component: ProductPriceComponent},
-                                    // {path: 'seat', component: SeatDemo},
-                                    // {path: 'payment', component: PaymentDemo}
-                                ],
+                                loadChildren: () => import('./controllers/product/product.module').then(p => p.ProductModule)
                             },
                             {
                                 path: 'edit', data: {breadcrumb: 'Edit Product'}, component: ProductFormComponent,
-                                children: [
-                                    {path: '', redirectTo: 'detail', pathMatch: 'full'},
-                                    {path: 'detail', component: ProductDetailComponent},
-                                    {path: 'price', component: ProductPriceComponent},
-                                ],
+                                loadChildren: () => import('./controllers/product/product.module').then(p => p.ProductModule)
                             },
                         ]
                     },
@@ -113,4 +109,7 @@ import {ProductFormComponent} from "./controllers/product/Form/product-form/prod
     exports: [RouterModule]
 })
 export class AppRoutingModule {
+
+    childrenArray: any[] = [];
 }
+

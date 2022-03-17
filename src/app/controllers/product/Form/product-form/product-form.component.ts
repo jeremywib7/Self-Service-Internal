@@ -25,7 +25,7 @@ export class ProductFormComponent implements OnInit {
             },
             {
                 label: 'Image',
-                routerLink: 'payment'
+                routerLink: 'image'
             },
             {
                 label: 'Confirmation',

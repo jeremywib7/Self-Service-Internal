@@ -92,7 +92,8 @@ export class ProductDetailComponent implements OnInit {
                         active: true,
                         totalCalories: 150,
                         category: {
-                            id: '35b2bcea-02a4-4881-954b-eaf9f9953b02'
+                            // id: '35b2bcea-02a4-4881-954b-eaf9f9953b02'
+                            id: '41abdb19-dc0e-4923-9077-dc5c975ff52c'
                         }
                     })
                 }

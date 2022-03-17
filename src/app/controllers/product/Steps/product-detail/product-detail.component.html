@@ -95,7 +95,7 @@
 
                     <div class="field col-12">
                         <label for="description">Description</label>
-                        <textarea id="description" rows="5" cols="30" pInputTextarea
+                        <textarea id="description" rows="5" cols="30" pInputTextarea autoResize="true"
                                   formControlName="description"
                                   [ngClass]="{'ng-invalid ng-dirty' : productFg.get('description').errors &&
                                                        (productFg.get('description').touched || productFg.get('description').dirty)}">
