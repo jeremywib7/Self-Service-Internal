@@ -100,8 +100,11 @@ export class ProductPriceComponent implements OnInit {
     inputDiscountedPrice(event) {
         let unitPrice = this.productFg.get('unitPrice').value;
         let discountedPrice = event.value;
+        let discountPercent = 100 * discountedPrice / unitPrice;
 
-        this.productFg.get('discountPercent').setValue(100 * discountedPrice / unitPrice);
+        this.productFg.get('discountPercent').setValue(discountPercent);
+        this.productFg.get('sliderPercent').setValue(discountPercent);
+
     }
 
     onChangeDiscountStatus(event) {
