@@ -12,7 +12,7 @@
                     <div class="field col-12">
                         <label for="unitPrice">Unit Price</label>
                         <p-inputNumber id="unitPrice" formControlName="unitPrice" prefix="Rp. "
-                                       maxFractionDigits="0"
+                                       maxFractionDigits="0" (onInput)="inputUnitPrice($event)"
                                        [ngClass]="{'ng-invalid ng-dirty' : productFg.get('unitPrice').errors &&
                                                                 (productFg.get('unitPrice').touched || productFg.get('unitPrice').dirty)}">
                         </p-inputNumber>
@@ -34,6 +34,7 @@
                         <label for="discount">Discount Availability</label>
                         <p-dropdown id="discount" [options]="availableDropdown" [showClear]="true"
                                     appendTo="body" formControlName="discount" placeholder="Select a Status"
+                                    (onChange)="onChangeDiscountStatus($event)"
                                     [ngClass]="{'ng-invalid ng-dirty' : productFg.get('discount').errors &&
                                      (productFg.get('discount').touched || productFg.get('discount').dirty)}">
                             <ng-template pTemplate="selectedItem">
@@ -68,7 +69,7 @@
                     <div class="field col-12 md:col-4">
                         <label for="discountedPrice">Discounted Price</label>
                         <p-inputNumber id="discountedPrice" formControlName="discountedPrice" prefix="Rp. "
-                                       maxFractionDigits="0"
+                                       maxFractionDigits="0" (onInput)="inputDiscountedPrice($event)"
                                        [ngClass]="{'ng-invalid ng-dirty' : productFg.get('discountedPrice').errors &&
                                                                 (productFg.get('discountedPrice').touched ||
                                                                 productFg.get('discountedPrice').dirty)}">

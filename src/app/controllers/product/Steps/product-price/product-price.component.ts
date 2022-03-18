@@ -61,6 +61,22 @@ export class ProductPriceComponent implements OnInit {
         //     discountedPrice: 12500,
         // })
 
+        // to disable or enable on init based discount status
+        if (this.productModel.productInformation.priceInformation.discount) {
+            this.enableDiscountControls();
+        } else {
+            this.disableDiscountControls();
+        }
+
+    }
+
+    inputUnitPrice(event) {
+        let unitPrice = event.value;
+        let discountPercent = this.productFg.get('discountPercent').value;
+        let discountedPrice = unitPrice * discountPercent / 100;
+
+        this.productFg.get('discountedPrice').setValue(discountedPrice);
+
     }
 
     inputDiscountValue(event) {
@@ -74,26 +90,67 @@ export class ProductPriceComponent implements OnInit {
 
             let unitPrice = this.productFg.get('unitPrice').value;
             let discountValue = unitPrice * event.value / 100;
+            let discountedPrice = unitPrice - discountValue;
 
-            this.productFg.get('discountedPrice').setValue(unitPrice - discountValue);
+            this.productFg.get('discountedPrice').setValue(discountedPrice);
         }
 
     }
 
+    inputDiscountedPrice(event) {
+        let unitPrice = this.productFg.get('unitPrice').value;
+        let discountedPrice = event.value;
+
+        this.productFg.get('discountPercent').setValue(100 * discountedPrice / unitPrice);
+    }
+
+    onChangeDiscountStatus(event) {
+
+        if (event.value == false) {
+            this.disableDiscountControls();
+        } else {
+            this.enableDiscountControls();
+        }
+
+    }
+
+    enableDiscountControls() {
+        this.productFg.controls['discountedPrice'].enable();
+        this.productFg.controls['discountPercent'].enable();
+        this.productFg.controls['sliderPercent'].enable();
+    }
+
+    disableDiscountControls() {
+        this.productFg.get('discountedPrice').setValue(0);
+        this.productFg.get('sliderPercent').setValue(0);
+        this.productFg.get('discountPercent').setValue(0);
+
+        this.productFg.controls['discountedPrice'].disable();
+        this.productFg.controls['discountPercent'].disable();
+        this.productFg.controls['sliderPercent'].disable();
+    }
+
     nextPage() {
+
         if (this.productFg.valid) {
+            if (this.productFg.value.discountedPrice === 0 || this.productFg.value.discountPercent === 0) {
+                this.productFg.value.discount = false;
+            }
+
             this.productModel.productInformation.priceInformation = this.productFg.value;
-            console.log(this.productFg.value);
-            this.router.navigate(['pages/product/add/image']);
+            console.log(this.productModel.productInformation.priceInformation);
+
+            this.router.navigate(['pages/product/add/image']).then();
         } else {
             this.productFg.markAllAsTouched();
             this.validateFormFields(this.productFg);
         }
+
     }
 
     prevPage() {
         this.productModel.productInformation.priceInformation = this.productFg.value;
-        this.router.navigate(['pages/product/add/detail']);
+        this.router.navigate(['pages/product/add/detail']).then();
     }
 
     public validateFormFields(formGroup: FormGroup) {
