@@ -51,18 +51,18 @@ export class ProductPriceComponent implements OnInit {
             ],
         });
 
-        this.productFg.patchValue(this.productModel.productInformation.priceInformation);
+        // this.productFg.patchValue(this.productModel.productInformation.priceInformation);
 
         //for testing
-        // this.productFg.patchValue({
-        //     unitPrice: 25000,
-        //     discount: true,
-        //     discountPercent: 50,
-        //     discountedPrice: 12500,
-        // })
+        this.productFg.patchValue({
+            unitPrice: 45000,
+            discount: false,
+            // discountPercent: 50,
+            // discountedPrice: 12500,
+        })
 
         // to disable or enable on init based discount status
-        if (this.productModel.productInformation.priceInformation.discount) {
+        if (this.productFg.value.discount) {
             this.enableDiscountControls();
         } else {
             this.disableDiscountControls();
@@ -71,12 +71,13 @@ export class ProductPriceComponent implements OnInit {
     }
 
     inputUnitPrice(event) {
-        let unitPrice = event.value;
-        let discountPercent = this.productFg.get('discountPercent').value;
-        let discountedPrice = unitPrice * discountPercent / 100;
+        if (this.productFg.value.discount) {
+            let unitPrice = event.value;
+            let discountPercent = this.productFg.get('discountPercent').value;
+            let discountedPrice = unitPrice * discountPercent / 100;
 
-        this.productFg.get('discountedPrice').setValue(discountedPrice);
-
+            this.productFg.get('discountedPrice').setValue(unitPrice - discountedPrice);
+        }
     }
 
     inputDiscountValue(event) {
@@ -98,13 +99,17 @@ export class ProductPriceComponent implements OnInit {
     }
 
     inputDiscountedPrice(event) {
-        let unitPrice = this.productFg.get('unitPrice').value;
-        let discountedPrice = event.value;
-        let discountPercent = 100 * discountedPrice / unitPrice;
+        if (this.productFg.get('unitPrice').value != 0) {
+            let unitPrice = this.productFg.get('unitPrice').value;
 
-        this.productFg.get('discountPercent').setValue(discountPercent);
-        this.productFg.get('sliderPercent').setValue(discountPercent);
+            if (unitPrice) {
+                let discountedPrice = event.value;
+                let discountPercent = 100 * discountedPrice / unitPrice;
 
+                this.productFg.get('discountPercent').setValue(discountPercent);
+                this.productFg.get('sliderPercent').setValue(discountPercent);
+            }
+        }
     }
 
     onChangeDiscountStatus(event) {
@@ -139,10 +144,7 @@ export class ProductPriceComponent implements OnInit {
             if (this.productFg.value.discountedPrice === 0 || this.productFg.value.discountPercent === 0) {
                 this.productFg.value.discount = false;
             }
-
             this.productModel.productInformation.priceInformation = this.productFg.value;
-            console.log(this.productModel.productInformation.priceInformation);
-
             this.router.navigate(['pages/product/add/image']).then();
         } else {
             this.productFg.markAllAsTouched();

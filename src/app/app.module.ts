@@ -157,6 +157,7 @@ import {Product} from "./model/Product";
 import {ProductPriceComponent} from './controllers/product/Steps/product-price/product-price.component';
 import {ProductFormComponent} from './controllers/product/Form/product-form/product-form.component';
 import {BreadcrumbComponent} from './controllers/breadcrumb/breadcrumb/breadcrumb.component';
+import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";
 
 @NgModule({
     imports: [
@@ -302,6 +303,7 @@ import {BreadcrumbComponent} from './controllers/breadcrumb/breadcrumb/breadcrum
         ProductDetailComponent,
         ProductPriceComponent,
         ProductFormComponent,
+        ProductImageComponent,
         BreadcrumbComponent,
     ],
     providers: [
