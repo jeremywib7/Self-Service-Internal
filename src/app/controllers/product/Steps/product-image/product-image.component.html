@@ -8,44 +8,22 @@
         </ng-template>
         <ng-template pTemplate="content">
             <form [formGroup]="productFg">
-                <div formArrayName="images">
-                    <ng-container class="mb-3" *ngFor="let images of productFg.get('images').controls;let i = index"
-                                  [formGroupName]="i">
-                        <div class="mb-5">
-                            <!--                        <img *ngIf="editMode"-->
-                            <!--                             [lazyLoad]="checkAddProductImage(i, this.images.value.imageName)" width="150"-->
-                            <!--                             class="mt-0 mx-auto mb-3 block shadow-2" src="">-->
-                            <p-fileUpload #firstUpload tabindex="1" id="imageUrl" accept="image/*"
-                                          [showCancelButton]="false" [showUploadButton]="false" (onSelect)="onSelectedImage($event, i)"
-                                          [chooseLabel]="chooseLabel(i)" formArrayName="imageName"
-                                          maxFileSize="1000000" class="text-center" previewWidth="80">
-                                <ng-template let-file pTemplate='file'>
-                                    <img
-                                        class="img-product-upload mb-2 form-control"
-                                        [lazyLoad]="checkAddProductImage(i, this.images.value.imageName)" alt="Product Image"/>                                    <div>{{file.name}}</div>
-                                    <div>
-                                        <button icon="fa-close" pButton type="button" label="Remove"
-                                                (click)="removeFile(file, fileUploader)"></button>
-                                    </div>
-                                </ng-template>
-                            </p-fileUpload>
-
-                        </div>
-                    </ng-container>
-                    <div class="flex-grow-1 flex m-2 px-5 py-3 ">
-                        <button pButton pRipple type="button" label="Add more" (click)="addNewProductImage()"
-                                class="p-button-outlined p-button-secondary flex-grow-1"></button>
-                    </div>
+                <div class="mb-5">
+                    <p-fileUpload #fileUpload tabindex="1" id="imageUrl" accept="image/*"
+                                  [showCancelButton]="false" [showUploadButton]="false"
+                                  [files]="this.productModel.selectedImage"
+                                  (onSelect)="onSelectedImage($event)" multiple="multiple" fileLimit="3"
+                                  [chooseLabel]="'Add Product Image'" (onRemove)="onRemovedImage($event)"
+                                  maxFileSize="1000000" class="text-center" previewWidth="80">
+                    </p-fileUpload>
                 </div>
 
-                <!--                <div *ngIf="reactiveForm.controls.imageUrl.errors && (reactiveForm.controls.imageUrl.touched ||-->
-                <!--                           reactiveForm.controls.imageUrl.dirty) ">-->
-                <!--                    <div *ngIf="reactiveForm.hasError('required','imageUrl')">-->
-                <!--                        <div class="text-center p-2 border-round" style="background-color: #FBE8E6">-->
-                <!--                            <small id="imageRequiredMsg" class="p-error">Image is required.</small>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
+                <p-galleria [value]="this.productModel.selectedImage" [containerStyle]="{'max-width': '520px'}"
+                            [numVisible]="5">
+                    <ng-template pTemplate="item" let-image>
+                        <img [src]="displayImageCarrousel(image)" [alt]="image.alt" style="width: 100%;"/>
+                    </ng-template>
+                </p-galleria>
             </form>
         </ng-template>
         <ng-template pTemplate="footer">

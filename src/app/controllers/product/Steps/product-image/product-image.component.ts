@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {Product} from "../../../../model/Product";
 import {FormArray, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -19,11 +19,11 @@ export class ProductImageComponent implements OnInit {
 
     editMode: boolean = false;
 
-    constructor(private productModel: Product, private router: Router, private el: ElementRef, private rxFormBuilder:
+    constructor(public productModel: Product, private router: Router, private el: ElementRef, private rxFormBuilder:
         RxFormBuilder, private messageService: MessageService, private activatedRoute: ActivatedRoute) {
     }
 
-    @ViewChild('firstUpload') firstUpload: FileUpload = null;
+    @ViewChild('fileUpload') fileUpload: FileUpload;
 
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
@@ -46,13 +46,15 @@ export class ProductImageComponent implements OnInit {
         this.productModel.imagesName = this.productFg.get('images') as FormArray;
         this.productModel.imagesName.removeAt(0);
 
-        if (this.productModel.selectedImage[0]) {
-            this.productFg.controls['image'].setValue(this.productModel.selectedImage[0]);
-        }
+
+        // if (this.productModel.selectedImage[0]) {
+        //     this.productFg.controls['image'].setValue(this.productModel.selectedImage[0]);
+        // }
 
     }
 
     addNewProductImage() {
+
         let lastIndex = this.productModel.imagesName.length - 1;
         const lastImageName = this.productModel.imagesName.value[lastIndex].imageName;
 
@@ -117,17 +119,25 @@ export class ProductImageComponent implements OnInit {
         });
     }
 
-    checkAddProductImage(index, imageName) {
-        return this.productModel.imageSrc[index];
-        // if (this.productModel.imageSrc[index]) {
-        //     return this.productModel.imageSrc[index];
-        // } else if (!this.productModel.imageSrc[index] && imageName) {
-        //     return this.apiBaseUrl + '/' + this.projectName + '/images/product/download/' + imageName;
-        // } else if (!imageName) {
-        //     return this.apiBaseUrl + '/' + this.projectName + '/images/product/download/' +
-        //         'defaultproduct.jpg'
-        // }
-        // return null;
+    url: any[] = [];
+
+    displayImageCarrousel(image) {
+        const reader = new FileReader();
+
+        let index = this.productModel.selectedImage.findIndex(image => image.name === image.name);
+
+        reader.onload = (event: any) => {
+            this.url[index] = event.target.result;
+        };
+
+        // reader.onerror = (event: any) => {
+        //     console.log("File could not be read: " + event.target.error.code);
+        // };
+
+        reader.readAsDataURL(image)
+
+        return this.url[index];
+
     }
 
     nextPage() {
@@ -147,25 +157,19 @@ export class ProductImageComponent implements OnInit {
         this.router.navigate(['pages/product/add/price']).then();
     }
 
-    onSelectedImage(event: any, index: number): void {
-        // check if image not empty
-        if (event.currentFiles && event.currentFiles[0]) {
-            this.productModel.selectedImage[index] = event.currentFiles[0]; // set file array
+    onSelectedImage(event: any): void {
 
-            const file = event.currentFiles[0];
-            const reader = new FileReader();
-            reader.onload = (e: any) => {
-                // set image preview
-                this.productModel.imageSrc[index] = e.currentTarget.result;
-            };
-            reader.readAsDataURL(file);
-
-            (this.productModel.imagesName.at(index) as FormGroup).get('imageName').patchValue(
-                event.currentFiles[0].name); // set image name in form control
+        if (this.productModel.selectedImage.length <= 2) {
+            this.productModel.selectedImage = this.fileUpload._files;
         }
+        console.log(this.productModel.selectedImage);
+
     }
 
-    onRemovedImage() {
+    onRemovedImage(event) {
+        let index = this.productModel.selectedImage.findIndex(image => image.name === event.file.name);
+        this.productModel.selectedImage.splice(index, 1);
+        console.log(this.productModel.selectedImage);
 
     }
 
