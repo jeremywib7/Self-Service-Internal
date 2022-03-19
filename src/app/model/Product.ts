@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Subject} from "rxjs";
+import {FormArray} from "@angular/forms";
 
 @Injectable()
 export class Product {
@@ -44,6 +45,10 @@ export class Product {
             images: [],
         }
     };
+
+    selectedImage: File[] = []; // list of file
+    imagesName: FormArray; // form name array
+    imageSrc: string[] = []; // for image preview
 
     private addOrEditComplete = new Subject<any>();
 

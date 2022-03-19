@@ -15,10 +15,21 @@
                             <!--                        <img *ngIf="editMode"-->
                             <!--                             [lazyLoad]="checkAddProductImage(i, this.images.value.imageName)" width="150"-->
                             <!--                             class="mt-0 mx-auto mb-3 block shadow-2" src="">-->
-                            <p-fileUpload tabindex="1" id="imageUrl" accept="image/*" [showCancelButton]="false"
-                                          [showUploadButton]="false" (onSelect)="onSelectedImage($event, i)"
+                            <p-fileUpload #firstUpload tabindex="1" id="imageUrl" accept="image/*"
+                                          [showCancelButton]="false" [showUploadButton]="false" (onSelect)="onSelectedImage($event, i)"
+                                          [chooseLabel]="chooseLabel(i)" formArrayName="imageName"
                                           maxFileSize="1000000" class="text-center" previewWidth="80">
+                                <ng-template let-file pTemplate='file'>
+                                    <img
+                                        class="img-product-upload mb-2 form-control"
+                                        [lazyLoad]="checkAddProductImage(i, this.images.value.imageName)" alt="Product Image"/>                                    <div>{{file.name}}</div>
+                                    <div>
+                                        <button icon="fa-close" pButton type="button" label="Remove"
+                                                (click)="removeFile(file, fileUploader)"></button>
+                                    </div>
+                                </ng-template>
                             </p-fileUpload>
+
                         </div>
                     </ng-container>
                     <div class="flex-grow-1 flex m-2 px-5 py-3 ">

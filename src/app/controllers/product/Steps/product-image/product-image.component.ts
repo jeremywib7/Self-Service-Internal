@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Product} from "../../../../model/Product";
 import {FormArray, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -6,6 +6,7 @@ import {environment} from "../../../../../environments/environment";
 import {RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {MessageService} from "primeng/api";
 import {HttpParams} from "@angular/common/http";
+import {FileUpload} from "primeng/fileupload";
 
 @Component({
     selector: 'app-product-image',
@@ -13,10 +14,6 @@ import {HttpParams} from "@angular/common/http";
     styleUrls: ['./product-image.component.scss']
 })
 export class ProductImageComponent implements OnInit {
-
-    imageSrc: string[] = [];
-
-    selectedImage: File[] = [];
 
     productFg: FormGroup;
 
@@ -26,7 +23,7 @@ export class ProductImageComponent implements OnInit {
         RxFormBuilder, private messageService: MessageService, private activatedRoute: ActivatedRoute) {
     }
 
-    images: FormArray;
+    @ViewChild('firstUpload') firstUpload: FileUpload = null;
 
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
@@ -46,22 +43,27 @@ export class ProductImageComponent implements OnInit {
         });
 
         // clear initialization images name array
-        this.images = this.productFg.get('images') as FormArray;
-        this.images.removeAt(0);
+        this.productModel.imagesName = this.productFg.get('images') as FormArray;
+        this.productModel.imagesName.removeAt(0);
+
+        if (this.productModel.selectedImage[0]) {
+            this.productFg.controls['image'].setValue(this.productModel.selectedImage[0]);
+        }
+
     }
 
     addNewProductImage() {
-        let lastIndex = this.images.length - 1;
-        const lastImageName = this.images.value[lastIndex].imageName;
+        let lastIndex = this.productModel.imagesName.length - 1;
+        const lastImageName = this.productModel.imagesName.value[lastIndex].imageName;
 
-        if (this.images.length < 3 && lastImageName) {
-            this.images.push(this.rxFormBuilder.group({
+        if (this.productModel.imagesName.length < 3 && lastImageName) {
+            this.productModel.imagesName.push(this.rxFormBuilder.group({
                 imageName: ['', RxwebValidators.required()],
             }))
 
         } else if (!lastImageName) {
             this.displayMessage('error', 'No Image', 'Please add current image');
-        } else if (this.images.length === 3) {
+        } else if (this.productModel.imagesName.length === 3) {
             this.displayMessage('error', 'Maximum Image', 'You can only upload maximum 3 images');
         }
     }
@@ -72,7 +74,7 @@ export class ProductImageComponent implements OnInit {
         } else {
             this.editMode = false;
             // add 1 value to the empty array
-            this.images.push(this.rxFormBuilder.group({
+            this.productModel.imagesName.push(this.rxFormBuilder.group({
                 imageName: ['', RxwebValidators.required()],
             }));
 
@@ -88,6 +90,24 @@ export class ProductImageComponent implements OnInit {
         }
     }
 
+    chooseLabel(index: number): string {
+        let action = this.productModel.selectedImage[index] ? 'Change' : 'Choose';
+
+        switch (index) {
+            case 0: {
+                return action + " First Image";
+            }
+            case 1: {
+                return action + " Second Image";
+            }
+            case 2: {
+                return action + " Third Image";
+            }
+            default: {
+                return action + " Image";
+            }
+        }
+    }
 
     displayMessage(severity: string, summary: string, detail: string) {
         this.messageService.add({
@@ -98,15 +118,16 @@ export class ProductImageComponent implements OnInit {
     }
 
     checkAddProductImage(index, imageName) {
-        if (this.imageSrc[index]) {
-            return this.imageSrc[index];
-        } else if (!this.imageSrc[index] && imageName) {
-            return this.apiBaseUrl + '/' + this.projectName + '/images/product/download/' + imageName;
-        } else if (!imageName) {
-            return this.apiBaseUrl + '/' + this.projectName + '/images/product/download/' +
-                'defaultproduct.jpg'
-        }
-        return null;
+        return this.productModel.imageSrc[index];
+        // if (this.productModel.imageSrc[index]) {
+        //     return this.productModel.imageSrc[index];
+        // } else if (!this.productModel.imageSrc[index] && imageName) {
+        //     return this.apiBaseUrl + '/' + this.projectName + '/images/product/download/' + imageName;
+        // } else if (!imageName) {
+        //     return this.apiBaseUrl + '/' + this.projectName + '/images/product/download/' +
+        //         'defaultproduct.jpg'
+        // }
+        // return null;
     }
 
     nextPage() {
@@ -129,11 +150,23 @@ export class ProductImageComponent implements OnInit {
     onSelectedImage(event: any, index: number): void {
         // check if image not empty
         if (event.currentFiles && event.currentFiles[0]) {
-            this.selectedImage[index] = event.currentFiles[0];
-            (this.images.at(index) as FormGroup).get('imageName').patchValue(
-                event.currentFiles[0].name);
-            console.log(this.productFg.get('images').value);
+            this.productModel.selectedImage[index] = event.currentFiles[0]; // set file array
+
+            const file = event.currentFiles[0];
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                // set image preview
+                this.productModel.imageSrc[index] = e.currentTarget.result;
+            };
+            reader.readAsDataURL(file);
+
+            (this.productModel.imagesName.at(index) as FormGroup).get('imageName').patchValue(
+                event.currentFiles[0].name); // set image name in form control
         }
+    }
+
+    onRemovedImage() {
+
     }
 
     public validateFormFields(formGroup: FormGroup) {
