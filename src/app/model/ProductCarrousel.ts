@@ -1,3 +1,4 @@
 export class ProductCarrousel {
-    imageSrc: any
+    imageBase64: any;
+    imageFile: File;
 }

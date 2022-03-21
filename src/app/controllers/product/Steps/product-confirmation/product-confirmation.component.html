@@ -13,7 +13,7 @@
             </div>
             <div class="field col-12">
                 <label>Category Name</label> <br>
-                <b>{{productInformation.detailInformation.category.categoryName ? productInformation.detailInformation.category.categoryName : '-'}}</b>
+                <b>{{productInformation.detailInformation.category['categoryName'] ? productInformation.detailInformation.category['categoryName'] : '-'}}</b>
             </div>
             <div class="field col-12">
                 <label>Total Calories</label> <br>
@@ -25,6 +25,7 @@
             </div>
             <div class="field col-12">
                 <label>Unit Price</label> <br>
+                <!--suppress TypeScriptUnresolvedFunction -->
                 <b>{{productInformation.priceInformation.unitPrice ? (productInformation.priceInformation.unitPrice | currency:'Rp. ') : '-' }}</b>
             </div>
             <div class="field col-12">
@@ -39,17 +40,17 @@
             </div>
             <div class="field col-12">
                 <label>Discounted Price</label> <br>
+                <!--suppress TypeScriptUnresolvedFunction -->
                 <b>{{productInformation.priceInformation.discountedPrice ? (productInformation.priceInformation.discountedPrice | currency:'Rp. ')
                     : '-'}}</b>
             </div>
-            <p-galleria #galleria [value]="images" [containerStyle]="{'max-width': '320px', 'margin-top':'2em'}"
+            <p-galleria [value]="images" [containerStyle]="{'max-width': '320px', 'margin-top':'2em'}"
                         [numVisible]="5"
                         [circular]="true" [showItemNavigators]="true" [showThumbnails]="false" [showIndicators]="true"
                         [showItemNavigatorsOnHover]="true"
                         [showIndicatorsOnItem]="true">
                 <ng-template pTemplate="item" let-image>
-                    <img *ngIf="image.imageSrc" (change)="setGalleria(galleria)" [src]="image.imageSrc"
-                         style="width: 100%;"/>
+                    <img [src]="image.imageBase64" style="width: 100%;" alt=""/>
                 </ng-template>
             </p-galleria>
         </ng-template>

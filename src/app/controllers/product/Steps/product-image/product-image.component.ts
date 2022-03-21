@@ -17,96 +17,25 @@ export class ProductImageComponent implements OnInit {
 
     productFg: FormGroup;
 
-    productImage = {
-        imageSrc: ''
-    }
-
     editMode: boolean = false;
 
     constructor(public productModel: Product, private router: Router, private el: ElementRef, private rxFormBuilder:
         RxFormBuilder, private messageService: MessageService, private activatedRoute: ActivatedRoute) {
     }
 
-    @ViewChild('fileUpload') fileUpload: FileUpload;
-
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
 
     ngOnInit(): void {
         this.initForm().then(() => {
-                this.checkParamsExists();
             }
         );
     }
 
     async initForm() {
-        this.productFg = this.rxFormBuilder.group({
-            images: this.rxFormBuilder.array([{
-                initialValue: [],
-            }])
-        });
-
-        // clear initialization images name array
-        this.productModel.imagesName = this.productFg.get('images') as FormArray;
-        this.productModel.imagesName.removeAt(0);
-
-    }
-
-    addNewProductImage() {
-
-        let lastIndex = this.productModel.imagesName.length - 1;
-        const lastImageName = this.productModel.imagesName.value[lastIndex].imageName;
-
-        if (this.productModel.imagesName.length < 3 && lastImageName) {
-            this.productModel.imagesName.push(this.rxFormBuilder.group({
-                imageName: ['', RxwebValidators.required()],
-            }))
-
-        } else if (!lastImageName) {
-            this.displayMessage('error', 'No Image', 'Please add current image');
-        } else if (this.productModel.imagesName.length === 3) {
-            this.displayMessage('error', 'Maximum Image', 'You can only upload maximum 3 images');
-        }
-    }
-
-    checkParamsExists() {
-        // check if param id exists, then load data if true and set edit mode to true
         if (this.activatedRoute.snapshot.queryParams['i']) {
         } else {
             this.editMode = false;
-            // add 1 value to the empty array
-            this.productModel.imagesName.push(this.rxFormBuilder.group({
-                imageName: ['', RxwebValidators.required()],
-            }));
-
-            // get uuid and path to form
-            // this.productService.getUUID().subscribe(
-            //     (data: object) => {
-            //         const uuid = data['data']['uuid'];
-            //         this.reactiveForm.patchValue({
-            //             id: uuid,
-            //         });
-            //     },
-            // );
-        }
-    }
-
-    chooseLabel(index: number): string {
-        let action = this.productModel.selectedImage[index] ? 'Change' : 'Choose';
-
-        switch (index) {
-            case 0: {
-                return action + " First Image";
-            }
-            case 1: {
-                return action + " Second Image";
-            }
-            case 2: {
-                return action + " Third Image";
-            }
-            default: {
-                return action + " Image";
-            }
         }
     }
 
@@ -119,18 +48,7 @@ export class ProductImageComponent implements OnInit {
     }
 
     nextPage() {
-
         this.router.navigate(['pages/product/add/confirmation']).then();
-
-
-        if (this.productFg.valid) {
-            this.productModel.productInformation.imageInformation = this.productFg.value;
-            this.router.navigate(['pages/product/add/confirmation']).then();
-        } else {
-            this.productFg.markAllAsTouched();
-            this.validateFormFields(this.productFg);
-        }
-
     }
 
     prevPage() {
@@ -140,30 +58,43 @@ export class ProductImageComponent implements OnInit {
 
     onSelectedImage(event: any): void {
 
-        if (this.productModel.selectedImage.length <= 2) {
+        let lastIndex = event.currentFiles.length - 1;
+        let lastImageFile = event.currentFiles[lastIndex];
+        let currentImageLength = event.currentFiles.length;
+        let previousImageLength = this.productModel.previousImageFileLength;
 
-            // list of files in global variable
-            this.productModel.selectedImage = this.fileUpload._files;
-            this.productModel.productCarrousel = [...this.productModel.productCarrousel, this.productImage];
+        // validate maximum 3 image and there is difference with previous length
+        // difference may happen because removal of a image
+        // to prevent adding same image
+        if (currentImageLength <= 3 && previousImageLength != currentImageLength) {
 
-            let lastIndex = this.productModel.selectedImage.length - 1;
-            let lastFile = this.productModel.selectedImage[lastIndex];
+            // update previous image length with current length
+            this.productModel.previousImageFileLength = event.currentFiles.length;
+
+            // push last file
+            this.productModel.pFileUploadProductImg.push(lastImageFile);
 
             const reader = new FileReader();
 
             reader.onload = (event: any) => {
-                this.productModel.productCarrousel[lastIndex].imageSrc = event.target.result;
+                this.productModel.productCarrousel.push({
+                    imageBase64: event.target.result,
+                    imageFile: lastImageFile
+                });
             };
 
-            reader.readAsDataURL(lastFile);        }
+            reader.readAsDataURL(lastImageFile);
+        }
 
     }
 
     onRemovedImage(event) {
-        let index = this.productModel.selectedImage.findIndex(image => image.name === event.file.name);
-        this.productModel.selectedImage.splice(index, 1);
-        console.log(this.productModel.selectedImage);
+        let index = this.productModel.productCarrousel.findIndex(image => image.imageFile.name === event.file.name);
+        this.productModel.pFileUploadProductImg.splice(index, 1); // remove from global store file
+        this.productModel.productCarrousel.splice(index, 1);
 
+        //minus 1 for previous image length
+        this.productModel.previousImageFileLength = this.productModel.previousImageFileLength - 1;
     }
 
     public validateFormFields(formGroup: FormGroup) {

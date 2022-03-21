@@ -13,11 +13,9 @@ export class ProductConfirmationComponent implements OnInit {
 
     images: any[];
 
-    activeIndex: number = 0;
-
     productInformation: any;
 
-    @ViewChild('galleria') galleria: Galleria;
+    productCarrousel: any;
 
     constructor(public productModel: Product, private router: Router) {
     }
@@ -25,12 +23,8 @@ export class ProductConfirmationComponent implements OnInit {
     ngOnInit(): void {
         this.productInformation = this.productModel.productInformation;
         this.images = this.productModel.productCarrousel;
-    }
 
-    setGalleria(galleria: Galleria) {
-        console.log("ok");
-
-        console.log(galleria);
+        console.log(this.images);
     }
 
     complete() {

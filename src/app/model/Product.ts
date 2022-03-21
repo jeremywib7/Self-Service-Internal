@@ -1,7 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Subject} from "rxjs";
-import {FormArray} from "@angular/forms";
+import {FormArray, FormGroup} from "@angular/forms";
 import {ProductCarrousel} from "./ProductCarrousel";
+import {RxFormBuilder} from "@rxweb/reactive-form-validators";
 
 @Injectable()
 export class Product {
@@ -42,16 +43,24 @@ export class Product {
             sliderPercent: '',
             discountedPrice: '',
         },
-        imageInformation: {
-            images: [],
-        }
     };
+
+    // array of categories
+
+    categoryDropdown = {
+        category: []
+    }
+
 
     // for carousel or display array of images
     productCarrousel: ProductCarrousel[] = [];
 
-    selectedImage: File[] = []; // list of file
-    imagesName: FormArray; // form name array
+    pFileUploadProductImg: File[] = []; // list of image file
+
+    previousImageFileLength: number = -1; // if there is difference with previous image length then it is true condition
+
+
+    // on complete steps
 
     private addOrEditComplete = new Subject<any>();
 
@@ -59,12 +68,6 @@ export class Product {
 
     complete() {
         this.addOrEditComplete.next(this.productInformation);
-    }
-
-    // array of categories
-
-    categoryDropdown = {
-        category: []
     }
 
 }
