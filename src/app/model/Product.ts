@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Subject} from "rxjs";
 import {FormArray} from "@angular/forms";
+import {ProductCarrousel} from "./ProductCarrousel";
 
 @Injectable()
 export class Product {
@@ -29,7 +30,7 @@ export class Product {
             name: '',
             category: {
                 id: '',
-                categoryName:''
+                categoryName: ''
             },
             totalCalories: '',
             description: ''
@@ -46,9 +47,11 @@ export class Product {
         }
     };
 
+    // for carousel or display array of images
+    productCarrousel: ProductCarrousel[] = [];
+
     selectedImage: File[] = []; // list of file
     imagesName: FormArray; // form name array
-    imageSrc: string[] = []; // for image preview
 
     private addOrEditComplete = new Subject<any>();
 

@@ -17,13 +17,6 @@
                                   maxFileSize="1000000" class="text-center" previewWidth="80">
                     </p-fileUpload>
                 </div>
-
-                <p-galleria [value]="this.productModel.selectedImage" [containerStyle]="{'max-width': '520px'}"
-                            [numVisible]="5">
-                    <ng-template pTemplate="item" let-image>
-                        <img [src]="displayImageCarrousel(image)" [alt]="image.alt" style="width: 100%;"/>
-                    </ng-template>
-                </p-galleria>
             </form>
         </ng-template>
         <ng-template pTemplate="footer">

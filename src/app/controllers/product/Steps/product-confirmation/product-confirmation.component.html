@@ -1,0 +1,64 @@
+<div class="stepsdemo-content">
+    <p-card>
+        <ng-template pTemplate="title">
+            Confirmation
+        </ng-template>
+        <ng-template pTemplate="subtitle">
+            Confirmation for adding product
+        </ng-template>
+        <ng-template pTemplate="content">
+            <div class="field col-12">
+                <label>Name</label> <br>
+                <b>{{productInformation.detailInformation.name ? productInformation.detailInformation.name : '-'}}</b>
+            </div>
+            <div class="field col-12">
+                <label>Category Name</label> <br>
+                <b>{{productInformation.detailInformation.category.categoryName ? productInformation.detailInformation.category.categoryName : '-'}}</b>
+            </div>
+            <div class="field col-12">
+                <label>Total Calories</label> <br>
+                <b>{{productInformation.detailInformation.totalCalories ? productInformation.detailInformation.totalCalories + " Cals" : '-'}}</b>
+            </div>
+            <div class="field col-12">
+                <label>Description</label> <br>
+                <b>{{productInformation.detailInformation.description ? productInformation.detailInformation.description : '-'}}</b>
+            </div>
+            <div class="field col-12">
+                <label>Unit Price</label> <br>
+                <b>{{productInformation.priceInformation.unitPrice ? (productInformation.priceInformation.unitPrice | currency:'Rp. ') : '-' }}</b>
+            </div>
+            <div class="field col-12">
+                <label>Discount</label> <br>
+                <b [class]="productInformation.priceInformation.discount ? 'item-badge status-true': 'item-badge status-false'">
+                    {{productInformation.priceInformation.discount ? 'AVAILABLE' : 'NOT AVAILABLE' }}</b>
+            </div>
+            <div class="field col-12">
+                <label>Discount Percentage</label> <br>
+                <b>{{productInformation.priceInformation.discountPercent ? productInformation.priceInformation.discountPercent + " %"
+                    : '-'}}</b>
+            </div>
+            <div class="field col-12">
+                <label>Discounted Price</label> <br>
+                <b>{{productInformation.priceInformation.discountedPrice ? (productInformation.priceInformation.discountedPrice | currency:'Rp. ')
+                    : '-'}}</b>
+            </div>
+            <p-galleria #galleria [value]="images" [containerStyle]="{'max-width': '320px', 'margin-top':'2em'}"
+                        [numVisible]="5"
+                        [circular]="true" [showItemNavigators]="true" [showThumbnails]="false" [showIndicators]="true"
+                        [showItemNavigatorsOnHover]="true"
+                        [showIndicatorsOnItem]="true">
+                <ng-template pTemplate="item" let-image>
+                    <img *ngIf="image.imageSrc" (change)="setGalleria(galleria)" [src]="image.imageSrc"
+                         style="width: 100%;"/>
+                </ng-template>
+            </p-galleria>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="grid grid-nogutter justify-content-between">
+                <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+                <p-button label="Complete" (onClick)="complete()" icon="pi pi-angle-right" iconPos="right"
+                          styleClass="p-button-success"></p-button>
+            </div>
+        </ng-template>
+    </p-card>
+</div>

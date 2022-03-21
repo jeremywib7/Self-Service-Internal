@@ -57,8 +57,9 @@
 
                     <div class="field col-12 md:col-4" formGroupName="category">
                         <label for="active">Category</label>
-                        <p-dropdown id="id" [options]="this.productModel.categoryDropdown.category" [showClear]="true"
+                        <p-dropdown #categoryDropdown id="id" [options]="this.productModel.categoryDropdown.category" [showClear]="true"
                                     appendTo="body" formControlName="id" placeholder="Choose..."
+                                    (onChange)="onSelectedCategory(categoryDropdown)"
                                     [ngClass]="{'ng-invalid ng-dirty' : productFg.get('category.id').errors &&
                                      (productFg.get('category.id').touched || productFg.get('category.id').dirty)}">
                             <ng-template let-category>

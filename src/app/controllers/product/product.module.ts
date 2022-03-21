@@ -8,9 +8,13 @@ import {CardModule} from "primeng/card";
 import {ButtonModule} from "primeng/button";
 import {FileUploadModule} from "primeng/fileupload";
 import {RxReactiveFormsModule} from "@rxweb/reactive-form-validators";
+import { ProductConfirmationComponent } from './Steps/product-confirmation/product-confirmation.component';
+import {GalleriaModule} from "primeng/galleria";
 
 @NgModule({
     declarations: [
+
+    ProductConfirmationComponent
   ],
     imports: [
         CommonModule,
@@ -19,11 +23,13 @@ import {RxReactiveFormsModule} from "@rxweb/reactive-form-validators";
             {path: 'detail', component: ProductDetailComponent},
             {path: 'price', component: ProductPriceComponent},
             {path: 'image', component: ProductImageComponent},
+            {path: 'confirmation', component: ProductConfirmationComponent},
         ]),
         CardModule,
         ButtonModule,
         FileUploadModule,
-        RxReactiveFormsModule
+        RxReactiveFormsModule,
+        GalleriaModule
     ],
     exports: [RouterModule]
 })

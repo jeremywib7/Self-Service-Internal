@@ -5,8 +5,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {environment} from "../../../../../environments/environment";
 import {RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {MessageService} from "primeng/api";
-import {HttpParams} from "@angular/common/http";
 import {FileUpload} from "primeng/fileupload";
+import {ProductCarrousel} from "../../../../model/ProductCarrousel";
 
 @Component({
     selector: 'app-product-image',
@@ -16,6 +16,10 @@ import {FileUpload} from "primeng/fileupload";
 export class ProductImageComponent implements OnInit {
 
     productFg: FormGroup;
+
+    productImage = {
+        imageSrc: ''
+    }
 
     editMode: boolean = false;
 
@@ -45,11 +49,6 @@ export class ProductImageComponent implements OnInit {
         // clear initialization images name array
         this.productModel.imagesName = this.productFg.get('images') as FormArray;
         this.productModel.imagesName.removeAt(0);
-
-
-        // if (this.productModel.selectedImage[0]) {
-        //     this.productFg.controls['image'].setValue(this.productModel.selectedImage[0]);
-        // }
 
     }
 
@@ -119,28 +118,10 @@ export class ProductImageComponent implements OnInit {
         });
     }
 
-    url: any[] = [];
-
-    displayImageCarrousel(image) {
-        const reader = new FileReader();
-
-        let index = this.productModel.selectedImage.findIndex(image => image.name === image.name);
-
-        reader.onload = (event: any) => {
-            this.url[index] = event.target.result;
-        };
-
-        // reader.onerror = (event: any) => {
-        //     console.log("File could not be read: " + event.target.error.code);
-        // };
-
-        reader.readAsDataURL(image)
-
-        return this.url[index];
-
-    }
-
     nextPage() {
+
+        this.router.navigate(['pages/product/add/confirmation']).then();
+
 
         if (this.productFg.valid) {
             this.productModel.productInformation.imageInformation = this.productFg.value;
@@ -160,9 +141,21 @@ export class ProductImageComponent implements OnInit {
     onSelectedImage(event: any): void {
 
         if (this.productModel.selectedImage.length <= 2) {
+
+            // list of files in global variable
             this.productModel.selectedImage = this.fileUpload._files;
-        }
-        console.log(this.productModel.selectedImage);
+            this.productModel.productCarrousel = [...this.productModel.productCarrousel, this.productImage];
+
+            let lastIndex = this.productModel.selectedImage.length - 1;
+            let lastFile = this.productModel.selectedImage[lastIndex];
+
+            const reader = new FileReader();
+
+            reader.onload = (event: any) => {
+                this.productModel.productCarrousel[lastIndex].imageSrc = event.target.result;
+            };
+
+            reader.readAsDataURL(lastFile);        }
 
     }
 

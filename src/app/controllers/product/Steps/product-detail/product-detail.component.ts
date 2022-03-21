@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ProductCategory} from "../../../../model/ProductCategory";
 import {ProductService} from "../../../../service/product.service";
+import {Dropdown} from "primeng/dropdown";
 
 @Component({
     selector: 'app-product-detail',
@@ -50,7 +51,8 @@ export class ProductDetailComponent implements OnInit {
             ],
             active: ['', [RxwebValidators.required()]],
             category: this.rxFormBuilder.group({
-                id: ['', [RxwebValidators.required()]]
+                id: ['', [RxwebValidators.required()]],
+                categoryName: ['']
             }),
             description: ['',
                 [
@@ -134,6 +136,10 @@ export class ProductDetailComponent implements OnInit {
                 // }
             }
         }
+    }
+
+    onSelectedCategory(dd: Dropdown) {
+        this.productFg.value.category.categoryName = dd.selectedOption.label;
     }
 
 
