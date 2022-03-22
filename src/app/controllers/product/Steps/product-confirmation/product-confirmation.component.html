@@ -46,14 +46,19 @@
             </div>
 
             <!--      NORMAL      -->
-            <p-galleria #galleria *ngIf="!displayBasic" [value]="images" [(visible)]="!displayBasic"
-                        [responsiveOptions]="responsiveOptions"
-                        [(activeIndex)]="activeIndex" [numVisible]="3" [containerStyle]="{'max-width':'340px'}"
-                        containerClass="custom-galleria" [showThumbnails]="showThumbnails"
-                        [showItemNavigators]="true" [showItemNavigatorsOnHover]="true" [circular]="true"
-                        [autoPlay]="true" [transitionInterval]="3000">
+            <p-galleria #galleria [value]="images" [(activeIndex)]="activeIndex" [numVisible]="5"
+                        [containerStyle]="{'width':  '300px'}"
+                        [containerClass]="galleriaClass()"
+                        [showThumbnails]="showThumbnails" [showItemNavigators]="true" [showItemNavigatorsOnHover]="true"
+                        [circular]="true" [autoPlay]="true" [transitionInterval]="3000">
                 <ng-template pTemplate="item" let-image>
-                    <img [src]="image.imageBase64" style="width: 100%;height: 280px; display: block;"/>
+                    <img [src]="image.imageBase64"
+                         [ngStyle]="{
+                         'width': !fullscreen ? '300px' : '',
+                         'height': !fullscreen ? '300px' : '',
+                         'max-width': fullscreen ? '600px' : '300px',
+                         'max-height': fullscreen ? '500px' : '400px',
+                         'display': !fullscreen ? 'block' : ''}"/>
                 </ng-template>
                 <ng-template pTemplate="thumbnail" let-image>
                     <div class="grid grid-nogutter justify-content-center">
@@ -68,43 +73,14 @@
                             <span class="title">
                                 {{activeIndex == 0 ? 'Main Image' : activeIndex == 1 ? 'Secondary Image' : 'Third Image'}}
                             </span>
-                            <span>{{images[activeIndex].imageFile.name}}</span>
+                            <!--                            <span>{{images[activeIndex].imageFile.name}}</span>-->
                         </span>
-                        <button type="button" pButton icon="pi pi-external-link" (click)="displayBasic = true"
+                        <button type="button" pButton [icon]="fullScreenIcon()" (click)="toggleFullScreen()"
                                 class="fullscreen-button"></button>
+
                     </div>
                 </ng-template>
             </p-galleria>
-
-            <!--       FULLSCREEN     -->
-            <p-galleria [value]="images" [(visible)]="displayBasic" [responsiveOptions]="responsiveOptions2"
-                        containerClass="custom-galleria" [containerStyle]="{'max-width': '50%'}" [numVisible]="9"
-                        [(activeIndex)]="activeIndex" [showThumbnails]="showThumbnails2"
-                        [circular]="true" [fullScreen]="true" [showItemNavigators]="true" [baseZIndex]="100000">
-                <ng-template pTemplate="item" let-image>
-                    <img [src]="image.imageBase64" style="width: 100%; display: block;"/>
-                </ng-template>
-                <ng-template pTemplate="thumbnail" let-image>
-                    <div class="grid grid-nogutter justify-content-center">
-                        <img [src]="image.imageBase64" width="70" height="50" style="display: block;"/>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="footer">
-                    <div class="custom-galleria-footer">
-                        <button type="button" pButton icon="pi pi-list" (click)="onThumbnail2ButtonClick()"></button>
-                        <span *ngIf="images" class="title-container">
-                            <span>{{activeIndex + 1}}/{{images.length}}</span>
-                            <span class="title">
-                                {{activeIndex == 0 ? 'Main Image' : activeIndex == 1 ? 'Secondary Image' : 'Third Image'}}
-                            </span>
-                            <span>{{images[activeIndex].imageFile.name}}</span>
-                        </span>
-                        <button type="button" pButton icon="pi pi-external-link" (click)="displayBasic = false"
-                                class="fullscreen-button"></button>
-                    </div>
-                </ng-template>
-            </p-galleria>
-
         </ng-template>
         <ng-template pTemplate="footer">
             <div class="grid grid-nogutter justify-content-between">

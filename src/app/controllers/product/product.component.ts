@@ -72,8 +72,10 @@ export class ProductComponent implements OnInit {
             {label: 'NOT AVAILABLE', value: false},
         ];
 
-
         this.subscription = this.productModel.addOrEditComplete$.subscribe((productInformation) => {
+            this.productFg.patchValue(productInformation['detailInformation']);
+            console.log(this.productFg.value);
+
             this.messageService.add({
                 severity: 'success',
                 summary: 'Order submitted',
@@ -211,7 +213,6 @@ export class ProductComponent implements OnInit {
 
     submit() {
         console.log(this.productFg.value);
-        this.productFg.markAllAsTouched();
     }
 
 //   ON ACTION METHOD
