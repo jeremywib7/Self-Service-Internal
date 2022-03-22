@@ -13,6 +13,29 @@ export class ProductConfirmationComponent implements OnInit {
 
     images: any[];
 
+    showThumbnails: boolean;
+
+    activeIndex: number = 0;
+
+    onFullScreenListener: any;
+
+    @ViewChild('galleria') galleria: Galleria;
+
+    responsiveOptions: any[] = [
+        {
+            breakpoint: '1024px',
+            numVisible: 5
+        },
+        {
+            breakpoint: '768px',
+            numVisible: 3
+        },
+        {
+            breakpoint: '560px',
+            numVisible: 1
+        }
+    ];
+
     productInformation: any;
 
     productCarrousel: any;
@@ -26,6 +49,11 @@ export class ProductConfirmationComponent implements OnInit {
 
         console.log(this.images);
     }
+
+    onThumbnailButtonClick() {
+        this.showThumbnails = !this.showThumbnails;
+    }
+
 
     complete() {
         this.productModel.complete();

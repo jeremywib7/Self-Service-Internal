@@ -44,13 +44,30 @@
                 <b>{{productInformation.priceInformation.discountedPrice ? (productInformation.priceInformation.discountedPrice | currency:'Rp. ')
                     : '-'}}</b>
             </div>
-            <p-galleria [value]="images" [containerStyle]="{'max-width': '320px', 'margin-top':'2em'}"
-                        [numVisible]="5"
-                        [circular]="true" [showItemNavigators]="true" [showThumbnails]="false" [showIndicators]="true"
-                        [showItemNavigatorsOnHover]="true"
-                        [showIndicatorsOnItem]="true">
+            <p-galleria #galleria [value]="images" [responsiveOptions]="responsiveOptions" [(activeIndex)]="activeIndex"
+                        [numVisible]="3" [containerStyle]="{'max-width':'340px'}" containerClass="custom-galleria"
+                        [showThumbnails]="showThumbnails"
+                        [showItemNavigators]="true" [showItemNavigatorsOnHover]="true" [circular]="true"
+                        [autoPlay]="true" [transitionInterval]="3000">
                 <ng-template pTemplate="item" let-image>
-                    <img [src]="image.imageBase64" style="width: 100%;" alt=""/>
+                    <img [src]="image.imageBase64" style="width: 100%;height: 280px; display: block;"/>
+                </ng-template>
+                <ng-template pTemplate="thumbnail" let-image>
+                    <div class="grid grid-nogutter justify-content-center">
+                        <img [src]="image.imageBase64" width="70" height="50" style="display: block;"/>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="footer" let-item>
+                    <div class="custom-galleria-footer">
+                        <button type="button" pButton icon="pi pi-list" (click)="onThumbnailButtonClick()"></button>
+                        <span *ngIf="images" class="title-container">
+                            <span>{{activeIndex + 1}}/{{images.length}}</span>
+                            <span class="title">
+                                {{activeIndex == 0 ? 'Main Image' : activeIndex == 1 ? 'Secondary Image' : 'Third Image'}}
+                            </span>
+                            <span>{{images[activeIndex].imageFile.name}}</span>
+                        </span>
+                    </div>
                 </ng-template>
             </p-galleria>
         </ng-template>
