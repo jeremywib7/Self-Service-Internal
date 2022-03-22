@@ -15,11 +15,19 @@ export class ProductConfirmationComponent implements OnInit {
 
     showThumbnails: boolean;
 
+    showThumbnails2: boolean;
+
+    displayBasic: boolean;
+
     activeIndex: number = 0;
 
-    onFullScreenListener: any;
+    fullscreen: boolean = false;
 
     @ViewChild('galleria') galleria: Galleria;
+
+    onCLose() {
+        console.log("closed");
+    }
 
     responsiveOptions: any[] = [
         {
@@ -29,6 +37,25 @@ export class ProductConfirmationComponent implements OnInit {
         {
             breakpoint: '768px',
             numVisible: 3
+        },
+        {
+            breakpoint: '560px',
+            numVisible: 1
+        }
+    ];
+
+    responsiveOptions2:any[] = [
+        {
+            breakpoint: '1500px',
+            numVisible: 5
+        },
+        {
+            breakpoint: '1024px',
+            numVisible: 3
+        },
+        {
+            breakpoint: '768px',
+            numVisible: 2
         },
         {
             breakpoint: '560px',
@@ -54,6 +81,9 @@ export class ProductConfirmationComponent implements OnInit {
         this.showThumbnails = !this.showThumbnails;
     }
 
+    onThumbnail2ButtonClick() {
+        this.showThumbnails2 = !this.showThumbnails2;
+    }
 
     complete() {
         this.productModel.complete();
