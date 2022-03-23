@@ -158,6 +158,7 @@ import {ProductPriceComponent} from './controllers/product/Steps/product-price/p
 import {ProductFormComponent} from './controllers/product/Form/product-form/product-form.component';
 import {BreadcrumbComponent} from './controllers/breadcrumb/breadcrumb/breadcrumb.component';
 import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";
+import {HistoryRouteService} from "./service/history.route.service";
 
 @NgModule({
     imports: [
@@ -324,8 +325,12 @@ import {ProductImageComponent} from "./controllers/product/Steps/product-image/p
         ConfirmationService,
         MessageService,
         Product,
+        HistoryRouteService,
         RxFormBuilder,
-        {provide: LocationStrategy, useClass: HashLocationStrategy},
+        {
+            provide: LocationStrategy,
+            useClass: HashLocationStrategy
+        },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, ConfigService
     ],

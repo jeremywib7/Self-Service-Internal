@@ -13,19 +13,21 @@ export class ProductPriceComponent implements OnInit {
 
     productFg: FormGroup;
 
-    availableDropdown: any[];
+    availableDropdown: any[]
+
+    productInfo: any;
 
     constructor(private productModel: Product, private router: Router, private rxFormBuilder: RxFormBuilder,
                 private el: ElementRef) {
+        this.productInfo = this.productModel.productInformation;
+
+        if (this.productInfo.detailInformation.completed === false) {
+            this.router.navigate(['pages/product/add/detail']);
+        }
     }
 
     ngOnInit(): void {
         this.initForm();
-
-        this.availableDropdown = [
-            {label: 'AVAILABLE', value: true},
-            {label: 'NOT AVAILABLE', value: false},
-        ];
     }
 
     initForm() {
@@ -37,7 +39,7 @@ export class ProductPriceComponent implements OnInit {
                     RxwebValidators.numeric({
                         acceptValue: NumericValueType.PositiveNumber, allowDecimal: false
                     }),
-                    RxwebValidators.greaterThan({fieldName: 'discountedPrice'})
+                    RxwebValidators.greaterThanEqualTo({fieldName: 'discountedPrice'})
                 ],
             ],
             discount: ['', [RxwebValidators.required()]],
@@ -46,20 +48,27 @@ export class ProductPriceComponent implements OnInit {
             discountedPrice: ['',
                 [
                     RxwebValidators.required(),
-                    RxwebValidators.lessThan({fieldName: 'unitPrice'})
+                    RxwebValidators.lessThanEqualTo({fieldName: 'unitPrice'})
                 ]
             ],
         });
 
-        // this.productFg.patchValue(this.productModel.productInformation.priceInformation);
+
+        this.productFg.patchValue(this.productModel.productInformation.priceInformation);
 
         //for testing
-        this.productFg.patchValue({
-            unitPrice: 45000,
-            discount: false,
-            // discountPercent: 50,
-            // discountedPrice: 12500,
-        })
+        // this.productFg.patchValue({
+        //     unitPrice: 45000,
+        //     discount: false,
+        //     discountPercent: 50,
+        //     discountedPrice: 12500,
+        // })
+
+
+        this.availableDropdown = [
+            {label: 'AVAILABLE', value: true},
+            {label: 'NOT AVAILABLE', value: false},
+        ];
 
         // to disable or enable on init based discount status
         if (this.productFg.value.discount) {
@@ -104,7 +113,7 @@ export class ProductPriceComponent implements OnInit {
 
             if (unitPrice) {
                 let discountedPrice = event.value;
-                let discountPercent = 100 * discountedPrice / unitPrice;
+                let discountPercent = ((unitPrice - discountedPrice)/unitPrice)*100;
 
                 this.productFg.get('discountPercent').setValue(discountPercent);
                 this.productFg.get('sliderPercent').setValue(discountPercent);
@@ -123,13 +132,16 @@ export class ProductPriceComponent implements OnInit {
     }
 
     enableDiscountControls() {
+        this.productFg.get('discountedPrice').setValue(this.productFg.value.unitPrice);
+
         this.productFg.controls['discountedPrice'].enable();
         this.productFg.controls['discountPercent'].enable();
         this.productFg.controls['sliderPercent'].enable();
     }
 
     disableDiscountControls() {
-        this.productFg.get('discountedPrice').setValue(0);
+        this.productFg.get('discountedPrice').setValue(this.productFg.value.unitPrice);
+
         this.productFg.get('sliderPercent').setValue(0);
         this.productFg.get('discountPercent').setValue(0);
 
@@ -142,9 +154,12 @@ export class ProductPriceComponent implements OnInit {
 
         if (this.productFg.valid) {
             if (this.productFg.value.discountedPrice === 0 || this.productFg.value.discountPercent === 0) {
-                this.productFg.value.discount = false;
+                this.productFg.get('discount').setValue(false);
             }
-            this.productModel.productInformation.priceInformation = this.productFg.value;
+
+            this.productModel.productInformation.priceInformation = this.productFg.getRawValue();
+            this.productModel.productInformation.priceInformation.completed = true;
+
             this.router.navigate(['pages/product/add/image']).then();
         } else {
             this.productFg.markAllAsTouched();

@@ -19,8 +19,17 @@ export class ProductImageComponent implements OnInit {
 
     editMode: boolean = false;
 
+    productInfo: any;
+
     constructor(public productModel: Product, private router: Router, private el: ElementRef, private rxFormBuilder:
         RxFormBuilder, private messageService: MessageService, private activatedRoute: ActivatedRoute) {
+
+        this.productInfo = this.productModel.productInformation;
+
+        if (this.productInfo.detailInformation.completed === false) {
+            this.router.navigate(['pages/product/add/detail']);
+        }
+
     }
 
     apiBaseUrl = environment.apiBaseUrl;
@@ -28,8 +37,7 @@ export class ProductImageComponent implements OnInit {
 
     ngOnInit(): void {
         this.initForm().then(() => {
-            }
-        );
+        });
     }
 
     async initForm() {

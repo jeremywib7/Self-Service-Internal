@@ -23,11 +23,6 @@ export class ProductConfirmationComponent implements OnInit {
 
     @ViewChild('galleria') galleria: Galleria;
 
-
-    onCLose() {
-        console.log("closed");
-    }
-
     responsiveOptions: any[] = [
         {
             breakpoint: '1024px',
@@ -43,7 +38,7 @@ export class ProductConfirmationComponent implements OnInit {
         }
     ];
 
-    productInformation: any;
+    productInfo: any;
 
     productCarrousel: any;
 
@@ -51,10 +46,16 @@ export class ProductConfirmationComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.productInformation = this.productModel.productInformation;
-        this.images = this.productModel.productCarrousel;
+        this.productInfo = this.productModel.productInformation;
+        if (this.productInfo.detailInformation.completed === false || this.productInfo.detailInformation.completed === false) {
+            this.router.navigate(['pages/product/add/detail']);
+        } else {
+            this.images = this.productModel.productCarrousel;
 
-        this.bindDocumentListeners();
+            this.bindDocumentListeners();
+        }
+
+
     }
 
     onThumbnailButtonClick() {
@@ -64,8 +65,7 @@ export class ProductConfirmationComponent implements OnInit {
     toggleFullScreen() {
         if (this.fullscreen) {
             this.closePreviewFullScreen();
-        }
-        else {
+        } else {
             this.openPreviewFullScreen();
         }
 
@@ -76,14 +76,11 @@ export class ProductConfirmationComponent implements OnInit {
         let elem = this.galleria.element.nativeElement.querySelector(".p-galleria");
         if (elem.requestFullscreen) {
             elem.requestFullscreen();
-        }
-        else if (elem['mozRequestFullScreen']) { /* Firefox */
+        } else if (elem['mozRequestFullScreen']) { /* Firefox */
             elem['mozRequestFullScreen']();
-        }
-        else if (elem['webkitRequestFullscreen']) { /* Chrome, Safari & Opera */
+        } else if (elem['webkitRequestFullscreen']) { /* Chrome, Safari & Opera */
             elem['webkitRequestFullscreen']();
-        }
-        else if (elem['msRequestFullscreen']) { /* IE/Edge */
+        } else if (elem['msRequestFullscreen']) { /* IE/Edge */
             elem['msRequestFullscreen']();
         }
     }
@@ -97,14 +94,11 @@ export class ProductConfirmationComponent implements OnInit {
     closePreviewFullScreen() {
         if (document.exitFullscreen) {
             document.exitFullscreen();
-        }
-        else if (document['mozCancelFullScreen']) {
+        } else if (document['mozCancelFullScreen']) {
             document['mozCancelFullScreen']();
-        }
-        else if (document['webkitExitFullscreen']) {
+        } else if (document['webkitExitFullscreen']) {
             document['webkitExitFullscreen']();
-        }
-        else if (document['msExitFullscreen']) {
+        } else if (document['msExitFullscreen']) {
             document['msExitFullscreen']();
         }
     }

@@ -9,56 +9,56 @@
         <ng-template pTemplate="content">
             <div class="field col-12">
                 <label>Name</label> <br>
-                <b>{{productInformation.detailInformation.name ? productInformation.detailInformation.name : '-'}}</b>
+                <b>{{productInfo.detailInformation.name ? productInfo.detailInformation.name : '-'}}</b>
             </div>
             <div class="field col-12">
                 <label>Category Name</label> <br>
-                <b>{{productInformation.detailInformation.category['categoryName'] ? productInformation.detailInformation.category['categoryName'] : '-'}}</b>
+                <b>{{productInfo.detailInformation.category['categoryName'] ? productInfo.detailInformation.category['categoryName'] : '-'}}</b>
             </div>
             <div class="field col-12">
                 <label>Total Calories</label> <br>
-                <b>{{productInformation.detailInformation.totalCalories ? productInformation.detailInformation.totalCalories + " Cals" : '-'}}</b>
+                <b>{{productInfo.detailInformation.totalCalories ? productInfo.detailInformation.totalCalories + " Cals" : '-'}}</b>
             </div>
             <div class="field col-12">
                 <label>Description</label> <br>
-                <b>{{productInformation.detailInformation.description ? productInformation.detailInformation.description : '-'}}</b>
+                <b>{{productInfo.detailInformation.description ? productInfo.detailInformation.description : '-'}}</b>
             </div>
             <div class="field col-12">
                 <label>Unit Price</label> <br>
                 <!--suppress TypeScriptUnresolvedFunction -->
-                <b>{{productInformation.priceInformation.unitPrice ? (productInformation.priceInformation.unitPrice | currency:'Rp. ') : '-' }}</b>
+                <b>{{productInfo.priceInformation.unitPrice ? (productInfo.priceInformation.unitPrice | currency:'Rp. ') : '-' }}</b>
             </div>
             <div class="field col-12">
                 <label>Discount</label> <br>
-                <b [class]="productInformation.priceInformation.discount ? 'item-badge status-true': 'item-badge status-false'">
-                    {{productInformation.priceInformation.discount ? 'AVAILABLE' : 'NOT AVAILABLE' }}</b>
+                <b [class]="productInfo.priceInformation.discount ? 'item-badge status-true': 'item-badge status-false'">
+                    {{productInfo.priceInformation.discount ? 'AVAILABLE' : 'NOT AVAILABLE' }}</b>
             </div>
             <div class="field col-12">
                 <label>Discount Percentage</label> <br>
-                <b>{{productInformation.priceInformation.discountPercent ? productInformation.priceInformation.discountPercent + " %"
+                <b>{{productInfo.priceInformation.discountPercent ? productInfo.priceInformation.discountPercent + " %"
                     : '-'}}</b>
             </div>
             <div class="field col-12">
                 <label>Discounted Price</label> <br>
                 <!--suppress TypeScriptUnresolvedFunction -->
-                <b>{{productInformation.priceInformation.discountedPrice ? (productInformation.priceInformation.discountedPrice | currency:'Rp. ')
-                    : '-'}}</b>
+                <b>{{productInfo.priceInformation.discountedPrice ? (productInfo.priceInformation.discountedPrice |
+                    currency:'Rp. ') : '-'}}</b>
             </div>
 
             <!--      NORMAL      -->
             <p-galleria #galleria [value]="images" [(activeIndex)]="activeIndex" [numVisible]="5"
-                        [containerStyle]="{'width':  '300px'}"
+                        [containerStyle]="{'width':  '320px'}"
                         [containerClass]="galleriaClass()"
                         [showThumbnails]="showThumbnails" [showItemNavigators]="true" [showItemNavigatorsOnHover]="true"
                         [circular]="true" [autoPlay]="true" [transitionInterval]="3000">
                 <ng-template pTemplate="item" let-image>
                     <img [src]="image.imageBase64"
                          [ngStyle]="{
-                         'width': !fullscreen ? '300px' : '',
-                         'height': !fullscreen ? '300px' : '',
-                         'max-width': fullscreen ? '600px' : '300px',
-                         'max-height': fullscreen ? '500px' : '400px',
-                         'display': !fullscreen ? 'block' : ''}"/>
+                         'width': !fullscreen ? '320px' : '',
+                         'height': !fullscreen ? '270px' : '',
+                         'max-width': !fullscreen ? '320px' : '600px',
+                         'max-height': !fullscreen ? '400px' : '500px',
+                         'display': !fullscreen ? 'block' : ''}" [alt]="image['imageFile'].name"/>
                 </ng-template>
                 <ng-template pTemplate="thumbnail" let-image>
                     <div class="grid grid-nogutter justify-content-center">

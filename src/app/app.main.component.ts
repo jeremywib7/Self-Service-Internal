@@ -12,9 +12,10 @@ import {AppComponent} from './app.component';
 import {ConfigService} from './service/app.config.service';
 import {AppConfig} from './api/appconfig';
 import {Subscription} from 'rxjs';
-import {MessageService} from "primeng/api";
 import {LoaderService} from "./service/loader.service";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
+import {HistoryRouteService} from "./service/history.route.service";
+import {filter} from "rxjs/operators";
 
 @Component({
     selector: 'app-main',
@@ -65,7 +66,16 @@ export class AppMainComponent implements AfterViewInit, AfterContentChecked, OnD
     subscription: Subscription;
 
     constructor(public renderer: Renderer2, public app: AppComponent, public configService: ConfigService,
-                private router: Router, public loaderService: LoaderService, private cdr: ChangeDetectorRef) {
+                private router: Router, public loaderService: LoaderService, private cdr: ChangeDetectorRef,
+                private historyRouteService: HistoryRouteService) {
+
+        // for saving previous route, example if token expired then login. then user back to previous route.
+        this.router.events.pipe(filter((event) => event instanceof NavigationEnd))
+            .subscribe((event: NavigationEnd) => {
+                this.historyRouteService.previousUrl = this.historyRouteService.currentUrl;
+                this.historyRouteService.currentUrl = event.url;
+            });
+
     }
 
     ngOnInit() {

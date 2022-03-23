@@ -33,15 +33,20 @@ export class Product {
                 id: '',
                 categoryName: ''
             },
-            totalCalories: '',
-            description: ''
+            totalCalories: 0,
+            description: '',
+            completed: false,
         },
         priceInformation: {
-            unitPrice: '',
+            unitPrice: 0,
             discount: '',
-            discountPercent: '',
-            sliderPercent: '',
-            discountedPrice: '',
+            discountPercent: 0,
+            sliderPercent: 0,
+            discountedPrice: 0,
+            completed: false,
+        },
+        imageInformation: {
+            imageName: [],
         },
     };
 
@@ -53,6 +58,7 @@ export class Product {
 
 
     // for carousel or display array of images
+
     productCarrousel: ProductCarrousel[] = [];
 
     pFileUploadProductImg: File[] = []; // list of image file
@@ -62,12 +68,12 @@ export class Product {
 
     // on complete steps
 
-    private addOrEditComplete = new Subject<any>();
+    private addOrEditCompleteProduct = new Subject<any>();
 
-    addOrEditComplete$ = this.addOrEditComplete.asObservable();
+    addOrEditCompleteProduct$ = this.addOrEditCompleteProduct.asObservable();
 
     complete() {
-        this.addOrEditComplete.next(this.productInformation);
+        this.addOrEditCompleteProduct.next(this.productInformation);
     }
 
 }

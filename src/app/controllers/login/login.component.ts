@@ -7,6 +7,7 @@ import {UserService} from "../../service/user.service";
 import {UserAuthService} from "../../service/user-auth.service";
 import {Router} from "@angular/router";
 import {MessageService} from "primeng/api";
+import {HistoryRouteService} from "../../service/history.route.service";
 
 @Component({
     selector: 'app-login',
@@ -23,16 +24,27 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     subscription: Subscription;
 
+    previousUrl: string = '';
+
     constructor(public configService: ConfigService, public userService: UserService,
-                public userAuthService: UserAuthService, public router: Router,
-                public messageService: MessageService) {
+                public userAuthService: UserAuthService, public router: Router, public messageService: MessageService,
+                private historyRouteService: HistoryRouteService) {
+
+        if (userAuthService.isLoggedIn()) {
+            this.router.navigate(['/']).then(r => null);
+        }
+
     }
 
     ngOnInit(): void {
+        // from prime ng
         this.config = this.configService.config;
         this.subscription = this.configService.configUpdate$.subscribe(config => {
             this.config = config;
         });
+        //
+
+        this.previousUrl = this.historyRouteService.previousUrl;
     }
 
     ngOnDestroy(): void {
@@ -52,7 +64,11 @@ export class LoginComponent implements OnInit, OnDestroy {
                 const userRole = response.user.role.roleName;
 
                 if (userRole === "Admin") {
-                    this.router.navigate(['/']);
+                    if (this.previousUrl && this.previousUrl != "/pages/login") {
+                        this.router.navigate([this.previousUrl]);
+                    } else {
+                        this.router.navigate(['/']);
+                    }
                 } else if (userRole === "User") {
                     this.router.navigate(['/']);
                 }

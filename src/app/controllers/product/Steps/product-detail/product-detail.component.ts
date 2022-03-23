@@ -1,5 +1,5 @@
-import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
-import {FormArray, FormGroup} from "@angular/forms";
+import {Component, ElementRef, OnInit} from '@angular/core';
+import  {FormGroup} from "@angular/forms";
 import {Product} from "../../../../model/Product";
 import {Router} from "@angular/router";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
@@ -28,15 +28,7 @@ export class ProductDetailComponent implements OnInit {
     }
 
     ngOnInit(): void {
-
         this.initForm();
-        this.loadProductCategory();
-
-        this.statusDropdown = [
-            {label: 'ACTIVE', value: true},
-            {label: 'INACTIVE', value: false},
-        ];
-
     }
 
     initForm() {
@@ -46,7 +38,7 @@ export class ProductDetailComponent implements OnInit {
                 [
                     RxwebValidators.required(),
                     RxwebValidators.minLength({value: 3}),
-                    RxwebValidators.maxLength({value: 10})
+                    RxwebValidators.maxLength({value: 20})
                 ]
             ],
             active: ['', [RxwebValidators.required()]],
@@ -73,6 +65,12 @@ export class ProductDetailComponent implements OnInit {
             ],
         });
 
+        this.loadProductCategory();
+
+        this.statusDropdown = [
+            {label: 'ACTIVE', value: true},
+            {label: 'INACTIVE', value: false},
+        ];
     }
 
     loadProductCategory() {
@@ -87,19 +85,19 @@ export class ProductDetailComponent implements OnInit {
                     });
                 },
                 complete: () => {
-                    // this.productFg.patchValue(this.productModel.productInformation.detailInformation);
+                    this.productFg.patchValue(this.productModel.productInformation.detailInformation);
 
                     //for testing
-                    this.productFg.patchValue({
-                        name: 'Pasta',
-                        description: 'A pasta made with love',
-                        active: true,
-                        totalCalories: 150,
-                        category: {
-                            id: '35b2bcea-02a4-4881-954b-eaf9f9953b02'
-                            // id: '41abdb19-dc0e-4923-9077-dc5c975ff52c'
-                        }
-                    })
+                    // this.productFg.patchValue({
+                    //     name: 'Pasta',
+                    //     description: 'A pasta made with love',
+                    //     active: true,
+                    //     totalCalories: 150,
+                    //     category: {
+                    //         id: '35b2bcea-02a4-4881-954b-eaf9f9953b02'
+                    //         // id: '41abdb19-dc0e-4923-9077-dc5c975ff52c'
+                    //     }
+                    // })
                 }
             }
         );

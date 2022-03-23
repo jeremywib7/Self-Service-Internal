@@ -1,14 +1,12 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {User} from "../../model/User";
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Product} from "../../model/Product";
 import {LazyLoadEvent, MenuItem, MessageService} from "primeng/api";
 import {HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
-import {debounceTime, distinctUntilChanged, Observable, Subject, Subscription} from "rxjs";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {FormGroupExtension, NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
-import {ProductCategory} from "../../model/ProductCategory";
+import {debounceTime, Subscription} from "rxjs";
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
@@ -58,6 +56,7 @@ export class ProductComponent implements OnInit {
         private productService: ProductService,
         public productModel: Product,
         private router: Router,
+        private el: ElementRef,
         private activatedRoute: ActivatedRoute,
         private messageService: MessageService,
         private fb: FormBuilder,
@@ -72,15 +71,40 @@ export class ProductComponent implements OnInit {
             {label: 'NOT AVAILABLE', value: false},
         ];
 
-        this.subscription = this.productModel.addOrEditComplete$.subscribe((productInformation) => {
-            this.productFg.patchValue(productInformation['detailInformation']);
-            console.log(this.productFg.value);
+        this.subscription = this.productModel.addOrEditCompleteProduct$.subscribe((productInformation) => {
 
-            this.messageService.add({
-                severity: 'success',
-                summary: 'Order submitted',
-                detail: 'Good Job'
-            });
+            this.productFg.patchValue(productInformation['detailInformation']);
+            this.productFg.patchValue(productInformation['priceInformation']);
+            this.productFg.patchValue(productInformation['imageInformation']);
+
+            if (this.productFg.valid) {
+                this.productService.addOrAndUpdateProduct(this.productFg.value, this.productModel.pFileUploadProductImg,
+                    this.editMode).subscribe(
+                    (response) => {
+                        if (!this.editMode) {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: 'Product successfully updated'
+                            });
+                        } else {
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Success',
+                                detail: 'Product successfully updated'
+                            });
+                        }
+                    },
+                );
+
+
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Failed',
+                    detail: 'Please double check required fields'
+                });
+            }
         });
     }
 
@@ -111,7 +135,7 @@ export class ProductComponent implements OnInit {
                 [
                     RxwebValidators.required(),
                     RxwebValidators.minLength({value: 3}),
-                    RxwebValidators.maxLength({value: 10})
+                    RxwebValidators.maxLength({value: 20})
                 ]
             ],
             active: ['', [RxwebValidators.required()]],
@@ -144,13 +168,13 @@ export class ProductComponent implements OnInit {
                     }),
                     RxwebValidators.maxNumber({value: 1000000}),
                     RxwebValidators.minNumber({value: 1}),
-                    RxwebValidators.greaterThan({fieldName: 'discountedPrice'})
+                    RxwebValidators.greaterThanEqualTo({fieldName: 'discountedPrice'})
                 ],
             ],
             discountedPrice: ['',
                 [
                     RxwebValidators.required(),
-                    RxwebValidators.lessThan({fieldName: 'unitPrice'})
+                    RxwebValidators.lessThanEqualTo({fieldName: 'unitPrice'})
                 ]
             ],
             images: this.rxFormBuilder.array([{
@@ -158,10 +182,17 @@ export class ProductComponent implements OnInit {
             }])
         });
 
+        // this.productService.getUUID().subscribe(
+        //     (data: object) => {
+        //         const uuid = data['data']['uuid'];
+        //         this.productFg.get('id').setValue(uuid);
+        //     },
+        // );
+
     }
 
     isChildComponentActive(): boolean {
-        if (this.router.url.includes("/add") ) {
+        if (this.router.url.includes("/add")) {
             return false;
         } else {
             return true;
@@ -199,23 +230,24 @@ export class ProductComponent implements OnInit {
 
     }
 
-    openAddOrEditProductDialog(editMode?: boolean, product?: Product) {
+    public validateFormFields(formGroup: FormGroup) {
+        for (const key of Object.keys(formGroup.controls)) {
+            if (formGroup.controls[key].invalid) {
+                console.log(key);
+                break;
+            }
+        }
+    }
+
+
+    openAddOrEditProductSteps(editMode: boolean) {
         if (editMode) {
 
         } else {
-            // this.productFg.reset();
-            // this.productFg.markAsPristine();
-            // this.productFg.markAsUntouched();
+            this.router.navigate(['pages/product/add']);
         }
-        this.router.navigate(['pages/product/add']);
-        // this.showAddOrEditProductDialog = true;
     }
 
-    submit() {
-        console.log(this.productFg.value);
-    }
-
-//   ON ACTION METHOD
 
     onDeleteSelectedProducts() {
 

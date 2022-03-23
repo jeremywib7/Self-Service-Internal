@@ -7,7 +7,7 @@ import {
 } from "@angular/common/http";
 import {catchError, EMPTY, finalize, Observable} from "rxjs";
 import {Router} from "@angular/router";
-import {AfterViewInit, ChangeDetectorRef, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {UserAuthService} from "../service/user-auth.service";
 import {MessageService} from "primeng/api";
 import {LoaderService} from "../service/loader.service";
@@ -29,16 +29,6 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        // this.service_count++; // increment the count for each intercepted http request.
-        // this.loaderService.value.next(0);
-        // this.loaderService.isLoading.next(true);
-        //
-        // let interval = setInterval(() => {
-        //     this.loaderService.value.next(this.loaderService.value.value + Math.floor(Math.random() * 10) + 1);
-        //     if (this.loaderService.value.value >= 50) {
-        //         clearInterval(interval);
-        //     }
-        // }, 100);
 
         if (req.headers.get('No-Auth') === 'True') {
             // this.onFinishLoad();

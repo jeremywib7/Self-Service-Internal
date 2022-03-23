@@ -24,8 +24,9 @@
                             <div *ngIf="productFg.hasError('numeric','unitPrice')">
                                 <small class="p-error">Unit price must be number.</small>
                             </div>
-                            <div *ngIf="productFg.hasError('greaterThan','unitPrice')">
-                                <small class="p-error">Unit price must be greater than discounted price.</small>
+                            <div *ngIf="productFg.hasError('greaterThanEqualTo','unitPrice')">
+                                <small class="p-error">Unit price must be greater than or equal to discounted
+                                    price.</small>
                             </div>
                         </div>
                     </div>
@@ -82,8 +83,9 @@
                             <div *ngIf="productFg.hasError('pattern','discountedPrice')">
                                 <small class="p-error">Discounted price format is invalid</small>
                             </div>
-                            <div *ngIf="productFg.hasError('lessThan','discountedPrice')">
-                                <small class="p-error">Discounted price should be less than unit price !</small>
+                            <div *ngIf="productFg.hasError('lessThanEqualTo','discountedPrice')">
+                                <small class="p-error">Discounted price should be less than or equal to unit price
+                                    !</small>
                             </div>
                         </div>
                     </div>
