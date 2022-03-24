@@ -41,9 +41,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
 
         return next.handle(req).pipe(
-            finalize(() => {
-                // this.onFinishLoad();
-            }),
             catchError(
                 (err: HttpErrorResponse) => {
                     if (err.status === 401) {
@@ -57,7 +54,11 @@ export class AuthInterceptor implements HttpInterceptor {
                     } else if (err.status === 403) {
                         this.router.navigate(['/forbidden']);
                     } else {
-                        this.messageService.add({severity: 'error', summary: 'Error', detail: err.error.message});
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Failed',
+                            detail: err.error.message
+                        });
                     }
                     return EMPTY;
                 }

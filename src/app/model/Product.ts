@@ -23,7 +23,7 @@ export class Product {
     createdOn: Date;
 
 
-    // for steps
+    // for add or edit product steps
 
     productInformation = {
         detailInformation: {
@@ -33,22 +33,59 @@ export class Product {
                 id: '',
                 categoryName: ''
             },
-            totalCalories: 0,
+            totalCalories: null,
             description: '',
             completed: false,
         },
         priceInformation: {
-            unitPrice: 0,
+            unitPrice: null,
             discount: '',
-            discountPercent: 0,
-            sliderPercent: 0,
-            discountedPrice: 0,
+            discountPercent: null,
+            sliderPercent: null,
+            discountedPrice: null,
             completed: false,
         },
         imageInformation: {
             imageName: [],
         },
     };
+
+    //
+
+
+    // reset add or edit product steps
+
+    resetProductInformation = {
+        detailInformation: {
+            id: '',
+            name: '',
+            category: {
+                id: '',
+                categoryName: ''
+            },
+            totalCalories: null,
+            description: '',
+            completed: false,
+        },
+        priceInformation: {
+            unitPrice: null,
+            discount: '',
+            discountPercent: null,
+            sliderPercent: null,
+            discountedPrice: null,
+            completed: false,
+        },
+        imageInformation: {
+            imageName: [],
+        },
+    };
+
+    resetAddOrEditProductSteps() {
+        this.productInformation.detailInformation = this.resetProductInformation.detailInformation;
+        this.productInformation.priceInformation = this.resetProductInformation.priceInformation;
+        this.productInformation.imageInformation = this.resetProductInformation.imageInformation;
+    }
+
 
     // array of categories
 
@@ -66,7 +103,7 @@ export class Product {
     previousImageFileLength: number = -1; // if there is difference with previous image length then it is true condition
 
 
-    // on complete steps
+    // on complete add or edit product steps
 
     private addOrEditCompleteProduct = new Subject<any>();
 

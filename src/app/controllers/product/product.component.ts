@@ -5,7 +5,7 @@ import {HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
 import {debounceTime, Subscription} from "rxjs";
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -47,6 +47,8 @@ export class ProductComponent implements OnInit {
 
     searchFormGroup: FormGroup;
 
+    images: FormArray;
+
     productFg: FormGroup;
 
     apiBaseUrl = environment.apiBaseUrl;
@@ -78,10 +80,12 @@ export class ProductComponent implements OnInit {
             this.productFg.patchValue(productInformation['imageInformation']);
 
             if (this.productFg.valid) {
+
                 this.productService.addOrAndUpdateProduct(this.productFg.value, this.productModel.pFileUploadProductImg,
-                    this.editMode).subscribe(
-                    (response) => {
-                        if (!this.editMode) {
+                    this.editMode).subscribe({
+                    next: () => {
+                        this.productModel.resetAddOrEditProductSteps();
+                        if (this.editMode) {
                             this.messageService.add({
                                 severity: 'success',
                                 summary: 'Success',
@@ -91,11 +95,11 @@ export class ProductComponent implements OnInit {
                             this.messageService.add({
                                 severity: 'success',
                                 summary: 'Success',
-                                detail: 'Product successfully updated'
+                                detail: 'Product successfully added'
                             });
                         }
                     },
-                );
+                });
 
 
             } else {
@@ -106,6 +110,7 @@ export class ProductComponent implements OnInit {
                 });
             }
         });
+
     }
 
     ngOnDestroy() {
@@ -181,6 +186,9 @@ export class ProductComponent implements OnInit {
                 initialValue: [],
             }])
         });
+
+        this.images = this.productFg.get('images') as FormArray;
+        this.images.removeAt(0);
 
         // this.productService.getUUID().subscribe(
         //     (data: object) => {

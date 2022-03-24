@@ -28,7 +28,7 @@ export class ProductService {
 
                         const formData: FormData = new FormData();
                         formData.append('file', obj);
-                        formData.append('name', product.id + "_" + index);
+                        formData.append('name', product.name + "_" + index);
 
                         return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/product/upload`, formData, {
                             responseType: 'text'

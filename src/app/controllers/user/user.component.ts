@@ -333,8 +333,12 @@ export class UserComponent implements OnInit {
         if (this.reactiveForm.valid) {
 
             this.reactiveForm.patchValue({
-                dateJoined: this.datepipe.transform(this.reactiveForm.value.dateJoined,
-                    'dd/MM/yyyy'),
+
+                // to check if the date format already dd/MM/yyyy by length
+                dateJoined: this.reactiveForm.value.dateJoined.length === 10 ?
+                    this.reactiveForm.value.dateJoined :
+                    this.datepipe.transform(this.reactiveForm.value.dateJoined,
+                        'dd/MM/yyyy'),
                 role: {
                     roleDescription: this.reactiveForm.value.role.roleName + " role"
                 }

@@ -80,13 +80,13 @@ export class ProductPriceComponent implements OnInit {
     }
 
     inputUnitPrice(event) {
-        if (this.productFg.value.discount) {
-            let unitPrice = event.value;
-            let discountPercent = this.productFg.get('discountPercent').value;
-            let discountedPrice = unitPrice * discountPercent / 100;
 
-            this.productFg.get('discountedPrice').setValue(unitPrice - discountedPrice);
-        }
+        let unitPrice = event.value;
+        let discountPercent = this.productFg.get('discountPercent').value;
+        let discountedPrice = unitPrice * discountPercent / 100;
+
+        this.productFg.get('discountedPrice').setValue(unitPrice - discountedPrice);
+
     }
 
     inputDiscountValue(event) {
@@ -108,17 +108,19 @@ export class ProductPriceComponent implements OnInit {
     }
 
     inputDiscountedPrice(event) {
+
         if (this.productFg.get('unitPrice').value != 0) {
             let unitPrice = this.productFg.get('unitPrice').value;
 
             if (unitPrice) {
                 let discountedPrice = event.value;
-                let discountPercent = ((unitPrice - discountedPrice)/unitPrice)*100;
+                let discountPercent = ((unitPrice - discountedPrice) / unitPrice) * 100;
 
                 this.productFg.get('discountPercent').setValue(discountPercent);
                 this.productFg.get('sliderPercent').setValue(discountPercent);
             }
         }
+
     }
 
     onChangeDiscountStatus(event) {
