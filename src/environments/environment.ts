@@ -6,8 +6,20 @@ export const environment = {
     production: false,
     apiBaseUrl: 'http://localhost:9090',
     project: 'selfservice',
-    accessToken: '1234'
+    accessToken: '1234',
+
+    firebase: {
+        apiKey: "AIzaSyDCiCWjf3tms077CnqgiP0zWhFqQjzLdRc",
+        authDomain: "self-service-4820d.firebaseapp.com",
+        projectId: "self-service-4820d",
+        storageBucket: "self-service-4820d.appspot.com",
+        messagingSenderId: "602646727662",
+        appId: "1:602646727662:web:a323db94f3dea8e9e49cff",
+        measurementId: "G-Q3EQ96CHJP",
+        databaseURL: '<your-database-URL>',
+    }
 };
+
 
 /*
  * For easier debugging in development mode, you can import the following file

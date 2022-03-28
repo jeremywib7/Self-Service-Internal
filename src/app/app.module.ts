@@ -160,7 +160,10 @@ import {BreadcrumbComponent} from './controllers/breadcrumb/breadcrumb/breadcrum
 import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";
 import {HistoryRouteService} from "./service/history.route.service";
 import { WaitingListComponent } from './controllers/waiting-list/waiting-list.component';
-import {WebSocketService} from "./service/web-socket.service";
+import {AngularFireModule} from "@angular/fire/compat";
+import {environment} from "../environments/environment";
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
+import {WaitingListService} from "./service/waiting-list.service";
 
 @NgModule({
     imports: [
@@ -170,6 +173,8 @@ import {WebSocketService} from "./service/web-socket.service";
         AppRoutingModule,
         HttpClientModule,
         BrowserAnimationsModule,
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
         AccordionModule,
         AutoCompleteModule,
         AvatarModule,
@@ -328,9 +333,9 @@ import {WebSocketService} from "./service/web-socket.service";
         ConfirmationService,
         MessageService,
         Product,
-        WebSocketService,
         HistoryRouteService,
         RxFormBuilder,
+        WaitingListService,
         {
             provide: LocationStrategy,
             useClass: HashLocationStrategy
