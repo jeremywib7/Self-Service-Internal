@@ -1,0 +1,131 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>Waiting List</h5>
+            <p-dataView #dv [value]="webSocketService.waitingList" layout="list">
+                <ng-template pTemplate="header">
+                    <div class="grid grid-nogutter flex-column md:flex-row justify-content-between">
+                        <button
+                            (click)="showAddOrEditWaitingList = true"
+                            pButton pRipple label="Add Waiting List" icon="pi pi-plus"
+                            class="p-button-success mr-2"></button>
+                        <span class="p-input-icon-left mb-2 md:mb-0">
+                            <i class="pi pi-search"></i>
+                            <input type="search" pInputText placeholder="Search"
+                                   (input)="dv.filter($event.target.value)">
+                        </span>
+                    </div>
+                </ng-template>
+
+                <ng-template let-waitingList pTemplate="listItem">
+                    <div class="col-12">
+                        <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+                            <div class="flex-1 text-center md:text-left">
+                                <div class="font-bold text-2xl">{{waitingList.number}}</div>
+                                <div class="mb-3">{{waitingList.customerName}}</div>
+                                <div class="flex align-items-center mt-2">
+                                    <i class="pi pi-tag mr-2"></i>
+                                    <span class="font-semibold">{{waitingList.customerName}}</span>
+                                </div>
+                            </div>
+                            <div
+                                class="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
+                                <p-button icon="pi pi-shopping-cart" label="Edit"
+                                          class="mb-2"></p-button>
+                                <span
+                                    [class]="'waiting-list-badge status-' + waitingList.status.toLowerCase()">
+                                    {{waitingList.status}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+            </p-dataView>
+        </div>
+
+        <p-dialog [(visible)]="showAddOrEditWaitingList" [style]="{width: '450px'}"
+                  header="{{editMode ? 'Edit' : 'Add'}} Waiting List" (onHide)="waitingListFg.reset()"
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <form *ngIf="waitingListFg" [formGroup]="waitingListFg" (ngSubmit)="submit()">
+
+                    <div class="p-fluid p-formgrid grid">
+                        <div class="field col-12">
+                            <label for="name">Number</label>
+                            <p-inputNumber formControlName="number" inputId="minmax" mode="decimal"
+                                           [min]="0" [ngClass]="{'ng-invalid ng-dirty' :
+                                           waitingListFg.controls.number.errors && (waitingListFg.controls.number.touched
+                                            || waitingListFg.controls.number.dirty)}">
+                            </p-inputNumber>
+                            <div *ngIf="waitingListFg.controls.number.errors && (waitingListFg.controls.number.touched ||
+                                       waitingListFg.controls.number.dirty) ">
+                                <div *ngIf="waitingListFg.hasError('required','number')">
+                                    <small class="p-error">Number is required.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field col-12">
+                            <label for="name">Customer</label>
+                            <input type="text" pInputText id="name" formControlName="customerName"
+                                   [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.number.errors &&
+                                            (waitingListFg.controls.number.touched || waitingListFg.controls.number.dirty)}"/>
+                            <div *ngIf="waitingListFg.controls.number.errors && (waitingListFg.controls.number.touched ||
+                                       waitingListFg.controls.number.dirty) ">
+                                <div *ngIf="waitingListFg.hasError('required','number')">
+                                    <small class="p-error">Number is required.</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="name">Estimated Time</label>
+                        </div>
+
+                        <div class="field col-4">
+                            <p-inputNumber [showButtons]="true" formControlName="estHour" [min]="0" [max]="24"
+                                           buttonLayout="vertical" inputId="vertical"
+                                           suffix=" Hour" decrementButtonClass="p-button-secondary"
+                                           incrementButtonClass="p-button-secondary" incrementButtonIcon="pi pi-plus"
+                                           decrementButtonIcon="pi pi-minus">
+                            </p-inputNumber>
+                        </div>
+
+                        <div class="field col-4">
+                            <p-inputNumber [showButtons]="true" formControlName="estMinute" [min]="0" [max]="60"
+                                           buttonLayout="vertical" inputId="vertical" suffix=" Minute"
+                                           decrementButtonClass="p-button-secondary"
+                                           incrementButtonClass="p-button-secondary" incrementButtonIcon="pi pi-plus"
+                                           decrementButtonIcon="pi pi-minus">
+                            </p-inputNumber>
+                        </div>
+
+                        <div class="field col-4">
+                            <p-inputNumber [showButtons]="true" formControlName="estSecond" [min]="0" [max]="60"
+                                           buttonLayout="vertical" inputId="vertical" suffix=" Second"
+                                           decrementButtonClass="p-button-secondary"
+                                           incrementButtonClass="p-button-secondary" incrementButtonIcon="pi pi-plus"
+                                           decrementButtonIcon="pi pi-minus">
+                            </p-inputNumber>
+                        </div>
+
+                    </div>
+                </form>
+                <button pButton pRipple *ngIf="editMode" label="Reset Password"
+                        icon="pi pi-refresh"
+                        class="p-button-danger"></button>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple (click)="showAddOrEditWaitingList = false" label="Cancel" icon="pi pi-times"
+                        class="p-button-text"></button>
+                <button pButton pRipple
+                        (click)="submit()"
+                        label="Save" icon="pi pi-check" class="p-button-text"></button>
+            </ng-template>
+        </p-dialog>
+
+
+    </div>
+</div>

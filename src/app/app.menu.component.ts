@@ -52,6 +52,20 @@ export class AppMenuComponent implements OnInit {
             },
 
             {
+                label: 'Order',
+                items: [
+                    {label: 'Waiting List', icon: 'pi pi-fw pi-user', routerLink: ['/pages/waitingList']},
+                ]
+            },
+
+            {
+                label: 'Report',
+                items: [
+                    {label: 'Sales Report', icon: 'pi pi-fw pi-user', routerLink: ['/pages/report']},
+                ]
+            },
+
+            {
                 label: 'UI Components',
                 items: [
                     {label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout']},

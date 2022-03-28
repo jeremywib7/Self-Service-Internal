@@ -159,6 +159,8 @@ import {ProductFormComponent} from './controllers/product/Form/product-form/prod
 import {BreadcrumbComponent} from './controllers/breadcrumb/breadcrumb/breadcrumb.component';
 import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";
 import {HistoryRouteService} from "./service/history.route.service";
+import { WaitingListComponent } from './controllers/waiting-list/waiting-list.component';
+import {WebSocketService} from "./service/web-socket.service";
 
 @NgModule({
     imports: [
@@ -306,6 +308,7 @@ import {HistoryRouteService} from "./service/history.route.service";
         ProductFormComponent,
         ProductImageComponent,
         BreadcrumbComponent,
+        WaitingListComponent,
     ],
     providers: [
         AuthGuard,
@@ -325,6 +328,7 @@ import {HistoryRouteService} from "./service/history.route.service";
         ConfirmationService,
         MessageService,
         Product,
+        WebSocketService,
         HistoryRouteService,
         RxFormBuilder,
         {

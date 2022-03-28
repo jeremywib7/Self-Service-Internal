@@ -33,6 +33,7 @@ import {LoginComponent} from "./controllers/login/login.component";
 import {ProductDetailComponent} from "./controllers/product/Steps/product-detail/product-detail.component";
 import {ProductPriceComponent} from "./controllers/product/Steps/product-price/product-price.component";
 import {ProductFormComponent} from "./controllers/product/Form/product-form/product-form.component";
+import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.component";
 
 const routes: Routes = [
     {path: '', redirectTo: 'detail', pathMatch: 'full'},
@@ -70,6 +71,11 @@ const routes: Routes = [
                         ]
                     },
 
+                    // waiting list
+                    {path: 'pages/waitingList', data: {breadcrumb: 'Waiting List'}, component: WaitingListComponent},
+
+                    // report
+                    {path: 'pages/report', data: {breadcrumb: 'User'}, component: UserComponent},
 
                     {path: 'uikit/formlayout', component: FormLayoutComponent},
                     {path: 'uikit/input', component: InputComponent},

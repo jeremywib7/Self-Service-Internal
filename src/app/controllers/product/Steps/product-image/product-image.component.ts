@@ -1,12 +1,10 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {Product} from "../../../../model/Product";
-import {FormArray, FormGroup} from "@angular/forms";
+import {FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {environment} from "../../../../../environments/environment";
-import {RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
+import {RxFormBuilder} from "@rxweb/reactive-form-validators";
 import {MessageService} from "primeng/api";
-import {FileUpload} from "primeng/fileupload";
-import {ProductCarrousel} from "../../../../model/ProductCarrousel";
 
 @Component({
     selector: 'app-product-image',
