@@ -164,6 +164,7 @@ import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environment";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {WaitingListService} from "./service/waiting-list.service";
+import {CountdownModule} from "ngx-countdown";
 
 @NgModule({
     imports: [
@@ -193,6 +194,7 @@ import {WaitingListService} from "./service/waiting-list.service";
         CodeHighlighterModule,
         ConfirmDialogModule,
         ConfirmPopupModule,
+        CountdownModule,
         ColorPickerModule,
         ContextMenuModule,
         DataViewModule,

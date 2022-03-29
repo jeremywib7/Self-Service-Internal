@@ -12,7 +12,12 @@
     }
 
     &.status-preparing {
-        background: #e5dcb1;
-        color: #9d8908;
+        background: #B3E5FC;
+        color: #23547B;
+    }
+
+    &.status-waiting {
+        background: #FEEDAF;
+        color: #8A5340;
     }
 }

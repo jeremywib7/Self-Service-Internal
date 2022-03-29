@@ -18,4 +18,8 @@ export class WaitingListService {
         return this.fireServices.collection('Waiting_List').snapshotChanges();
     }
 
+    update_WaitingListStatus(id: string, status: string) {
+        this.fireServices.doc(`Waiting_List/${id}`).update({status: status.toUpperCase()}).then(r => null);
+    }
+
 }
