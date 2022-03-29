@@ -20,7 +20,11 @@ export class WaitingListComponent implements OnInit {
 
     isSendingWaitingList: boolean = false;
 
+    isLoadingWaitingList: boolean = false;
+
     waitingListFg: FormGroup;
+
+    waitingLists: WaitingList[] = [];
 
     waitingList: WaitingList;
 
@@ -33,6 +37,23 @@ export class WaitingListComponent implements OnInit {
 
     ngOnInit(): void {
         this.initForm();
+        this.isLoadingWaitingList = true;
+        this.waitingListService.get_AllWaitingList().subscribe({
+            next: value => {
+                this.waitingLists = value.map(e => {
+                    return {
+                        id: e.payload.doc.id,
+                        number: e.payload.doc.data()['number'],
+                        customerName: e.payload.doc.data()['customerName'],
+                        status: e.payload.doc.data()['status'],
+                        estHour: e.payload.doc.data()['estHour'],
+                        estMinute: e.payload.doc.data()['estMinute'],
+                        estSecond: e.payload.doc.data()['estSecond']
+                    } as WaitingList;
+                });
+                this.isLoadingWaitingList = false;
+            },
+        });
     }
 
 

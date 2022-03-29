@@ -15,7 +15,7 @@ export class WaitingListService {
     }
 
     get_AllWaitingList() {
-        // return this.fireServices.collection('WaitingList').
+        return this.fireServices.collection('Waiting_List').snapshotChanges();
     }
 
 }

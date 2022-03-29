@@ -3,7 +3,7 @@
         <div class="card">
             <h5>Waiting List</h5>
             <!-- webSocketService.waitingList -->
-            <p-dataView #dv [value]="" layout="list">
+            <p-dataView #dv [value]="waitingLists" [loading]="isLoadingWaitingList" layout="list">
                 <ng-template pTemplate="header">
                     <div class="grid grid-nogutter flex-column md:flex-row justify-content-between">
                         <button
