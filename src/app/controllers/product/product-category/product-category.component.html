@@ -38,6 +38,7 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
+                        <th style="width: 3rem"></th>
                         <th pSortableColumn="categoryName">Name
                             <p-sortIcon field="categoryName"></p-sortIcon>
                         </th>
@@ -53,6 +54,7 @@
                         <th></th>
                     </tr>
                     <tr>
+                        <th></th>
                         <th>
                             <p-columnFilter type="text" field="categoryName"></p-columnFilter>
                         </th>
@@ -68,8 +70,13 @@
                         <th></th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-productCategory>
+                <ng-template pTemplate="body" let-productCategory let-expanded="expanded">
                     <tr>
+                        <td>
+                            <button type="button" pButton pRipple
+                                    class="p-button-text p-button-rounded p-button-plain"
+                                    [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                        </td>
                         <td style="min-width:10rem;">
                             <span class="p-column-title">Name</span>
                             {{productCategory.categoryName ? productCategory.categoryName : '-'}}
@@ -97,6 +104,24 @@
                                         (click)="openDeleteProductCategoryDialog(productCategory)"
                                         icon="pi pi-trash" class="p-button-rounded p-button-warning"
                                 ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="rowexpansion" let-productCategory>
+                    <tr>
+                        <td colspan="7">
+                            <div class="p-p-3">
+                                <p-table [value]="productCategory['products']" dataKey="id">
+                                    <ng-template pTemplate="header">
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-order>
+                                    </ng-template>
+                                    <ng-template pTemplate="emptymessage">
+                                        <div></div>
+                                    </ng-template>
+                                </p-table>
                             </div>
                         </td>
                     </tr>
