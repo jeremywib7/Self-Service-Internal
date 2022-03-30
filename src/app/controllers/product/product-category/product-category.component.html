@@ -1,0 +1,108 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button
+                            (click)="openAddOrEditCategoryDialog(false)"
+                            pButton pRipple label="Add Category" icon="pi pi-plus"
+                            class="p-button-success mr-2">
+                        </button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <button type="button" pButton pRipple icon="pi pi-file" (click)="dt.exportCSV()" class="mr-2"
+                            pTooltip="CSV" tooltipPosition="bottom"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="productCategory" [columns]="cols" responsiveLayout="scroll"
+                     [loading]="tableProductCategoryLoading"
+                     [globalFilterFields]="['username','role.roleName','active']" [rows]="10" [paginator]="true"
+                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                     [exportHeader]="'customExportHeader'"
+                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                     [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Manage Product Category</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <!--suppress TypeScriptUnresolvedVariable -->
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                   placeholder="Search..."/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="categoryName">Name
+                            <p-sortIcon field="categoryName"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="totalProduct">Total Product
+                            <p-sortIcon field="totalProduct"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="createdOn">Created On
+                            <p-sortIcon field="createdOn"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="updatedOn">Updated On
+                            <p-sortIcon field="updatedOn"></p-sortIcon>
+                        </th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>
+                            <p-columnFilter type="text" field="categoryName"></p-columnFilter>
+                        </th>
+                        <th>
+                            <p-columnFilter type="text" field="totalProduct"></p-columnFilter>
+                        </th>
+                        <th>
+                            <p-columnFilter type="text" field="createdOn"></p-columnFilter>
+                        </th>
+                        <th>
+                            <p-columnFilter type="text" field="updatedOn"></p-columnFilter>
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-productCategory>
+                    <tr>
+                        <td style="min-width:10rem;">
+                            <span class="p-column-title">Name</span>
+                            {{productCategory.categoryName ? productCategory.categoryName : '-'}}
+                        </td>
+                        <td style="min-width:10rem;">
+                            <span class="p-column-title">Total Product</span>
+                            {{productCategory.totalProduct >= 0 ? productCategory.totalProduct : '-'}}
+                        </td>
+                        <td style="min-width: 10rem;">
+                            <span class="p-column-title">Created On</span>
+                            {{productCategory.createdOn ? productCategory.createdOn : '-'}}
+                        </td>
+                        <td style="min-width: 10rem;">
+                            <span class="p-column-title">Updated On</span>
+                            {{productCategory.updatedOn ? productCategory.updatedOn : '-'}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple
+                                        (click)="openAddOrEditCategoryDialog(true, productCategory)"
+                                        icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-success mr-2"
+                                ></button>
+                                <button pButton pRipple *ngIf="productCategory.categoryName.toString() != 'Unassigned'"
+                                        (click)="openDeleteProductCategoryDialog(productCategory)"
+                                        icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+        </div>
+    </div>
+</div>

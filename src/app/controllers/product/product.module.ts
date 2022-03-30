@@ -10,11 +10,21 @@ import {FileUploadModule} from "primeng/fileupload";
 import {RxReactiveFormsModule} from "@rxweb/reactive-form-validators";
 import { ProductConfirmationComponent } from './Steps/product-confirmation/product-confirmation.component';
 import {GalleriaModule} from "primeng/galleria";
+import { ProductCategoryComponent } from './product-category/product-category.component';
+import {ToolbarModule} from "primeng/toolbar";
+import {RippleModule} from "primeng/ripple";
+import {TooltipModule} from "primeng/tooltip";
+import {TableModule} from "primeng/table";
+import {InputTextModule} from "primeng/inputtext";
+import {DropdownModule} from "primeng/dropdown";
+import {FormsModule} from "@angular/forms";
+import {LazyLoadImageModule} from "ng-lazyload-image";
 
 @NgModule({
     declarations: [
 
-    ProductConfirmationComponent
+    ProductConfirmationComponent,
+     ProductCategoryComponent
   ],
     imports: [
         CommonModule,
@@ -29,7 +39,15 @@ import {GalleriaModule} from "primeng/galleria";
         ButtonModule,
         FileUploadModule,
         RxReactiveFormsModule,
-        GalleriaModule
+        GalleriaModule,
+        ToolbarModule,
+        RippleModule,
+        TooltipModule,
+        TableModule,
+        InputTextModule,
+        DropdownModule,
+        FormsModule,
+        LazyLoadImageModule
     ],
     exports: [RouterModule]
 })

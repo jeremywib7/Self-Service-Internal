@@ -34,6 +34,8 @@ import {ProductDetailComponent} from "./controllers/product/Steps/product-detail
 import {ProductPriceComponent} from "./controllers/product/Steps/product-price/product-price.component";
 import {ProductFormComponent} from "./controllers/product/Form/product-form/product-form.component";
 import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.component";
+import {ProductCategory} from "./model/ProductCategory";
+import {ProductCategoryComponent} from "./controllers/product/product-category/product-category.component";
 
 const routes: Routes = [
     {path: '', redirectTo: 'detail', pathMatch: 'full'},
@@ -69,6 +71,12 @@ const routes: Routes = [
                                 loadChildren: () => import('./controllers/product/product.module').then(p => p.ProductModule)
                             },
                         ]
+                    },
+
+                    {
+                        path: 'pages/product/category',
+                        data: {breadcrumb: 'Product Category'},
+                        component: ProductCategoryComponent
                     },
 
                     // waiting list
