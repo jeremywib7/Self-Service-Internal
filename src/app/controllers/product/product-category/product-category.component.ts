@@ -4,6 +4,9 @@ import {environment} from "../../../../environments/environment";
 import {ProductCategoryService} from "../../../service/product-category.service";
 import {FormGroup} from "@angular/forms";
 import {RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
+import {UnassignedProduct} from "../../../model/UnassignedProduct";
+import {Product} from "../../../model/Product";
+import {Dropdown} from "../../../model/Dropdown";
 
 @Component({
     selector: 'app-product-category',
@@ -18,6 +21,10 @@ export class ProductCategoryComponent implements OnInit {
 
     productCategory: ProductCategory[] = [];
 
+    unassignedProducts: UnassignedProduct[] = [];
+
+    categoryDd: Dropdown[] = [];
+
     cols: any[];
 
     catFg: FormGroup;
@@ -30,11 +37,11 @@ export class ProductCategoryComponent implements OnInit {
         private productCategoryService: ProductCategoryService,
         private rxFormBuilder: RxFormBuilder
     ) {
+        this.initForm();
+        this.loadAllProductCategory();
     }
 
     ngOnInit(): void {
-        this.initForm();
-        this.loadAllProductCategory();
     }
 
     initForm() {
@@ -54,8 +61,14 @@ export class ProductCategoryComponent implements OnInit {
 
     loadAllProductCategory() {
         this.productCategoryService.loadProductCategories().subscribe({
-            next: (productCategory: ProductCategory) => {
+            next: (productCategory: ProductCategory[]) => {
                 this.productCategory = productCategory['data'];
+                this.productCategory.forEach( value => {
+                    this.categoryDd.push({
+                        label: value['categoryName'],
+                        value: value['id'],
+                    })
+                })
             }
         })
     }
@@ -66,6 +79,20 @@ export class ProductCategoryComponent implements OnInit {
 
     openDeleteProductCategoryDialog(productCategory: ProductCategory) {
 
+    }
+
+    saveUnassignedProduct(product: Product[]) {
+        this.unassignedProducts = [];
+        product.forEach((tblProduct, index) => {
+            if (tblProduct['categoryId'] != undefined &&
+                tblProduct['categoryId'] != "akisjasas-asajek-ajsoaks-ejakjenafe") {
+                this.unassignedProducts.push({
+                    productId: tblProduct['id'],
+                    categoryId: tblProduct['categoryId']
+                })
+            }
+        });
+        console.log(this.unassignedProducts);
     }
 
 }

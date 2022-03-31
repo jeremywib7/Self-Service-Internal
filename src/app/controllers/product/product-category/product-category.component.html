@@ -73,7 +73,7 @@
                 <ng-template pTemplate="body" let-productCategory let-expanded="expanded">
                     <tr>
                         <td>
-                            <button type="button" pButton pRipple
+                            <button type="button" pButton pRipple [pRowToggler]="productCategory"
                                     class="p-button-text p-button-rounded p-button-plain"
                                     [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                         </td>
@@ -110,22 +110,65 @@
                 </ng-template>
 
                 <ng-template pTemplate="rowexpansion" let-productCategory>
-                    <tr>
-                        <td colspan="7">
-                            <div class="p-p-3">
-                                <p-table [value]="productCategory['products']" dataKey="id">
-                                    <ng-template pTemplate="header">
-                                    </ng-template>
-                                    <ng-template pTemplate="body" let-order>
-                                    </ng-template>
-                                    <ng-template pTemplate="emptymessage">
-                                        <div></div>
-                                    </ng-template>
-                                </p-table>
-                            </div>
-                        </td>
-                    </tr>
+
+                    <td colspan="7">
+                        <div class="p-6">
+                            <p-table [value]="productCategory['products']" dataKey="name">
+                                <ng-template pTemplate="caption">
+                                    <div
+                                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                        <h5 class="m-0">{{productCategory.categoryName}} Products</h5>
+                                    </div>
+                                </ng-template>
+
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>Image</th>
+                                        <th pSortableColumn="name">Product Name
+                                            <p-sortIcon field="name"></p-sortIcon>
+                                        </th>
+                                        <th>Category</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-product>
+                                    <tr>
+                                        <td style="min-width:10rem;"><span class="p-column-title">Image</span>
+                                            <img
+                                                defaultImage="/assets/demo/images/galleria/spinner.gif"
+                                                [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download/' +  product?.images[0]?.imageName  "
+                                                width="100"
+                                                class="shadow-4" src="" [alt]="product?.images[0]?.imageName"/>
+                                        </td>
+                                        <td style="min-width:10rem;">
+                                            <span class="p-column-title">Username</span>
+                                            {{product.name}}
+                                        </td>
+                                        <td>
+                                            <p-dropdown *ngIf="categoryDd" [showClear]="true"
+                                                        [options]="categoryDd"></p-dropdown>
+
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="emptymessage">
+                                    <div>No record found :(</div>
+                                </ng-template>
+                                <ng-template pTemplate="summary">
+                                    <div class="flex flex-column md:flex-row md:justify-content-end md:align-items-end">
+                                        <button
+                                            type="button" pButton pRipple label="Cancel" class="mr-2">
+                                        </button>
+                                        <button
+                                            type="button" class="p-button-success" pButton pRipple label="Save">
+                                        </button>
+                                    </div>
+                                </ng-template>
+                            </p-table>
+
+                        </div>
+                    </td>
                 </ng-template>
+
             </p-table>
 
         </div>
