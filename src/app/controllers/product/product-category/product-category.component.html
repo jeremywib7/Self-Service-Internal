@@ -18,7 +18,7 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="productCategory" [columns]="cols" responsiveLayout="scroll"
+            <p-table #dt [value]="productCategory" [columns]="productCategoryCols" responsiveLayout="scroll"
                      [loading]="tableProductCategoryLoading"
                      [globalFilterFields]="['username','role.roleName','active']" [rows]="10" [paginator]="true"
                      [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
@@ -34,38 +34,50 @@
                             <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
                                    placeholder="Search..."/>
                         </span>
+                        <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                                (click)="clear(dt)"></button>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 3rem"></th>
-                        <th pSortableColumn="categoryName">Name
-                            <p-sortIcon field="categoryName"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="totalProduct">Total Product
-                            <p-sortIcon field="totalProduct"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="createdOn">Created On
-                            <p-sortIcon field="createdOn"></p-sortIcon>
-                        </th>
-                        <th pSortableColumn="updatedOn">Updated On
-                            <p-sortIcon field="updatedOn"></p-sortIcon>
-                        </th>
                         <th></th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th>
-                            <p-columnFilter type="text" field="categoryName"></p-columnFilter>
+                        <th pSortableColumn="categoryName">
+                            <div class="flex justify-content-between align-items-center">
+                                Name
+                                <p-sortIcon field="categoryName"></p-sortIcon>
+                                <p-columnFilter type="text" field="categoryName" display="menu"
+                                                class="ml-auto"></p-columnFilter>
+                            </div>
                         </th>
-                        <th>
-                            <p-columnFilter type="text" field="totalProduct"></p-columnFilter>
+                        <th pSortableColumn="totalProduct">
+                            <div class="flex justify-content-between align-items-center">
+                                Total Product
+                                <p-sortIcon field="totalProduct"></p-sortIcon>
+                                <p-columnFilter type="text" field="totalProduct" display="menu"
+                                                class="ml-auto"></p-columnFilter>
+                            </div>
                         </th>
-                        <th>
-                            <p-columnFilter type="text" field="createdOn"></p-columnFilter>
+                        <th pSortableColumn="createdOn">
+                            <div class="flex justify-content-between align-items-center">
+                                Created On
+                                <p-sortIcon field="createdOn"></p-sortIcon>
+                                <p-columnFilter type="date" field="createdOn" display="menu"
+                                                class="ml-auto">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-calendar #calendar [ngModel]="value" (onSelect)="filter(calendar.value)"
+                                                    [showSeconds]="true"
+                                                    [showTime]="true"></p-calendar>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
                         </th>
-                        <th>
-                            <p-columnFilter type="text" field="updatedOn"></p-columnFilter>
+                        <th pSortableColumn="updatedOn">
+                            <div class="flex justify-content-between align-items-center">
+                                Updated On
+                                <p-sortIcon field="updatedOn"></p-sortIcon>
+                                <p-columnFilter type="datetime" field="updatedOn" display="menu"
+                                                class="ml-auto"></p-columnFilter>
+                            </div>
                         </th>
                         <th></th>
                     </tr>
@@ -85,13 +97,15 @@
                             <span class="p-column-title">Total Product</span>
                             {{productCategory.totalProduct >= 0 ? productCategory.totalProduct : '-'}}
                         </td>
+                        <!--suppress TypeScriptUnresolvedFunction -->
                         <td style="min-width: 10rem;">
                             <span class="p-column-title">Created On</span>
-                            {{productCategory.createdOn ? productCategory.createdOn : '-'}}
+                            {{productCategory.createdOn ? (productCategory.createdOn | date: 'MM/dd/yyyy HH:mm:ss') : '-'}}
                         </td>
+                        <!--suppress TypeScriptUnresolvedFunction -->
                         <td style="min-width: 10rem;">
                             <span class="p-column-title">Updated On</span>
-                            {{productCategory.updatedOn ? productCategory.updatedOn : '-'}}
+                            {{productCategory.updatedOn ? (productCategory.updatedOn | date: 'MM/dd/yyyy HH:mm:ss') : '-'}}
                         </td>
                         <td>
                             <div class="flex">
@@ -109,11 +123,19 @@
                     </tr>
                 </ng-template>
 
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td [attr.colspan]="6" class="text-center">
+                            No records found
+                        </td>
+                    </tr>
+                </ng-template>
+
                 <ng-template pTemplate="rowexpansion" let-productCategory>
 
                     <td colspan="7">
                         <div class="p-6">
-                            <p-table [value]="productCategory['products']" dataKey="name">
+                            <p-table [value]="productCategory['products']">
                                 <ng-template pTemplate="caption">
                                     <div
                                         class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -146,20 +168,25 @@
                                         <td>
                                             <p-dropdown *ngIf="categoryDd" [showClear]="true"
                                                         [options]="categoryDd"></p-dropdown>
-
                                         </td>
                                     </tr>
                                 </ng-template>
+
                                 <ng-template pTemplate="emptymessage">
-                                    <div>No record found :(</div>
+                                    <tr>
+                                        <td [attr.colspan]="3" class="text-center">
+                                            No records found
+                                        </td>
+                                    </tr>
                                 </ng-template>
+
                                 <ng-template pTemplate="summary">
                                     <div class="flex flex-column md:flex-row md:justify-content-end md:align-items-end">
-                                        <button
-                                            type="button" pButton pRipple label="Cancel" class="mr-2">
+                                        <button icon="pi pi-times"
+                                                type="button" pButton pRipple label="Cancel" class="mr-2">
                                         </button>
-                                        <button
-                                            type="button" class="p-button-success" pButton pRipple label="Save">
+                                        <button icon="pi pi-check"
+                                                type="button" class="p-button-success" pButton pRipple label="Save">
                                         </button>
                                     </div>
                                 </ng-template>
@@ -172,5 +199,44 @@
             </p-table>
 
         </div>
+        <p-dialog [(visible)]="showAddOrEditProductCategoryDialog" [style]="{width: '450px'}"
+                  header="{{editMode ? 'Edit' : 'Add'}} Product Category" (onHide)="productCategoryFg.reset()"
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <form *ngIf="productCategoryFg" [formGroup]="productCategoryFg" (ngSubmit)="submit()">
+
+                    <div class="field">
+                        <label for="categoryName">Name</label>
+                        <input type="text" pInputText id="categoryName" formControlName="categoryName"
+                               [ngClass]="{'ng-invalid ng-dirty' : productCategoryFg.controls.categoryName.errors &&
+                                (productCategoryFg.controls.categoryName.touched || productCategoryFg.controls.categoryName.dirty)}"/>
+
+                        <div *ngIf="productCategoryFg.controls.categoryName.errors &&
+                        (productCategoryFg.controls.categoryName.touched ||
+                           productCategoryFg.controls.categoryName.dirty) ">
+                            <div *ngIf="productCategoryFg.hasError('required','categoryName')">
+                                <small class="p-error">Category Name is required.</small>
+                            </div>
+                            <div *ngIf="productCategoryFg.hasError('minLength','categoryName')">
+                                <small class="p-error">Category Name must be 3 characters or more.</small>
+                            </div>
+                            <div *ngIf="productCategoryFg.hasError('maxLength','categoryName')">
+                                <small class="p-error">Category Name maximum length is 20.</small>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple (click)="showAddOrEditProductCategoryDialog = false" label="Cancel"
+                        icon="pi pi-times"
+                        class="p-button-text"></button>
+                <button pButton pRipple
+                        (click)="submit()"
+                        label="Save" icon="pi pi-check" class="p-button-text"></button>
+            </ng-template>
+        </p-dialog>
+
     </div>
 </div>

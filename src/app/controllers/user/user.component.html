@@ -40,6 +40,8 @@
                             <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
                                    placeholder="Search..."/>
                         </span>
+                        <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                                (click)="clear(dt)"></button>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">

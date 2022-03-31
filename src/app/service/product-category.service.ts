@@ -32,7 +32,7 @@ export class ProductCategoryService {
 
   loadProductCategories() {
     return this.httpClient.get(`${this.apiServerUrl}/${this.project}/category/all`)
-      .pipe(map((data: any) => data || []))
+      .pipe(map((data: ProductCategory[]) => data || []))
   }
 
   loadProductsNameOnlyByCategory(params: HttpParams) {

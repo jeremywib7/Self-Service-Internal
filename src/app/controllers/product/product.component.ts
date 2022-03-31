@@ -8,6 +8,7 @@ import {debounceTime, Subscription} from "rxjs";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Table} from "primeng/table";
 
 @Component({
     selector: 'app-product',
@@ -117,6 +118,10 @@ export class ProductComponent implements OnInit {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
+    }
+
+    clear(table: Table) {
+        table.clear();
     }
 
     initForm() {

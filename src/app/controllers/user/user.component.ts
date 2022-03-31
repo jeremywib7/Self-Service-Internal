@@ -174,6 +174,10 @@ export class UserComponent implements OnInit {
 
     }
 
+    clear(table: Table) {
+        table.clear();
+    }
+
     setSelectedDropdownStatus(status: boolean, badge: boolean): string {
         if (badge) {
             if (status === true) {
