@@ -8,6 +8,7 @@ import {UnassignedProduct} from "../../../model/UnassignedProduct";
 import {Product} from "../../../model/Product";
 import {Dropdown} from "../../../model/Dropdown";
 import {Table} from "primeng/table";
+import {MessageService} from "primeng/api";
 
 @Component({
     selector: 'app-product-category',
@@ -35,10 +36,13 @@ export class ProductCategoryComponent implements OnInit {
 
     productCategoryCols: any[];
 
+    clonedProducts: { [s: string]: ProductCategory; } = {};
+
     productCategoryFg: FormGroup;
 
     constructor(
         private productCategoryService: ProductCategoryService,
+        private messageService: MessageService,
         private fb: FormBuilder,
         private el: ElementRef
     ) {
@@ -69,11 +73,18 @@ export class ProductCategoryComponent implements OnInit {
     initCols() {
 
         this.productCategoryCols = [
-            { field: 'categoryName', header: 'Category Name' },
-            { field: 'totalProduct', header: 'Total Product' },
-            { field: 'createdOn', header: 'createdOn' },
-            { field: 'updatedOn', header: 'updatedOn' },
+            {field: 'categoryName', header: 'Category Name'},
+            {field: 'totalProduct', header: 'Total Product'},
+            {field: 'createdOn', header: 'createdOn'},
+            {field: 'updatedOn', header: 'updatedOn'},
         ];
+    }
+
+    checkCategoryStatus(editing: boolean, categoryName: string): boolean {
+        if (categoryName === 'Unassigned') {
+            return false
+        } else return !editing;
+
     }
 
     loadAllProductCategory() {
@@ -97,17 +108,48 @@ export class ProductCategoryComponent implements OnInit {
         })
     }
 
+    onEditCategory(event) {
+        console.log(event);
+    }
+
     clear(table: Table) {
         table.clear();
     }
 
     openAddOrEditCategoryDialog(editMode?: boolean, productCategory?: ProductCategory) {
+        this.productCategoryFg.reset();
         this.showAddOrEditProductCategoryDialog = true;
     }
 
     openDeleteProductCategoryDialog(productCategory: ProductCategory) {
 
     }
+
+    // on action method
+
+    onRowEditInit(productCategory: ProductCategory) {
+        // this.productCategoryFg.patchValue(productCategory)
+        // this.clonedProducts[productCategory.id] = {...productCategory};
+        // console.log(this.clonedProducts);
+    }
+
+    onRowEditSave(productCategory: ProductCategory) {
+        // if (product.price > 0) {
+        //     delete this.clonedProducts[product.id];
+        //     this.messageService.add({severity:'success', summary: 'Success', detail:'Product is updated'});
+        // }
+        // else {
+        //     this.messageService.add({severity:'error', summary: 'Error', detail:'Invalid Price'});
+        // }
+    }
+
+    onRowEditCancel(productCategory: ProductCategory, index: number) {
+        this.productCategoryFg.reset()
+        // this.products2[index] = this.clonedProducts[product.id];
+        // delete this.clonedProducts[product.id];
+    }
+
+    //
 
     saveUnassignedProduct(product: Product[]) {
         this.unassignedProducts = [];
@@ -122,7 +164,7 @@ export class ProductCategoryComponent implements OnInit {
         });
     }
 
-    submit() {
+    submit(editMode: boolean) {
         if (this.productCategoryFg.valid) {
             if (this.editMode) {
 
@@ -130,6 +172,11 @@ export class ProductCategoryComponent implements OnInit {
                 this.productCategoryService.addProductCategory(this.productCategoryFg.value).subscribe({
                     next: value => {
                         this.productCategory = [...this.productCategory, value['data']]; // insert row
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'Category added!'
+                        });
                     },
                     complete: () => {
                         this.showAddOrEditProductCategoryDialog = false;

@@ -18,195 +18,240 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="productCategory" [columns]="productCategoryCols" responsiveLayout="scroll"
-                     [loading]="tableProductCategoryLoading"
-                     [globalFilterFields]="['username','role.roleName','active']" [rows]="10" [paginator]="true"
-                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
-                     [exportHeader]="'customExportHeader'"
-                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-                     [rowHover]="true" dataKey="id">
-                <ng-template pTemplate="caption">
-                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                        <h5 class="m-0">Manage Product Category</h5>
-                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+            <form [formGroup]="productCategoryFg">
+                <p-table #dt [value]="productCategory" [columns]="productCategoryCols" responsiveLayout="scroll"
+                         [loading]="tableProductCategoryLoading" (onEditInit)="productCategoryFg.reset()"
+                         [globalFilterFields]="['categoryName','totalProduct']" [rows]="10" [paginator]="true"
+                         [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                         [exportHeader]="'customExportHeader'" editMode="row"
+                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                         [rowHover]="true" dataKey="id">
+                    <ng-template pTemplate="caption">
+                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                            <h5 class="m-0">Manage Product Category</h5>
+                            <span class="block mt-2 md:mt-0 p-input-icon-left">
                             <i class="pi pi-search"></i>
-                            <!--suppress TypeScriptUnresolvedVariable -->
+                                <!--suppress TypeScriptUnresolvedVariable -->
                             <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
                                    placeholder="Search..."/>
                         </span>
-                        <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
-                                (click)="clear(dt)"></button>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th></th>
-                        <th pSortableColumn="categoryName">
-                            <div class="flex justify-content-between align-items-center">
-                                Name
-                                <p-sortIcon field="categoryName"></p-sortIcon>
-                                <p-columnFilter type="text" field="categoryName" display="menu"
-                                                class="ml-auto"></p-columnFilter>
-                            </div>
-                        </th>
-                        <th pSortableColumn="totalProduct">
-                            <div class="flex justify-content-between align-items-center">
-                                Total Product
-                                <p-sortIcon field="totalProduct"></p-sortIcon>
-                                <p-columnFilter type="text" field="totalProduct" display="menu"
-                                                class="ml-auto"></p-columnFilter>
-                            </div>
-                        </th>
-                        <th pSortableColumn="createdOn">
-                            <div class="flex justify-content-between align-items-center">
-                                Created On
-                                <p-sortIcon field="createdOn"></p-sortIcon>
-                                <p-columnFilter type="date"  field="createdOn" display="menu"
-                                                class="ml-auto">
-                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                        <p-calendar #calendar [ngModel]="value" (onSelect)="filter(calendar.value)"
-                                                    [showSeconds]="true" [showTime]="true"></p-calendar>
-                                    </ng-template>
-                                </p-columnFilter>
-                            </div>
-                        </th>
-                        <th pSortableColumn="updatedOn">
-                            <div class="flex justify-content-between align-items-center">
-                                Updated On
-                                <p-sortIcon field="updatedOn"></p-sortIcon>
-                                <p-columnFilter type="datetime" field="updatedOn" display="menu"
-                                                class="ml-auto"></p-columnFilter>
-                            </div>
-                        </th>
-                        <th></th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-productCategory let-expanded="expanded">
-                    <tr>
-                        <td>
-                            <button type="button" pButton pRipple [pRowToggler]="productCategory"
-                                    class="p-button-text p-button-rounded p-button-plain"
-                                    [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-                        </td>
-                        <td style="min-width:10rem;">
-                            <span class="p-column-title">Name</span>
-                            {{productCategory.categoryName ? productCategory.categoryName : '-'}}
-                        </td>
-                        <td style="min-width:10rem;">
-                            <span class="p-column-title">Total Product</span>
-                            {{productCategory.totalProduct >= 0 ? productCategory.totalProduct : '-'}}
-                        </td>
-                        <!--suppress TypeScriptUnresolvedFunction -->
-                        <td style="min-width: 10rem;">
-                            <span class="p-column-title">Created On</span>
-                            {{productCategory.createdOn ? (productCategory.createdOn | date: 'MM/dd/yyyy HH:mm:ss') : '-'}}
-                        </td>
-                        <!--suppress TypeScriptUnresolvedFunction -->
-                        <td style="min-width: 10rem;">
-                            <span class="p-column-title">Updated On</span>
-                            {{productCategory.updatedOn ? (productCategory.updatedOn | date: 'MM/dd/yyyy HH:mm:ss') : '-'}}
-                        </td>
-                        <td>
-                            <div class="flex">
-                                <button pButton pRipple
-                                        (click)="openAddOrEditCategoryDialog(true, productCategory)"
-                                        icon="pi pi-pencil"
-                                        class="p-button-rounded p-button-success mr-2"
-                                ></button>
-                                <button pButton pRipple *ngIf="productCategory.categoryName.toString() != 'Unassigned'"
-                                        (click)="openDeleteProductCategoryDialog(productCategory)"
-                                        icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                                ></button>
-                            </div>
-                        </td>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td [attr.colspan]="6" class="text-center">
-                            No records found
-                        </td>
-                    </tr>
-                </ng-template>
-
-                <ng-template pTemplate="rowexpansion" let-productCategory>
-
-                    <td colspan="7">
-                        <div class="p-6">
-                            <p-table [value]="productCategory['products']">
-                                <ng-template pTemplate="caption">
-                                    <div
-                                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                                        <h5 class="m-0">{{productCategory.categoryName}} Products</h5>
-                                    </div>
-                                </ng-template>
-
-                                <ng-template pTemplate="header">
-                                    <tr>
-                                        <th>Image</th>
-                                        <th pSortableColumn="name">Product Name
-                                            <p-sortIcon field="name"></p-sortIcon>
-                                        </th>
-                                        <th>Category</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-product>
-                                    <tr>
-                                        <td style="min-width:10rem;"><span class="p-column-title">Image</span>
-                                            <img
-                                                defaultImage="/assets/demo/images/galleria/spinner.gif"
-                                                [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download/' +  product?.images[0]?.imageName  "
-                                                width="100"
-                                                class="shadow-4" src="" [alt]="product?.images[0]?.imageName"/>
-                                        </td>
-                                        <td style="min-width:10rem;">
-                                            <span class="p-column-title">Username</span>
-                                            {{product.name}}
-                                        </td>
-                                        <td>
-                                            <p-dropdown *ngIf="categoryDd" [showClear]="true"
-                                                        [options]="categoryDd"></p-dropdown>
-                                        </td>
-                                    </tr>
-                                </ng-template>
-
-                                <ng-template pTemplate="emptymessage">
-                                    <tr>
-                                        <td [attr.colspan]="3" class="text-center">
-                                            No records found
-                                        </td>
-                                    </tr>
-                                </ng-template>
-
-                                <ng-template pTemplate="summary">
-                                    <div class="flex flex-column md:flex-row md:justify-content-end md:align-items-end">
-                                        <button icon="pi pi-times"
-                                                type="button" pButton pRipple label="Cancel" class="mr-2">
-                                        </button>
-                                        <button icon="pi pi-check"
-                                                type="button" class="p-button-success" pButton pRipple label="Save">
-                                        </button>
-                                    </div>
-                                </ng-template>
-                            </p-table>
-
+                            <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                                    (click)="clear(dt)"></button>
                         </div>
-                    </td>
-                </ng-template>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th></th>
+                            <th pSortableColumn="categoryName">
+                                <div class="flex justify-content-between align-items-center">
+                                    Name
+                                    <p-sortIcon field="categoryName"></p-sortIcon>
+                                    <p-columnFilter type="text" field="categoryName" display="menu"
+                                                    class="ml-auto"></p-columnFilter>
+                                </div>
+                            </th>
+                            <th pSortableColumn="totalProduct">
+                                <div class="flex justify-content-between align-items-center">
+                                    Total Product
+                                    <p-sortIcon field="totalProduct"></p-sortIcon>
+                                    <p-columnFilter type="text" field="totalProduct" display="menu"
+                                                    class="ml-auto"></p-columnFilter>
+                                </div>
+                            </th>
+                            <th pSortableColumn="createdOn">
+                                <div class="flex justify-content-between align-items-center">
+                                    Created On
+                                    <p-sortIcon field="createdOn"></p-sortIcon>
+                                    <p-columnFilter type="date" field="createdOn" display="menu"
+                                                    class="ml-auto">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-calendar #calendar [ngModel]="value" (onSelect)="filter(calendar.value)"
+                                                        [showSeconds]="true" [showTime]="true"></p-calendar>
+                                        </ng-template>
+                                    </p-columnFilter>
+                                </div>
+                            </th>
+                            <th pSortableColumn="updatedOn">
+                                <div class="flex justify-content-between align-items-center">
+                                    Updated On
+                                    <p-sortIcon field="updatedOn"></p-sortIcon>
+                                    <p-columnFilter type="datetime" field="updatedOn" display="menu"
+                                                    class="ml-auto"></p-columnFilter>
+                                </div>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
 
-            </p-table>
+                    <!--       Form On Edit Category         -->
+                    <ng-template pTemplate="body" let-productCategory let-editing="editing" let-ri="rowIndex"
+                                 let-expanded="expanded">
+                        <tr [pEditableRow]="productCategory">
+                            <td>
+                                <button type="button" pButton pRipple [pRowToggler]="productCategory"
+                                        class="p-button-text p-button-rounded p-button-plain"
+                                        [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                            </td>
+                            <td>
+                                <p-cellEditor>
+
+                                    <ng-template pTemplate="input">
+                                        <input pInputText type="text" formControlName="categoryName" placeholder="Category Name"
+                                               [ngClass]="{'ng-invalid ng-dirty' : productCategoryFg.controls.categoryName.errors
+                                                && (productCategoryFg.controls.categoryName.touched ||
+                                                productCategoryFg.controls.categoryName.dirty)}">
+
+                                        <div *ngIf="productCategoryFg.controls.categoryName.errors && (productCategoryFg.controls.categoryName.touched ||
+                                            productCategoryFg.controls.categoryName.dirty) ">
+                                            <div *ngIf="productCategoryFg.hasError('required','categoryName')">
+                                                <small class="p-error">Category Name is required.</small>
+                                            </div>
+                                            <div *ngIf="productCategoryFg.hasError('minLength','categoryName')">
+                                                <small class="p-error">Category Name must be 3 characters or
+                                                    more.</small>
+                                            </div>
+                                            <div *ngIf="productCategoryFg.hasError('maxLength','categoryName')">
+                                                <small class="p-error">Category Name maximum length is 20.</small>
+                                            </div>
+                                        </div>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="output">
+                                        {{productCategory.categoryName ? productCategory.categoryName : '-'}}
+                                    </ng-template>
+
+                                </p-cellEditor>
+                            </td>
+                            <td style="min-width:10rem;">
+                                <span class="p-column-title">Total Product</span>
+                                {{productCategory.totalProduct >= 0 ? productCategory.totalProduct : '-'}}
+                            </td>
+                            <!--suppress TypeScriptUnresolvedFunction -->
+                            <td style="min-width: 10rem;">
+                                <span class="p-column-title">Created On</span>
+                                {{productCategory.createdOn ? (productCategory.createdOn | date: 'MM/dd/yyyy HH:mm:ss') : '-'}}
+                            </td>
+                            <!--suppress TypeScriptUnresolvedFunction -->
+                            <td style="min-width: 10rem;">
+                                <span class="p-column-title">Updated On</span>
+                                {{productCategory.updatedOn ? (productCategory.updatedOn | date: 'MM/dd/yyyy HH:mm:ss') : '-'}}
+                            </td>
+                            <td>
+                                <div class="flex">
+
+                                    <div>
+                                        <div>
+                                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow
+                                                    icon="pi pi-pencil" (click)="onRowEditInit(productCategory)"
+                                                    class="p-button-rounded p-button-text"></button>
+                                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                                    icon="pi pi-check" (click)="onRowEditSave(productCategory)"
+                                                    class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                                    icon="pi pi-times" (click)="onRowEditCancel(productCategory, ri)"
+                                                    class="p-button-rounded p-button-text p-button-danger"></button>
+                                        </div>
+                                    </div>
+
+                                    <button *ngIf="checkCategoryStatus(editing, productCategory.categoryName.toString())"
+                                            pButton pRipple type="button" pInitEditableRow
+                                            icon="pi pi-trash"
+                                            (click)="openDeleteProductCategoryDialog(productCategory)"
+                                            class="p-button-rounded p-button-text">
+                                    </button>
+
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td [attr.colspan]="6" class="text-center">
+                                No records found
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="rowexpansion" let-productCategory>
+
+                        <td colspan="7">
+                            <div class="p-6">
+                                <p-table [value]="productCategory['products']">
+                                    <ng-template pTemplate="caption">
+                                        <div
+                                            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                                            <h5 class="m-0">{{productCategory.categoryName}} Products</h5>
+                                        </div>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th>Image</th>
+                                            <th pSortableColumn="name">Product Name
+                                                <p-sortIcon field="name"></p-sortIcon>
+                                            </th>
+                                            <th>Category</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-product>
+                                        <tr>
+                                            <td style="min-width:10rem;"><span class="p-column-title">Image</span>
+                                                <img
+                                                    defaultImage="/assets/demo/images/galleria/spinner.gif"
+                                                    [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download/' +  product?.images[0]?.imageName  "
+                                                    width="100"
+                                                    class="shadow-4" src="" [alt]="product?.images[0]?.imageName"/>
+                                            </td>
+                                            <td style="min-width:10rem;">
+                                                <span class="p-column-title">Username</span>
+                                                {{product.name}}
+                                            </td>
+                                            <td>
+                                                <p-dropdown *ngIf="categoryDd" [showClear]="true"
+                                                            [options]="categoryDd"></p-dropdown>
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="emptymessage">
+                                        <tr>
+                                            <td [attr.colspan]="3" class="text-center">
+                                                No records found
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+
+                                    <ng-template pTemplate="summary">
+                                        <div
+                                            class="flex flex-column md:flex-row md:justify-content-end md:align-items-end">
+                                            <button icon="pi pi-times"
+                                                    type="button" pButton pRipple label="Cancel" class="mr-2">
+                                            </button>
+                                            <button icon="pi pi-check"
+                                                    type="button" class="p-button-success" pButton pRipple label="Save">
+                                            </button>
+                                        </div>
+                                    </ng-template>
+                                </p-table>
+
+                            </div>
+                        </td>
+                    </ng-template>
+
+                </p-table>
+            </form>
 
         </div>
-        <p-dialog [(visible)]="showAddOrEditProductCategoryDialog" [style]="{width: '450px'}"
-                  header="{{editMode ? 'Edit' : 'Add'}} Product Category" (onHide)="productCategoryFg.reset()"
+        <p-dialog [(visible)]="showAddOrEditProductCategoryDialog" [style]="{width: '450px'}" [draggable]="false"
+                  header="{{editMode ? 'Edit' : 'Add'}} Product Category"
                   [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-                <form *ngIf="productCategoryFg" [formGroup]="productCategoryFg" (ngSubmit)="submit()">
+                <form *ngIf="productCategoryFg" [formGroup]="productCategoryFg" (ngSubmit)="submit(editMode)">
 
                     <div class="field">
-                        <label for="categoryName">Name</label>
-                        <input type="text" pInputText id="categoryName" formControlName="categoryName"
+                        <label>Name</label>
+                        <input type="text" pInputText formControlName="categoryName"
                                [ngClass]="{'ng-invalid ng-dirty' : productCategoryFg.controls.categoryName.errors &&
                                 (productCategoryFg.controls.categoryName.touched || productCategoryFg.controls.categoryName.dirty)}"/>
 
@@ -225,6 +270,7 @@
                         </div>
 
                     </div>
+
                 </form>
             </ng-template>
             <ng-template pTemplate="footer">
@@ -232,7 +278,7 @@
                         icon="pi pi-times"
                         class="p-button-text"></button>
                 <button pButton pRipple
-                        (click)="submit()"
+                        (click)="submit(editMode)"
                         label="Save" icon="pi pi-check" class="p-button-text"></button>
             </ng-template>
         </p-dialog>
