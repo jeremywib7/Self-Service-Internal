@@ -61,12 +61,11 @@
                             <div class="flex justify-content-between align-items-center">
                                 Created On
                                 <p-sortIcon field="createdOn"></p-sortIcon>
-                                <p-columnFilter type="date" field="createdOn" display="menu"
+                                <p-columnFilter type="date"  field="createdOn" display="menu"
                                                 class="ml-auto">
                                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                                         <p-calendar #calendar [ngModel]="value" (onSelect)="filter(calendar.value)"
-                                                    [showSeconds]="true"
-                                                    [showTime]="true"></p-calendar>
+                                                    [showSeconds]="true" [showTime]="true"></p-calendar>
                                     </ng-template>
                                 </p-columnFilter>
                             </div>
