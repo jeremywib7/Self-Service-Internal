@@ -5,7 +5,7 @@
                 <ng-template pTemplate="left">
                     <div class="my-2">
                         <button
-                            (click)="openAddOrEditCategoryDialog(false)"
+                            (click)="openAddCategoryDialog()"
                             pButton pRipple label="Add Category" icon="pi pi-plus"
                             class="p-button-success mr-2">
                         </button>
@@ -20,11 +20,10 @@
 
             <form [formGroup]="productCategoryFg">
                 <p-table #dt [value]="productCategory" [columns]="productCategoryCols" responsiveLayout="scroll"
-                         [loading]="tableProductCategoryLoading"
-                         [globalFilterFields]="['categoryName','totalProduct']" [rows]="10" [paginator]="true"
-                         [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                         [loading]="tableProductCategoryLoading" [globalFilterFields]="['categoryName','totalProduct']"
+                         [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                          [exportHeader]="'customExportHeader'" editMode="row" rowExpandMode="single"
-                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} categories"
                          [rowHover]="true" dataKey="id">
                     <ng-template pTemplate="caption">
                         <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -54,7 +53,7 @@
                                 <div class="flex justify-content-between align-items-center">
                                     Total Product
                                     <p-sortIcon field="totalProduct"></p-sortIcon>
-                                    <p-columnFilter type="text" field="totalProduct" display="menu"
+                                    <p-columnFilter type="numeric" field="totalProduct" display="menu"
                                                     class="ml-auto"></p-columnFilter>
                                 </div>
                             </th>
@@ -62,11 +61,12 @@
                                 <div class="flex justify-content-between align-items-center">
                                     Created On
                                     <p-sortIcon field="createdOn"></p-sortIcon>
-                                    <p-columnFilter type="date" field="createdOn" display="menu"
-                                                    class="ml-auto">
+                                    <p-columnFilter type="date" field="createdOn" display="menu" class="ml-auto">
                                         <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                            <p-calendar #calendar [ngModel]="value" (onSelect)="filter(calendar.value)"
-                                                        [showSeconds]="true" [showTime]="true"></p-calendar>
+                                            <p-calendar #calendar (onSelect)="filter(calendar.value)"
+                                                        [ngModelOptions]="{standalone: true}" [ngModel]="value"
+                                                        [showSeconds]="true" [showTime]="true">
+                                            </p-calendar>
                                         </ng-template>
                                     </p-columnFilter>
                                 </div>
@@ -75,8 +75,14 @@
                                 <div class="flex justify-content-between align-items-center">
                                     Updated On
                                     <p-sortIcon field="updatedOn"></p-sortIcon>
-                                    <p-columnFilter type="datetime" field="updatedOn" display="menu"
-                                                    class="ml-auto"></p-columnFilter>
+                                    <p-columnFilter type="date" field="updatedOn" display="menu" class="ml-auto">
+                                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                            <p-calendar #calendar (onSelect)="filter(calendar.value)"
+                                                        [ngModelOptions]="{standalone: true}" [ngModel]="value"
+                                                        [showSeconds]="true" [showTime]="true">
+                                            </p-calendar>
+                                        </ng-template>
+                                    </p-columnFilter>
                                 </div>
                             </th>
                             <th></th>
@@ -130,27 +136,32 @@
                             <!--suppress TypeScriptUnresolvedFunction -->
                             <td style="min-width: 10rem;">
                                 <span class="p-column-title">Created On</span>
-                                {{productCategory.createdOn ? (productCategory.createdOn | date: 'MM/dd/yyyy HH:mm:ss') : '-'}}
+                                {{productCategory.createdOn ? (productCategory.createdOn | date: 'dd/MM/yyyy HH:mm:ss') : '-'}}
                             </td>
                             <!--suppress TypeScriptUnresolvedFunction -->
                             <td style="min-width: 10rem;">
                                 <span class="p-column-title">Updated On</span>
-                                {{productCategory.updatedOn ? (productCategory.updatedOn | date: 'MM/dd/yyyy HH:mm:ss') : '-'}}
+                                {{productCategory.updatedOn ? (productCategory.updatedOn | date: 'dd/MM/yyyy HH:mm:ss') : '-'}}
                             </td>
                             <td>
                                 <div class="flex">
-
                                     <div>
                                         <button *ngIf="!editing" pButton pRipple pInitEditableRow type="button"
                                                 (click)="onRowEditInit(productCategory)" [disabled]="isInEditMode"
                                                 icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                                         ></button>
-                                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
-                                                icon="pi pi-check" (click)="onRowEditSave()"
-                                                class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
-                                                icon="pi pi-times" (click)="onRowEditCancel(productCategory, ri)"
-                                                class="p-button-rounded p-button-text p-button-danger"></button>
+
+                                        <div class="flex">
+                                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                                    icon="pi pi-check" (click)="onRowEditSave()"
+                                                    class="p-button-rounded p-button-text p-button-success"></button>
+                                        </div>
+                                        <div class="flex">
+                                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                                    icon="pi pi-times" (click)="onRowEditCancel(productCategory, ri)"
+                                                    class="p-button-rounded p-button-text p-button-danger"></button>
+                                        </div>
+
                                     </div>
 
                                     <button pButton pRipple
@@ -191,7 +202,9 @@
                                             <th pSortableColumn="name">Product Name
                                                 <p-sortIcon field="name"></p-sortIcon>
                                             </th>
-                                            <th>Category</th>
+                                            <th *ngIf="productCategory.id === 'akisjasas-asajek-ajsoaks-ejakjenafe'">
+                                                Category
+                                            </th>
                                         </tr>
                                     </ng-template>
                                     <ng-template pTemplate="body" let-product>
@@ -204,11 +217,14 @@
                                                     class="shadow-4" src="" [alt]="product?.images[0]?.imageName"/>
                                             </td>
                                             <td style="min-width:10rem;">
-                                                <span class="p-column-title">Username</span>
+                                                <span class="p-column-title">Name</span>
                                                 {{product.name}}
                                             </td>
-                                            <td>
-                                                <p-dropdown *ngIf="categoryDd" [showClear]="true"
+                                            <!--(onClear)="onClearDropdownUnassigned(product.id)"-->
+                                            <td *ngIf="productCategory.id === 'akisjasas-asajek-ajsoaks-ejakjenafe'">
+                                                <p-dropdown #dd *ngIf="categoryDd" [showClear]="true"
+                                                            [autoDisplayFirst]="false"
+                                                            (onChange)="onChangedDropdownUnassigned(product.id, dd.value)"
                                                             [options]="categoryDd"></p-dropdown>
                                             </td>
                                         </tr>
@@ -225,10 +241,7 @@
                                     <ng-template pTemplate="summary">
                                         <div
                                             class="flex flex-column md:flex-row md:justify-content-end md:align-items-end">
-                                            <button icon="pi pi-times"
-                                                    type="button" pButton pRipple label="Cancel" class="mr-2">
-                                            </button>
-                                            <button icon="pi pi-check"
+                                            <button icon="pi pi-check" *ngIf="productCategory.id === 'akisjasas-asajek-ajsoaks-ejakjenafe'"
                                                     type="button" class="p-button-success" pButton pRipple label="Save">
                                             </button>
                                         </div>

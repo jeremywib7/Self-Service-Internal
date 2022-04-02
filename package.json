@@ -23,6 +23,8 @@
     "@angular/router": "~13.0.0",
     "@ngx-loading-bar/core": "^6.0.2",
     "@ngx-loading-bar/http-client": "^6.0.2",
+    "@ngx-translate/core": "^14.0.0",
+    "@ngx-translate/http-loader": "^6.0.0",
     "@rxweb/reactive-form-validators": "^2.1.6",
     "@types/jspdf": "^2.0.0",
     "chart.js": "^3.3.2",

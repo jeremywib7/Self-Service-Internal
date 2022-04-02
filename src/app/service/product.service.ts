@@ -68,7 +68,7 @@ export class ProductService {
         return this.httpClient.get(`${this.apiServerUrl}/${this.project}/product/remove`, {params});
     }
 
-    updateUnassignedProduct(unassignedProduct: UnassignedProduct) {
+    updateUnassignedProduct(unassignedProduct: UnassignedProduct[]) {
         return this.httpClient.post(`${this.apiServerUrl}/${this.project}/product/unassigned/update`, unassignedProduct);
     }
 
