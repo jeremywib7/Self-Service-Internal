@@ -9,6 +9,7 @@ import {Product} from "../../../model/Product";
 import {Dropdown} from "../../../model/Dropdown";
 import {Table} from "primeng/table";
 import {MessageService} from "primeng/api";
+import {DatePipe} from "@angular/common";
 
 @Component({
     selector: 'app-product-category',
@@ -28,6 +29,8 @@ export class ProductCategoryComponent implements OnInit {
 
     showAddOrEditProductCategoryDialog: boolean = false;
 
+    isInEditMode: boolean = false;
+
     productCategory: ProductCategory[] = [];
 
     unassignedProducts: UnassignedProduct[] = [];
@@ -43,6 +46,7 @@ export class ProductCategoryComponent implements OnInit {
     constructor(
         private productCategoryService: ProductCategoryService,
         private messageService: MessageService,
+        public datepipe: DatePipe,
         private fb: FormBuilder,
         private el: ElementRef
     ) {
@@ -121,6 +125,10 @@ export class ProductCategoryComponent implements OnInit {
         this.showAddOrEditProductCategoryDialog = true;
     }
 
+    trackByFn(index, row) {
+        return index;
+    }
+
     openDeleteProductCategoryDialog(productCategory: ProductCategory) {
 
     }
@@ -128,22 +136,47 @@ export class ProductCategoryComponent implements OnInit {
     // on action method
 
     onRowEditInit(productCategory: ProductCategory) {
-        // this.productCategoryFg.patchValue(productCategory)
+        this.isInEditMode = true;
+        this.productCategoryFg.patchValue(productCategory)
         // this.clonedProducts[productCategory.id] = {...productCategory};
         // console.log(this.clonedProducts);
     }
 
-    onRowEditSave(productCategory: ProductCategory) {
-        // if (product.price > 0) {
-        //     delete this.clonedProducts[product.id];
-        //     this.messageService.add({severity:'success', summary: 'Success', detail:'Product is updated'});
-        // }
-        // else {
-        //     this.messageService.add({severity:'error', summary: 'Error', detail:'Invalid Price'});
-        // }
+    checkTable(table) {
+
+    }
+
+    onRowEditSave() {
+        this.isInEditMode = false;
+        if (this.productCategoryFg.valid) {
+            this.productCategoryFg.patchValue({
+                createdOn: this.datepipe.transform(this.productCategoryFg.value.createdOn,
+                    'MM/dd/yyyy HH:mm:ss'),
+            });
+
+            console.log(this.productCategoryFg.value);
+
+
+            this.productCategoryService.updateProductCategory(this.productCategoryFg.value).subscribe({
+                next: value => {
+
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'Category updated!'
+                    });
+                },
+                complete: () => {
+                    this.showAddOrEditProductCategoryDialog = false;
+                }
+            });
+        } else {
+            this.validateFormFields(this.productCategoryFg);
+        }
     }
 
     onRowEditCancel(productCategory: ProductCategory, index: number) {
+        this.isInEditMode = false;
         this.productCategoryFg.reset()
         // this.products2[index] = this.clonedProducts[product.id];
         // delete this.clonedProducts[product.id];

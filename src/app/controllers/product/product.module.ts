@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {ProductDetailComponent} from "./Steps/product-detail/product-detail.component";
 import {ProductPriceComponent} from "./Steps/product-price/product-price.component";
@@ -52,7 +52,8 @@ import {CalendarModule} from "primeng/calendar";
         DialogModule,
         CalendarModule
     ],
-    exports: [RouterModule]
+    exports: [RouterModule],
+    providers: [DatePipe]
 })
 export class ProductModule {
 }

@@ -2,7 +2,7 @@ import {ChangeDetectorRef, LOCALE_ID, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
-import {LocationStrategy, HashLocationStrategy, CommonModule, CurrencyPipe} from '@angular/common';
+import {LocationStrategy, HashLocationStrategy, CommonModule, CurrencyPipe, DatePipe} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AppRoutingModule} from './app-routing.module';
 
@@ -319,6 +319,7 @@ import {CountdownModule} from "ngx-countdown";
     ],
     providers: [
         AuthGuard,
+        DatePipe,
         {
             provide: LAZYLOAD_IMAGE_HOOKS,
             useClass: AppModule

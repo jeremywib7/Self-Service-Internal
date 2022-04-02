@@ -20,10 +20,10 @@
 
             <form [formGroup]="productCategoryFg">
                 <p-table #dt [value]="productCategory" [columns]="productCategoryCols" responsiveLayout="scroll"
-                         [loading]="tableProductCategoryLoading" (onEditInit)="productCategoryFg.reset()"
+                         [loading]="tableProductCategoryLoading"
                          [globalFilterFields]="['categoryName','totalProduct']" [rows]="10" [paginator]="true"
                          [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
-                         [exportHeader]="'customExportHeader'" editMode="row"
+                         [exportHeader]="'customExportHeader'" editMode="row" rowExpandMode="single"
                          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                          [rowHover]="true" dataKey="id">
                     <ng-template pTemplate="caption">
@@ -96,7 +96,8 @@
                                 <p-cellEditor>
 
                                     <ng-template pTemplate="input">
-                                        <input pInputText type="text" formControlName="categoryName" placeholder="Category Name"
+                                        <input pInputText type="text" formControlName="categoryName"
+                                               placeholder="Category Name"
                                                [ngClass]="{'ng-invalid ng-dirty' : productCategoryFg.controls.categoryName.errors
                                                 && (productCategoryFg.controls.categoryName.touched ||
                                                 productCategoryFg.controls.categoryName.dirty)}">
@@ -140,24 +141,23 @@
                                 <div class="flex">
 
                                     <div>
-                                        <div>
-                                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow
-                                                    icon="pi pi-pencil" (click)="onRowEditInit(productCategory)"
-                                                    class="p-button-rounded p-button-text"></button>
-                                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
-                                                    icon="pi pi-check" (click)="onRowEditSave(productCategory)"
-                                                    class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
-                                                    icon="pi pi-times" (click)="onRowEditCancel(productCategory, ri)"
-                                                    class="p-button-rounded p-button-text p-button-danger"></button>
-                                        </div>
+                                        <button *ngIf="!editing" pButton pRipple pInitEditableRow type="button"
+                                                (click)="onRowEditInit(productCategory)" [disabled]="isInEditMode"
+                                                icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                                        ></button>
+                                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow
+                                                icon="pi pi-check" (click)="onRowEditSave()"
+                                                class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
+                                                icon="pi pi-times" (click)="onRowEditCancel(productCategory, ri)"
+                                                class="p-button-rounded p-button-text p-button-danger"></button>
                                     </div>
 
-                                    <button *ngIf="checkCategoryStatus(editing, productCategory.categoryName.toString())"
-                                            pButton pRipple type="button" pInitEditableRow
-                                            icon="pi pi-trash"
+                                    <button pButton pRipple
+                                            *ngIf="checkCategoryStatus(editing, productCategory.categoryName.toString())"
+                                            type="button" icon="pi pi-trash"
                                             (click)="openDeleteProductCategoryDialog(productCategory)"
-                                            class="p-button-rounded p-button-text">
+                                            class="p-button-rounded p-button-warning">
                                     </button>
 
                                 </div>
