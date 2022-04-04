@@ -6,7 +6,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {Product} from "../../../model/Product";
 import {Dropdown} from "../../../model/Dropdown";
-import {Table} from "primeng/table";
+import {EditableRow, Table} from "primeng/table";
 import {MessageService, PrimeNGConfig} from "primeng/api";
 import {DatePipe} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
@@ -41,6 +41,8 @@ export class ProductCategoryComponent implements OnInit {
     productCategoryCols: any[];
 
     productCategoryFg: FormGroup;
+
+    element: HTMLElement;
 
     constructor(
         private productCategoryService: ProductCategoryService,
@@ -143,9 +145,9 @@ export class ProductCategoryComponent implements OnInit {
         this.productCategoryFg.patchValue(productCategory)
     }
 
-    onRowEditSave() {
-        this.isInEditMode = false;
+    onRowEditSave(index, id) {
         if (this.productCategoryFg.valid) {
+
             this.productCategoryFg.patchValue({
                 // to remove trailing whitespace
                 categoryName: this.productCategoryFg.value.categoryName.trim(),
@@ -155,10 +157,15 @@ export class ProductCategoryComponent implements OnInit {
             });
 
             this.productCategoryService.updateProductCategory(this.productCategoryFg.value).subscribe({
-                next: (value: ProductCategory) => {
-                    let index = this.productCategory.findIndex(productCategory => productCategory['id'] ===
-                        value['data']['id']);
-                    this.productCategory[index] = value['data'];
+                next: (response: any) => {
+                    this.productCategory[index] = response['data']; // update array index
+                    this.productCategory = [...this.productCategory]; // trigger update array by recreating array primeng
+
+                    // update category dropdown by index in dropdown
+                    let ddCategoryIndex = this.categoryDd.findIndex(categoryDd => categoryDd.value ===
+                        response.data.id);
+                    this.categoryDd[ddCategoryIndex].label = response.data.categoryName;
+                    this.categoryDd = [...this.categoryDd]; // refresh dropdown
 
                     this.messageService.add({
                         severity: 'success',
@@ -166,10 +173,18 @@ export class ProductCategoryComponent implements OnInit {
                         detail: 'Category updated!'
                     });
 
-                    this.showAddOrEditProductCategoryDialog = false;
+                    this.isInEditMode = false;
+
+                    // to close current edit row
+                    this.element = document.getElementById(id+index) as HTMLElement;
+                    this.element.click();
 
                 },
+                complete: () => {
+
+                }
             });
+
         } else {
             this.validateFormFields(this.productCategoryFg);
         }
@@ -180,17 +195,19 @@ export class ProductCategoryComponent implements OnInit {
         this.productCategoryFg.reset()
     }
 
-    onChangedDropdownUnassigned(productId: string, categoryId: string) {
+    onEventDropdownUnassigned(productId: string, categoryId: string, index: number) {
 
-        //if category is null and product id is not null, then it is dropdown on clear event
+        // if category is null and product id is not null, then it is dropdown on clear event (X button clicked)
         if (!categoryId && productId) {
 
             let itemIndex = this.unassignedProduct.findIndex(unassignedProduct => unassignedProduct.productId === productId);
             this.unassignedProduct.splice(itemIndex, 1); // delete
 
         } else {
+            // on selected category in dropdown
 
             let itemIndex = this.unassignedProduct.findIndex(unassignedProduct => unassignedProduct.productId === productId);
+            // no selected category for the product
             if (itemIndex === -1) {
                 this.unassignedProduct.push({
                     productId: productId,
@@ -198,26 +215,12 @@ export class ProductCategoryComponent implements OnInit {
                 });
 
             } else {
+                // update selected category for product
                 this.unassignedProduct[itemIndex]['categoryId'] = categoryId;
             }
 
         }
-        console.log(this.unassignedProduct);
     }
-
-    //
-    // saveUnassignedProduct(product: Product[]) {
-    //     this.changedProductCategory = [];
-    //     product.forEach((tblProduct, index) => {
-    //         if (tblProduct['categoryId'] != undefined &&
-    //             tblProduct['categoryId'] != "akisjasas-asajek-ajsoaks-ejakjenafe") {
-    //             this.changedProductCategory.push({
-    //                 productId: tblProduct['id'],
-    //                 categoryId: tblProduct['categoryId']
-    //             })
-    //         }
-    //     });
-    // }
 
     saveCategoryInProduct(products: Product[]) {
         products.forEach(value => {
@@ -225,30 +228,28 @@ export class ProductCategoryComponent implements OnInit {
         });
     }
 
-    submit(editMode: boolean) {
+    submit() {
         if (this.productCategoryFg.valid) {
-            if (this.editMode) {
 
-            } else {
-                this.productCategoryService.addProductCategory(this.productCategoryFg.value).subscribe({
-                    next: value => {
-                        this.productCategory = [...this.productCategory, value.data]; // insert row in table
-                        this.categoryDd.push({
-                            label: value.data.categoryName,
-                            value: value.data.id
-                        })// insert for dropdown in select unassigned product
+            this.productCategoryService.addProductCategory(this.productCategoryFg.value).subscribe({
+                next: value => {
+                    // insert row in table
+                    this.productCategory = [...this.productCategory, value.data];
 
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Success',
-                            detail: 'Category added!'
-                        });
-                    },
-                    complete: () => {
-                        this.showAddOrEditProductCategoryDialog = false;
-                    }
-                });
-            }
+                    // insert for dropdown in select unassigned product
+                    this.categoryDd = [...this.categoryDd, {label: value.data.categoryName, value: value.data.id}];
+
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'Category added!'
+                    });
+
+                },
+                complete: () => {
+                    this.showAddOrEditProductCategoryDialog = false;
+                }
+            });
 
         } else {
             this.validateFormFields(this.productCategoryFg);
@@ -257,17 +258,6 @@ export class ProductCategoryComponent implements OnInit {
 
     public validateFormFields(formGroup: FormGroup) {
         formGroup.markAllAsTouched();
-
-        for (const key of Object.keys(formGroup.controls)) {
-
-            if (formGroup.controls[key].invalid) {
-                const invalidControl = this.el.nativeElement.querySelector('[formcontrolname="' + key + '"]');
-                if (invalidControl) {
-                    invalidControl.focus();
-                }
-                break;
-            }
-        }
     }
 
 

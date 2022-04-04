@@ -360,6 +360,7 @@ export class UserComponent implements OnInit {
                     if (this.editMode) {
                         let index = this.users.findIndex(user => user['username'] === userResponse['data']['username']);
                         this.users[index] = userResponse['data'];
+                        this.users = [...this.users]; // refresh table
 
                         this.messageService.add({
                             severity: 'success',
