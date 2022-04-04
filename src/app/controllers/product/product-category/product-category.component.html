@@ -146,9 +146,11 @@
                             <td>
                                 <div class="flex">
                                     <div>
-                                        <button *ngIf="!editing" pButton pRipple pInitEditableRow type="button"
-                                                (click)="onRowEditInit(productCategory)" [disabled]="isInEditMode"
-                                                icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                                        <button
+                                            *ngIf="checkCategoryStatus(editing, productCategory.categoryName.toString())"
+                                            pButton pRipple pInitEditableRow type="button"
+                                            (click)="onRowEditInit(productCategory)" [disabled]="isInEditMode"
+                                            icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                                         ></button>
                                         <div class="flex">
                                             <button *ngIf="editing" pButton pRipple type="button"
@@ -157,7 +159,7 @@
                                         </div>
                                         <div class="flex">
                                             <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow
-                                                    icon="pi pi-times" (click)="onRowEditCancel(productCategory, ri)"
+                                                    icon="pi pi-times" (click)="onRowEditCancel()"
                                                     class="p-button-rounded p-button-text p-button-danger"></button>
                                         </div>
 
@@ -166,7 +168,7 @@
                                     <button pButton pRipple
                                             *ngIf="checkCategoryStatus(editing, productCategory.categoryName.toString())"
                                             type="button" icon="pi pi-trash"
-                                            (click)="openDeleteProductCategoryDialog(productCategory)"
+                                            (click)="onDeleteProductCategory(ri)"
                                             class="p-button-rounded p-button-warning">
                                     </button>
 
@@ -224,7 +226,7 @@
                                             <!--(onClear)="onClearDropdownUnassigned(product.id)"-->
                                             <td *ngIf="productCategory.id === 'akisjasas-asajek-ajsoaks-ejakjenafe'">
                                                 <p-dropdown #dd *ngIf="categoryDd" [showClear]="true"
-                                                            [autoDisplayFirst]="false"
+                                                            [autoDisplayFirst]="false" [disabled]=""
                                                             (onChange)="onEventDropdownUnassigned(product.id, dd.value, ri)"
                                                             [options]="categoryDd"></p-dropdown>
                                             </td>
@@ -242,8 +244,9 @@
                                     <ng-template pTemplate="summary">
                                         <div
                                             class="flex flex-column md:flex-row md:justify-content-end md:align-items-end">
-                                            <button icon="pi pi-check"
+                                            <button icon="pi pi-check" [disabled]="unassignedProduct.length == 0"
                                                     *ngIf="productCategory.id === 'akisjasas-asajek-ajsoaks-ejakjenafe'"
+                                                    (click)="saveCategoryInProduct()"
                                                     type="button" class="p-button-success" pButton pRipple label="Save">
                                             </button>
                                         </div>
@@ -293,7 +296,7 @@
                         icon="pi pi-times"
                         class="p-button-text"></button>
                 <button pButton pRipple
-                        (click)="submit(editMode)"
+                        (click)="submit()"
                         label="Save" icon="pi pi-check" class="p-button-text"></button>
             </ng-template>
         </p-dialog>

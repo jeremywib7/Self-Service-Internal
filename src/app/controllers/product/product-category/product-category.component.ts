@@ -11,6 +11,8 @@ import {MessageService, PrimeNGConfig} from "primeng/api";
 import {DatePipe} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
 import {UnassignedProduct} from "../../../model/UnassignedProduct";
+import {HttpParams} from "@angular/common/http";
+import {lastValueFrom, map, switchMap} from "rxjs";
 
 @Component({
     selector: 'app-product-category',
@@ -96,6 +98,9 @@ export class ProductCategoryComponent implements OnInit {
     }
 
     loadAllProductCategory() {
+        this.productCategory = [];
+        this.categoryDd = [];
+
         this.productCategoryService.loadProductCategories().subscribe({
             next: productCategory => {
 
@@ -130,7 +135,62 @@ export class ProductCategoryComponent implements OnInit {
         this.showAddOrEditProductCategoryDialog = true;
     }
 
-    openDeleteProductCategoryDialog(productCategory: ProductCategory) {
+    async onDeleteProductCategory(deletedIndex) {
+        let httpParams = new HttpParams();
+        httpParams = httpParams.append('productCategoryId', this.productCategory[deletedIndex].id); // append product category id for delete
+
+        // append product id array to set unsigned in loops
+        this.productCategory[deletedIndex].products.forEach((product) => {
+            httpParams = httpParams.append('id', product.id);
+        });
+
+        // http delete request
+        // this.productCategoryService.deleteProductCategory(httpParams)
+
+        // example if 3 switch map
+        // this.productCategoryService.deleteProductCategory(httpParams).pipe(
+        //     switchMap(address => this.productCategoryService.loadProductCategories().pipe(
+        //         switchMap(addresss => this.productCategoryService.loadProductCategories().pipe(
+        //             map(cities => ({cities, address, addresss}))
+        //         ))
+        //     ))
+        // );
+
+        this.productCategoryService.deleteProductCategory(httpParams).pipe(
+            switchMap(deleteResponse => this.productCategoryService.loadProductCategories().pipe(
+                map(productCategoryResponse => ({productCategoryResponse, deleteResponse}))
+            ))
+        ).subscribe({
+            next: ({deleteResponse, productCategoryResponse}) => {
+                // console.log(cities);
+                // console.log(address);
+
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'Delete product category success!'
+                });
+
+                // reload table from api
+                this.loadAllProductCategory();
+                this.productCategory = [...this.productCategory]; // refresh by recreating array
+
+                // this.cities = cities
+                // this.address = address
+            }
+        });
+
+        // await lastValueFrom(this.productCategoryService.deleteProductCategory(httpParams)).then(() => {
+        //     this.messageService.add({
+        //         severity: 'success',
+        //         summary: 'Success',
+        //         detail: 'Delete product category success!'
+        //     });
+        //
+        //     // reload table from api
+        //     this.loadAllProductCategory();
+        //     this.productCategory = [...this.productCategory]; // refresh by recreating array
+        // });
 
     }
 
@@ -145,7 +205,7 @@ export class ProductCategoryComponent implements OnInit {
         this.productCategoryFg.patchValue(productCategory)
     }
 
-    onRowEditSave(index, id) {
+    async onRowEditSave(index, domId) {
         if (this.productCategoryFg.valid) {
 
             this.productCategoryFg.patchValue({
@@ -156,16 +216,14 @@ export class ProductCategoryComponent implements OnInit {
                     'MM/dd/yyyy HH:mm:ss'),
             });
 
-            this.productCategoryService.updateProductCategory(this.productCategoryFg.value).subscribe({
-                next: (response: any) => {
+            await lastValueFrom(this.productCategoryService.updateProductCategory(this.productCategoryFg.value)).then(
+                (response) => {
                     this.productCategory[index] = response['data']; // update array index
-                    this.productCategory = [...this.productCategory]; // trigger update array by recreating array primeng
 
                     // update category dropdown by index in dropdown
                     let ddCategoryIndex = this.categoryDd.findIndex(categoryDd => categoryDd.value ===
                         response.data.id);
                     this.categoryDd[ddCategoryIndex].label = response.data.categoryName;
-                    this.categoryDd = [...this.categoryDd]; // refresh dropdown
 
                     this.messageService.add({
                         severity: 'success',
@@ -176,23 +234,22 @@ export class ProductCategoryComponent implements OnInit {
                     this.isInEditMode = false;
 
                     // to close current edit row
-                    this.element = document.getElementById(id+index) as HTMLElement;
+                    this.element = document.getElementById(domId + index) as HTMLElement;
                     this.element.click();
-
                 },
-                complete: () => {
+            );
 
-                }
-            });
+            this.productCategory = [...this.productCategory]; // refresh table
+            this.categoryDd = [...this.categoryDd]; // refresh dropdown
 
         } else {
             this.validateFormFields(this.productCategoryFg);
         }
     }
 
-    onRowEditCancel(productCategory: ProductCategory, index: number) {
+    onRowEditCancel() {
         this.isInEditMode = false;
-        this.productCategoryFg.reset()
+        this.productCategoryFg.reset();
     }
 
     onEventDropdownUnassigned(productId: string, categoryId: string, index: number) {
@@ -222,8 +279,8 @@ export class ProductCategoryComponent implements OnInit {
         }
     }
 
-    saveCategoryInProduct(products: Product[]) {
-        products.forEach(value => {
+    saveCategoryInProduct() {
+        this.unassignedProduct.forEach(value => {
             console.log(value);
         });
     }

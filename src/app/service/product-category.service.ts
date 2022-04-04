@@ -26,8 +26,8 @@ export class ProductCategoryService {
       .pipe(map((data: any) => data || []))
   }
 
-  deleteProductCategory(id: string) {
-    return this.httpClient.delete(`${this.apiServerUrl}/${this.project}/category/delete/${id}`);
+  deleteProductCategory(params: HttpParams) {
+    return this.httpClient.get(`${this.apiServerUrl}/${this.project}/category/delete`, {params});
   }
 
   loadProductCategories() {
