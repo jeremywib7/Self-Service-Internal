@@ -20,6 +20,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {LazyLoadImageModule} from "ng-lazyload-image";
 import {DialogModule} from "primeng/dialog";
 import {CalendarModule} from "primeng/calendar";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
 
 @NgModule({
     declarations: [
@@ -50,7 +51,8 @@ import {CalendarModule} from "primeng/calendar";
         FormsModule,
         LazyLoadImageModule,
         DialogModule,
-        CalendarModule
+        CalendarModule,
+        ConfirmDialogModule
     ],
     exports: [RouterModule],
     providers: [DatePipe]

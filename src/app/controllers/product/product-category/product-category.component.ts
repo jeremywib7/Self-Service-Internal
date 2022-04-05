@@ -7,7 +7,7 @@ import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {Product} from "../../../model/Product";
 import {Dropdown} from "../../../model/Dropdown";
 import {EditableRow, Table} from "primeng/table";
-import {MessageService, PrimeNGConfig} from "primeng/api";
+import {ConfirmationService, MessageService, PrimeNGConfig} from "primeng/api";
 import {DatePipe} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
 import {UnassignedProduct} from "../../../model/UnassignedProduct";
@@ -32,6 +32,8 @@ export class ProductCategoryComponent implements OnInit {
 
     showAddOrEditProductCategoryDialog: boolean = false;
 
+    showDeleteConfirmationDialog: boolean = false;
+
     isInEditMode: boolean = false;
 
     productCategory: ProductCategory[] = [];
@@ -52,6 +54,7 @@ export class ProductCategoryComponent implements OnInit {
         public datepipe: DatePipe,
         private translateService: TranslateService,
         private config: PrimeNGConfig,
+        private confirmationService: ConfirmationService,
         private fb: FormBuilder,
         private el: ElementRef
     ) {
@@ -146,37 +149,52 @@ export class ProductCategoryComponent implements OnInit {
     //     ))
     // );
 
-    onDeleteProductCategory(deletedIndex) {
+    onDeleteProductCategory(deletedIndex, categoryName: string) {
+        this.confirmationService.confirm({
+            message: `
+                      <div class="mb-2 text-center">
+                          <span><b> Are you sure you want to delete category "${categoryName}"</b>?</span>
+                      </div>
+                      <div class="text-center">
+                          <span>(Products "${categoryName}" will be set to category "Unassigned")</span>
+                      </div>
+                     `,
+            header: `Delete Category`,
+            accept: () => {
+                let httpParams = new HttpParams();
+                httpParams = httpParams.append('productCategoryId', this.productCategory[deletedIndex].id); // append product category id for delete
 
-        let httpParams = new HttpParams();
-        httpParams = httpParams.append('productCategoryId', this.productCategory[deletedIndex].id); // append product category id for delete
-
-        // append product id array to set unsigned in loops
-        this.productCategory[deletedIndex].products.forEach((product) => {
-            httpParams = httpParams.append('id', product.id);
-        });
-
-        this.productCategoryService.deleteProductCategory(httpParams).pipe(
-            switchMap(deleteResponse => this.productCategoryService.loadProductCategories().pipe(
-                map(productCategoryResponse => ({productCategoryResponse, deleteResponse}))
-            ))
-        ).subscribe({
-            next: ({deleteResponse, productCategoryResponse}) => {
-                this.productCategory = [];
-                this.categoryDd = [];
-
-                this.responseProductCategory(productCategoryResponse);
-
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: 'Delete product category success!'
+                // append product id array to set unsigned in loops
+                this.productCategory[deletedIndex].products.forEach((product) => {
+                    httpParams = httpParams.append('id', product.id);
                 });
 
-                // reload table from api
-                this.productCategory = [...this.productCategory]; // refresh by recreating array
-            }
+                this.productCategoryService.deleteProductCategory(httpParams).pipe(
+                    switchMap(deleteResponse => this.productCategoryService.loadProductCategories().pipe(
+                        map(productCategoryResponse => ({productCategoryResponse, deleteResponse}))
+                    ))
+                ).subscribe({
+                    next: ({deleteResponse, productCategoryResponse}) => {
+
+                        this.productCategory = [];
+                        this.categoryDd = [];
+
+                        this.responseProductCategory(productCategoryResponse['data']);
+
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'Delete product category success!'
+                        });
+
+                        // reload table from api
+                        this.productCategory = [...this.productCategory]; // refresh by recreating array
+                    }
+                });
+
+            },
         });
+
 
     }
 
@@ -191,7 +209,7 @@ export class ProductCategoryComponent implements OnInit {
         this.productCategoryFg.patchValue(productCategory)
     }
 
-    async onRowEditSave(index, domId) {
+    onRowEditSave(index, domId) {
         if (this.productCategoryFg.valid) {
 
             this.productCategoryFg.patchValue({
@@ -202,8 +220,8 @@ export class ProductCategoryComponent implements OnInit {
                     'MM/dd/yyyy HH:mm:ss'),
             });
 
-            await lastValueFrom(this.productCategoryService.updateProductCategory(this.productCategoryFg.value)).then(
-                (response) => {
+            this.productCategoryService.updateProductCategory(this.productCategoryFg.value).subscribe({
+                next: response => {
                     this.productCategory[index] = response['data']; // update array index
 
                     // update category dropdown by index in dropdown
@@ -222,12 +240,11 @@ export class ProductCategoryComponent implements OnInit {
                     // to close current edit row
                     this.element = document.getElementById(domId + index) as HTMLElement;
                     this.element.click();
-                },
-            );
 
-            this.productCategory = [...this.productCategory]; // refresh table
-            this.categoryDd = [...this.categoryDd]; // refresh dropdown
-
+                    this.productCategory = [...this.productCategory]; // refresh table
+                    this.categoryDd = [...this.categoryDd]; // refresh dropdown
+                }
+            });
         } else {
             this.validateFormFields(this.productCategoryFg);
         }
@@ -266,8 +283,28 @@ export class ProductCategoryComponent implements OnInit {
     }
 
     saveCategoryInProduct() {
-        this.unassignedProduct.forEach(value => {
-            console.log(value);
+        this.productCategoryService.updateUnassignedProductList(this.unassignedProduct).subscribe({
+            next: productCategoryResponse => {
+
+                console.log(productCategoryResponse.data);
+
+                // clear array
+                this.productCategory = [];
+                this.categoryDd = [];
+
+                // set array
+                this.responseProductCategory(productCategoryResponse['data']);
+
+                // reload table from api
+                this.productCategory = [...this.productCategory]; // refresh by recreating array
+
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'Update product category success!'
+                });
+
+            }
         });
     }
 

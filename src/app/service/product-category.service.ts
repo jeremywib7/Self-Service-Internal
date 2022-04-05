@@ -4,6 +4,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {map, Observable} from "rxjs";
 import {ProductCategory} from "../model/ProductCategory";
 import {Product} from "../model/Product";
+import {UnassignedProduct} from "../model/UnassignedProduct";
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +23,12 @@ export class ProductCategoryService {
     }
 
     updateProductCategory(productCategory: ProductCategory) {
-        return this.httpClient.put(`${this.apiServerUrl}/${this.project}/category/update`, productCategory)
+        return this.httpClient.put(`${this.apiServerUrl}/${this.project}/category/update/name`, productCategory)
+            .pipe(map((data: any) => data || []))
+    }
+
+    updateUnassignedProductList(unassignedProduct: UnassignedProduct[]) {
+        return this.httpClient.put(`${this.apiServerUrl}/${this.project}/category/update/productList`, unassignedProduct)
             .pipe(map((data: any) => data || []))
     }
 
