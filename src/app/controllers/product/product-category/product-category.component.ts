@@ -152,11 +152,11 @@ export class ProductCategoryComponent implements OnInit {
     onDeleteProductCategory(deletedIndex, categoryName: string) {
         this.confirmationService.confirm({
             message: `
-                      <div class="mb-2 text-center">
+                      <div class="mb-2">
                           <span><b> Are you sure you want to delete category "${categoryName}"</b>?</span>
                       </div>
-                      <div class="text-center">
-                          <span>(Products "${categoryName}" will be set to category "Unassigned")</span>
+                      <div>
+                          <span>( Products "${categoryName}" will be set to category "Unassigned" )</span>
                       </div>
                      `,
             header: `Delete Category`,
