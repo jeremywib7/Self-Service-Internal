@@ -98,31 +98,33 @@ export class ProductCategoryComponent implements OnInit {
     }
 
     loadAllProductCategory() {
-        this.productCategory = [];
-        this.categoryDd = [];
 
         this.productCategoryService.loadProductCategories().subscribe({
             next: productCategory => {
-
-                this.productCategory = productCategory['data'];
-
-                this.productCategory.forEach(value => {
-
-                    // set field as date to filter
-                    // @ts-ignore
-                    value.createdOn = new Date(value.createdOn);
-                    // @ts-ignore
-                    value.updatedOn = new Date(value.updatedOn);
-
-                    if (value.id !== 'akisjasas-asajek-ajsoaks-ejakjenafe') {
-                        this.categoryDd.push({
-                            label: value['categoryName'],
-                            value: value['id'],
-                        });
-                    }
-
-                })
+                this.responseProductCategory(productCategory['data']);
             }
+        })
+
+    }
+
+    responseProductCategory(productCategory: ProductCategory[]) {
+        this.productCategory = productCategory;
+
+        this.productCategory.forEach(value => {
+
+            // set field as date to filter
+            // @ts-ignore
+            value.createdOn = new Date(value.createdOn);
+            // @ts-ignore
+            value.updatedOn = new Date(value.updatedOn);
+
+            if (value.id !== 'akisjasas-asajek-ajsoaks-ejakjenafe') {
+                this.categoryDd.push({
+                    label: value['categoryName'],
+                    value: value['id'],
+                });
+            }
+
         })
     }
 
@@ -135,7 +137,17 @@ export class ProductCategoryComponent implements OnInit {
         this.showAddOrEditProductCategoryDialog = true;
     }
 
-    async onDeleteProductCategory(deletedIndex) {
+    // example if 3 switch map
+    // this.productCategoryService.deleteProductCategory(httpParams).pipe(
+    //     switchMap(address => this.productCategoryService.loadProductCategories().pipe(
+    //         switchMap(addresss => this.productCategoryService.loadProductCategories().pipe(
+    //             map(cities => ({cities, address, addresss}))
+    //         ))
+    //     ))
+    // );
+
+    onDeleteProductCategory(deletedIndex) {
+
         let httpParams = new HttpParams();
         httpParams = httpParams.append('productCategoryId', this.productCategory[deletedIndex].id); // append product category id for delete
 
@@ -144,26 +156,16 @@ export class ProductCategoryComponent implements OnInit {
             httpParams = httpParams.append('id', product.id);
         });
 
-        // http delete request
-        // this.productCategoryService.deleteProductCategory(httpParams)
-
-        // example if 3 switch map
-        // this.productCategoryService.deleteProductCategory(httpParams).pipe(
-        //     switchMap(address => this.productCategoryService.loadProductCategories().pipe(
-        //         switchMap(addresss => this.productCategoryService.loadProductCategories().pipe(
-        //             map(cities => ({cities, address, addresss}))
-        //         ))
-        //     ))
-        // );
-
         this.productCategoryService.deleteProductCategory(httpParams).pipe(
             switchMap(deleteResponse => this.productCategoryService.loadProductCategories().pipe(
                 map(productCategoryResponse => ({productCategoryResponse, deleteResponse}))
             ))
         ).subscribe({
             next: ({deleteResponse, productCategoryResponse}) => {
-                // console.log(cities);
-                // console.log(address);
+                this.productCategory = [];
+                this.categoryDd = [];
+
+                this.responseProductCategory(productCategoryResponse);
 
                 this.messageService.add({
                     severity: 'success',
@@ -172,25 +174,9 @@ export class ProductCategoryComponent implements OnInit {
                 });
 
                 // reload table from api
-                this.loadAllProductCategory();
                 this.productCategory = [...this.productCategory]; // refresh by recreating array
-
-                // this.cities = cities
-                // this.address = address
             }
         });
-
-        // await lastValueFrom(this.productCategoryService.deleteProductCategory(httpParams)).then(() => {
-        //     this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Success',
-        //         detail: 'Delete product category success!'
-        //     });
-        //
-        //     // reload table from api
-        //     this.loadAllProductCategory();
-        //     this.productCategory = [...this.productCategory]; // refresh by recreating array
-        // });
 
     }
 
