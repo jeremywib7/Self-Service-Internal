@@ -1,10 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Product} from "../../model/Product";
-import {LazyLoadEvent, MenuItem, MessageService} from "primeng/api";
+import {ConfirmationService, LazyLoadEvent, MenuItem, MessageService} from "primeng/api";
 import {HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
-import {debounceTime, Subscription} from "rxjs";
+import {debounceTime, map, Subscription, switchMap} from "rxjs";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -58,6 +58,7 @@ export class ProductComponent implements OnInit {
     constructor(
         private productService: ProductService,
         public productModel: Product,
+        private confirmationService: ConfirmationService,
         private router: Router,
         private el: ElementRef,
         private activatedRoute: ActivatedRoute,
@@ -195,13 +196,6 @@ export class ProductComponent implements OnInit {
         this.images = this.productFg.get('images') as FormArray;
         this.images.removeAt(0);
 
-        // this.productService.getUUID().subscribe(
-        //     (data: object) => {
-        //         const uuid = data['data']['uuid'];
-        //         this.productFg.get('id').setValue(uuid);
-        //     },
-        // );
-
     }
 
     isChildComponentActive(): boolean {
@@ -261,9 +255,46 @@ export class ProductComponent implements OnInit {
         }
     }
 
+    onDeleteProduct(productId: string, productName: string) {
+        this.confirmationService.confirm({
+            message:
+                `
+                 <div>
+                    <span>Are you sure you want to delete product <b> ${productName}</b> ?</span>
+                 </div>
+                `,
+            header: `Delete Product`,
+            accept: () => {
+                this.productService.deleteProductById(productId).subscribe({
+                    next: value => {
+                        this.dataTblProducts = this.dataTblProducts.filter(val => val.id !== productId);
+                        this.dataTblProducts = [...this.dataTblProducts];
+
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'Product successfully deleted'
+                        });
+                    }
+                })
+            },
+        });
+    }
+
 
     onDeleteSelectedProducts() {
-
+        this.confirmationService.confirm({
+            message:
+                `
+                 <div>
+                    <span>Are you sure you want to delete selected product ?</span>
+                 </div>
+                `,
+            header: `Delete Selected Product`,
+            accept: () => {
+                console.log(this.selectedProducts);
+            },
+        });
     }
 
 }

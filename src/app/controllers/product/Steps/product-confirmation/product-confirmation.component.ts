@@ -54,8 +54,6 @@ export class ProductConfirmationComponent implements OnInit {
 
             this.bindDocumentListeners();
         }
-
-
     }
 
     onThumbnailButtonClick() {
