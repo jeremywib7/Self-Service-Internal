@@ -13,7 +13,7 @@ import {ConfigService} from './service/app.config.service';
 import {AppConfig} from './api/appconfig';
 import {Subscription} from 'rxjs';
 import {LoaderService} from "./service/loader.service";
-import {NavigationEnd, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {HistoryRouteService} from "./service/history.route.service";
 import {filter} from "rxjs/operators";
 
@@ -67,7 +67,7 @@ export class AppMainComponent implements AfterViewInit, AfterContentChecked, OnD
 
     constructor(public renderer: Renderer2, public app: AppComponent, public configService: ConfigService,
                 private router: Router, public loaderService: LoaderService, private cdr: ChangeDetectorRef,
-                private historyRouteService: HistoryRouteService) {
+                private historyRouteService: HistoryRouteService, private activatedRoute: ActivatedRoute) {
 
         // for saving previous route, example if token expired then login. then user back to previous route.
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd))

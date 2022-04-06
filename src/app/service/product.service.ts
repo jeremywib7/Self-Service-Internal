@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {map, Observable, of, switchMap} from "rxjs";
+import {map, Observable, Subscription} from "rxjs";
 import {Product} from "../model/Product";
-import {ProductCategory} from "../model/ProductCategory";
 import {UnassignedProduct} from "../model/UnassignedProduct";
 
 @Injectable({
@@ -17,42 +16,31 @@ export class ProductService {
     constructor(private httpClient: HttpClient) {
     }
 
-    public addOrAndUpdateProduct(product: Product, imageFiles?: File[], editMode?: boolean): Observable<Product> {
-        let observable = of({});
+    public addOrEditProduct(product: Product, editMode: boolean) {
+        if (editMode) {
+            return this.httpClient.put<Product>(`${this.apiServerUrl}/${this.project}/product/update`, product);
+        } else {
+            return this.httpClient.post<Product>(`${this.apiServerUrl}/${this.project}/product/add`, product);
+        }
+    }
+
+    public uploadImage(productName: string, imageFiles: File[]) {
 
         if (imageFiles) {
-            imageFiles.forEach((obj, index) => {
 
-                observable = observable.pipe(
-                    switchMap(() => {
+            const formData: FormData = new FormData();
+            formData.append('name', productName);
+            imageFiles.forEach((obj) => {
+                formData.append('files', obj);
+            });
 
-                        const formData: FormData = new FormData();
-                        formData.append('file', obj);
-                        formData.append('name', product.name + "_" + index);
-
-                        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/product/upload`, formData, {
-                            responseType: 'text'
-                        });
-                    })
-                )
+            return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/product/upload`, formData, {
+                responseType: 'text'
             });
 
         }
 
-        if (editMode === true) {
-            return observable.pipe(
-                switchMap(() => {
-                    return this.httpClient.put<Product>(`${this.apiServerUrl}/${this.project}/product/update`, product);
-                })
-            );
-        } else {
-            return observable.pipe(
-                switchMap(() => {
-                    return this.httpClient.post<Product>(`${this.apiServerUrl}/${this.project}/product/add`, product);
-                })
-            );
-        }
-
+        return null;
     }
 
     public getUUID() {

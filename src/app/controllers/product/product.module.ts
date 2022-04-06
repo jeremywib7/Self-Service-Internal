@@ -1,15 +1,15 @@
 import {NgModule} from '@angular/core';
-import {CommonModule, DatePipe} from '@angular/common';
+import {CommonModule, DatePipe, HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {ProductDetailComponent} from "./Steps/product-detail/product-detail.component";
 import {ProductPriceComponent} from "./Steps/product-price/product-price.component";
-import { ProductImageComponent } from './Steps/product-image/product-image.component';
+import {ProductImageComponent} from './Steps/product-image/product-image.component';
 import {CardModule} from "primeng/card";
 import {ButtonModule} from "primeng/button";
 import {FileUploadModule} from "primeng/fileupload";
-import { ProductConfirmationComponent } from './Steps/product-confirmation/product-confirmation.component';
+import {ProductConfirmationComponent} from './Steps/product-confirmation/product-confirmation.component';
 import {GalleriaModule} from "primeng/galleria";
-import { ProductCategoryComponent } from './product-category/product-category.component';
+import {ProductCategoryComponent} from './product-category/product-category.component';
 import {ToolbarModule} from "primeng/toolbar";
 import {RippleModule} from "primeng/ripple";
 import {TooltipModule} from "primeng/tooltip";
@@ -25,9 +25,9 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
 @NgModule({
     declarations: [
 
-    ProductConfirmationComponent,
-     ProductCategoryComponent
-  ],
+        ProductConfirmationComponent,
+        ProductCategoryComponent
+    ],
     imports: [
         CommonModule,
         RouterModule.forChild([
@@ -55,7 +55,13 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
         ConfirmDialogModule
     ],
     exports: [RouterModule],
-    providers: [DatePipe]
+    providers: [
+
+        DatePipe,
+        {
+            provide: LocationStrategy,
+            useClass: HashLocationStrategy
+        },]
 })
 export class ProductModule {
 }

@@ -47,11 +47,12 @@ const routes: Routes = [
     imports: [
         RouterModule.forRoot([
             {
-                path: '', component: AppMainComponent,
+                path: '',
+                component: AppMainComponent,
                 children: [
                     {
                         path: '',
-                        data: {breadcrumb: 'Dashboard'},
+                        // data: {breadcrumb: 'Dashboard'},
                         component: DashboardComponent
                     },
 
@@ -118,7 +119,7 @@ const routes: Routes = [
             {path: 'pages/notfound', component: NotfoundComponent},
             {path: 'pages/access', component: AccessComponent},
             {path: '**', redirectTo: 'pages/notfound'},
-        ], {scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled'})
+        ], {scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', useHash: true})
     ],
     exports: [RouterModule]
 })

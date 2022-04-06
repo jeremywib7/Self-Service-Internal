@@ -4,7 +4,7 @@ import {ConfirmationService, LazyLoadEvent, MenuItem, MessageService} from "prim
 import {HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
-import {debounceTime, map, Subscription, switchMap} from "rxjs";
+import {catchError, debounceTime, map, of, Subscription, switchMap} from "rxjs";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -75,6 +75,7 @@ export class ProductComponent implements OnInit {
             {label: 'NOT AVAILABLE', value: false},
         ];
 
+        // if confirmation steps completed, this will be triggered
         this.subscription = this.productModel.addOrEditCompleteProduct$.subscribe((productInformation) => {
 
             this.productFg.patchValue(productInformation['detailInformation']);
@@ -83,10 +84,28 @@ export class ProductComponent implements OnInit {
 
             if (this.productFg.valid) {
 
-                this.productService.addOrAndUpdateProduct(this.productFg.value, this.productModel.pFileUploadProductImg,
-                    this.editMode).subscribe({
+                // patch image name to form
+                // format imageName = (imageName_index.extension)
+                this.productModel.pFileUploadProductImg.forEach((value, index, array) => {
+
+                    // get extension
+                    const ext = value.name.substr(value.name.lastIndexOf('.') + 1);
+
+                    this.productFg.value.images.push({
+                        imageName: this.productFg.value.name + "_" + index + "." + ext
+                    })
+                });
+
+
+                this.productService.addOrEditProduct(this.productFg.value, this.editMode).pipe(
+                    switchMap(addProductResponse => this.productService.uploadImage(this.productFg.value.name,
+                        this.productModel.pFileUploadProductImg).pipe(
+                        map(uploadImageResponse => ({uploadImageResponse, addProductResponse}))
+                    ))
+                ).subscribe({
                     next: () => {
                         this.productModel.resetAddOrEditProductSteps();
+
                         if (this.editMode) {
                             this.messageService.add({
                                 severity: 'success',
@@ -100,9 +119,9 @@ export class ProductComponent implements OnInit {
                                 detail: 'Product successfully added'
                             });
                         }
+                        this.router.navigate(['pages/product']);
                     },
                 });
-
 
             } else {
                 this.messageService.add({
@@ -260,7 +279,7 @@ export class ProductComponent implements OnInit {
             message:
                 `
                  <div>
-                    <span>Are you sure you want to delete product <b> ${productName}</b> ?</span>
+                    <span>Are you sure you want to delete product <b> "${productName}"</b> ?</span>
                  </div>
                 `,
             header: `Delete Product`,

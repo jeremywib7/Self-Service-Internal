@@ -12,7 +12,7 @@ import {DatePipe} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
 import {UnassignedProduct} from "../../../model/UnassignedProduct";
 import {HttpParams} from "@angular/common/http";
-import {lastValueFrom, map, switchMap} from "rxjs";
+import {catchError, lastValueFrom, map, of, switchMap} from "rxjs";
 
 @Component({
     selector: 'app-product-category',
@@ -112,6 +112,7 @@ export class ProductCategoryComponent implements OnInit {
 
     responseProductCategory(productCategory: ProductCategory[]) {
         this.productCategory = productCategory;
+        // reload table from api
 
         this.productCategory.forEach(value => {
 
@@ -129,6 +130,7 @@ export class ProductCategoryComponent implements OnInit {
             }
 
         })
+        this.productCategory = [...this.productCategory]; // refresh by recreating array
     }
 
     clear(table: Table) {
@@ -170,6 +172,9 @@ export class ProductCategoryComponent implements OnInit {
                 });
 
                 this.productCategoryService.deleteProductCategory(httpParams).pipe(
+                    catchError((err) => {
+                        return of(undefined);
+                    }),
                     switchMap(deleteResponse => this.productCategoryService.loadProductCategories().pipe(
                         map(productCategoryResponse => ({productCategoryResponse, deleteResponse}))
                     ))
@@ -187,8 +192,7 @@ export class ProductCategoryComponent implements OnInit {
                             detail: 'Delete product category success!'
                         });
 
-                        // reload table from api
-                        this.productCategory = [...this.productCategory]; // refresh by recreating array
+
                     }
                 });
 
@@ -286,17 +290,12 @@ export class ProductCategoryComponent implements OnInit {
         this.productCategoryService.updateUnassignedProductList(this.unassignedProduct).subscribe({
             next: productCategoryResponse => {
 
-                console.log(productCategoryResponse.data);
-
                 // clear array
                 this.productCategory = [];
                 this.categoryDd = [];
 
                 // set array
                 this.responseProductCategory(productCategoryResponse['data']);
-
-                // reload table from api
-                this.productCategory = [...this.productCategory]; // refresh by recreating array
 
                 this.messageService.add({
                     severity: 'success',

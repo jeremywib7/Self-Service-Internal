@@ -54,15 +54,15 @@ export class ProductPriceComponent implements OnInit {
         });
 
 
-        this.productFg.patchValue(this.productModel.productInformation.priceInformation);
+        // this.productFg.patchValue(this.productModel.productInformation.priceInformation);
 
         //for testing
-        // this.productFg.patchValue({
-        //     unitPrice: 45000,
-        //     discount: false,
-        //     discountPercent: 50,
-        //     discountedPrice: 12500,
-        // })
+        this.productFg.patchValue({
+            unitPrice: 45000,
+            discount: false,
+            discountPercent: 50,
+            discountedPrice: 12500,
+        })
 
 
         this.availableDropdown = [

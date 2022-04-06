@@ -84,6 +84,7 @@ export class Product {
         this.productInformation.detailInformation = this.resetProductInformation.detailInformation;
         this.productInformation.priceInformation = this.resetProductInformation.priceInformation;
         this.productInformation.imageInformation = this.resetProductInformation.imageInformation;
+        this.pFileUploadProductImg = [];
     }
 
 

@@ -14,7 +14,7 @@ export class BreadcrumbComponent implements OnInit {
     static readonly ROUTE_DATA_BREADCRUMB = 'breadcrumb';
     // if home link is not empty
     // readonly home = {icon: 'pi pi-home', url: 'dashboard'};
-    readonly home = {icon: 'pi pi-home', routerLink: '/'};
+    readonly home = {icon: 'pi pi-home', routerLink: ''};
     menuItems: MenuItem[];
 
     constructor(private router: Router, private activatedRoute: ActivatedRoute) {

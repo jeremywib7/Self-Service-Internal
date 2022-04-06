@@ -64,7 +64,7 @@
                         <th></th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-product>
+                <ng-template pTemplate="body" let-product let-ri="rowIndex">
                     <tr>
                         <td>
                             <p-tableCheckbox [value]="product"></p-tableCheckbox>
@@ -76,7 +76,7 @@
                         <td style="min-width:10rem;"><span class="p-column-title">Image</span>
                             <img
                                 defaultImage="/assets/demo/images/galleria/spinner.gif"
-                                [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download/' +  product?.images[0]?.imageName  "
+                                [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download/' +  product?.images[0]?.imageName "
                                 width="100"
                                 class="shadow-4" src="" [alt]="product?.images[0]?.imageName"/>
                         </td>
