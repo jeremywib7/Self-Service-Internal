@@ -35,11 +35,23 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
             {
                 path: 'detail',
                 component: ProductDetailComponent,
-                data: {breadcrumb: 'Dashboard'},
+                data: {breadcrumb: 'Detail'},
             },
-            {path: 'price', component: ProductPriceComponent},
-            {path: 'image', component: ProductImageComponent},
-            {path: 'confirmation', component: ProductConfirmationComponent},
+            {
+                path: 'price',
+                component: ProductPriceComponent,
+                data: {breadcrumb: 'Price'},
+            },
+            {
+                path: 'image',
+                component: ProductImageComponent,
+                data: {breadcrumb: 'Image'},
+            },
+            {
+                path: 'confirmation',
+                component: ProductConfirmationComponent,
+                data: {breadcrumb: 'Confirmation'},
+            },
         ]),
         CardModule,
         ButtonModule,

@@ -85,19 +85,19 @@ export class ProductDetailComponent implements OnInit {
                     });
                 },
                 complete: () => {
-                    // this.productFg.patchValue(this.productModel.productInformation.detailInformation);
+                    this.productFg.patchValue(this.productModel.productInformation.detailInformation);
 
                     //for testing
-                    this.productFg.patchValue({
-                        name: 'Pasta',
-                        description: 'A pasta made with love',
-                        active: true,
-                        totalCalories: 150,
-                        category: {
-                            id: '35b2bcea-02a4-4881-954b-eaf9f9953b02'
-                            // id: '41abdb19-dc0e-4923-9077-dc5c975ff52c'
-                        }
-                    })
+                    // this.productFg.patchValue({
+                    //     name: 'Pasta',
+                    //     description: 'A pasta made with love',
+                    //     active: true,
+                    //     totalCalories: 150,
+                    //     category: {
+                    //         id: '35b2bcea-02a4-4881-954b-eaf9f9953b02'
+                    //         // id: '41abdb19-dc0e-4923-9077-dc5c975ff52c'
+                    //     }
+                    // })
                 }
             }
         );
@@ -107,7 +107,14 @@ export class ProductDetailComponent implements OnInit {
 
         if (this.productFg.valid) {
             this.productModel.productInformation.detailInformation = this.productFg.value;
-            this.router.navigate(['pages/product/add/price']);
+
+            if (this.router.url.includes("/add")) {
+                this.router.navigate(['pages/product/add/price']).then();
+            } else if (this.router.url.includes("/edit")) {
+                this.router.navigate(['pages/product/edit/price']).then();
+            }
+
+            this.productModel.detailInformationDone = true;
         } else {
             this.productFg.markAllAsTouched();
             this.validateFormFields(this.productFg);

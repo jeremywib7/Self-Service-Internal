@@ -25,7 +25,7 @@ export class ProductImageComponent implements OnInit {
         this.productInfo = this.productModel.productInformation;
 
         if (this.productInfo.detailInformation.completed === false) {
-            this.router.navigate(['pages/product/add/detail']);
+            this.router.navigate(['pages/product']);
         }
 
     }

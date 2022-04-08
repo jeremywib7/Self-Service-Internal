@@ -19,10 +19,13 @@ export class ProductPriceComponent implements OnInit {
 
     constructor(private productModel: Product, private router: Router, private rxFormBuilder: RxFormBuilder,
                 private el: ElementRef) {
+
         this.productInfo = this.productModel.productInformation;
 
-        if (this.productInfo.detailInformation.completed === false) {
-            this.router.navigate(['pages/product/add/detail']);
+        if (this.router.url.includes("/add") && this.productModel.detailInformationDone === false) {
+            this.router.navigate(['pages/product/add/detail']).then();
+        } else if (this.router.url.includes("/edit") && this.productModel.detailInformationDone === false) {
+            this.router.navigate(['pages/product/edit/detail']).then();
         }
     }
 
@@ -54,15 +57,15 @@ export class ProductPriceComponent implements OnInit {
         });
 
 
-        // this.productFg.patchValue(this.productModel.productInformation.priceInformation);
+        this.productFg.patchValue(this.productModel.productInformation.priceInformation);
 
         //for testing
-        this.productFg.patchValue({
-            unitPrice: 45000,
-            discount: false,
-            discountPercent: 50,
-            discountedPrice: 12500,
-        })
+        // this.productFg.patchValue({
+        //     unitPrice: 45000,
+        //     discount: false,
+        //     discountPercent: 50,
+        //     discountedPrice: 12500,
+        // })
 
 
         this.availableDropdown = [
@@ -159,10 +162,22 @@ export class ProductPriceComponent implements OnInit {
                 this.productFg.get('discount').setValue(false);
             }
 
+            // save in global state
             this.productModel.productInformation.priceInformation = this.productFg.getRawValue();
-            this.productModel.productInformation.priceInformation.completed = true;
 
-            this.router.navigate(['pages/product/add/image']).then();
+            // save discount state
+            this.productModel.discountPercent = this.productFg.getRawValue();
+            this.productModel.sliderPercent = this.productFg.getRawValue();
+
+            // update status to done
+            this.productModel.priceInformationDone = true;
+
+            if (this.router.url.includes("/add")) {
+                this.router.navigate(['pages/product/add/image']).then();
+            } else if (this.router.url.includes("/edit")) {
+                this.router.navigate(['pages/product/edit/image']).then();
+            }
+
         } else {
             this.productFg.markAllAsTouched();
             this.validateFormFields(this.productFg);

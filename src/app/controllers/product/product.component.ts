@@ -82,6 +82,10 @@ export class ProductComponent implements OnInit {
             this.productFg.patchValue(productInformation['priceInformation']);
             this.productFg.patchValue(productInformation['imageInformation']);
 
+            if (this.productFg.value.images.length >= 0) {
+                console.log(this.productFg.value.images);
+            }
+
             if (this.productFg.valid) {
 
                 // patch image name to form
@@ -92,10 +96,10 @@ export class ProductComponent implements OnInit {
                     const ext = value.name.substr(value.name.lastIndexOf('.') + 1);
 
                     this.productFg.value.images.push({
-                        imageName:index + "." + ext
+                        imageName: index + "." + ext
                     })
-                });
 
+                });
 
                 this.productService.addOrEditProduct(this.productFg.value, this.editMode).pipe(
                     switchMap(addProductResponse => this.productService.uploadImage(this.productFg.value.name,
@@ -103,7 +107,8 @@ export class ProductComponent implements OnInit {
                         map(uploadImageResponse => ({uploadImageResponse, addProductResponse}))
                     ))
                 ).subscribe({
-                    next: () => {
+                    next: ({uploadImageResponse, addProductResponse}) => {
+
                         // reset form
                         this.productFg.reset();
 
@@ -124,6 +129,7 @@ export class ProductComponent implements OnInit {
                             });
                         }
                         this.router.navigate(['pages/product']);
+
                     },
                 });
 
@@ -222,11 +228,13 @@ export class ProductComponent implements OnInit {
     }
 
     isChildComponentActive(): boolean {
-        if (this.router.url.includes("/add")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(this.router.url.includes("/add") || this.router.url.includes("/edit"));
+
+        // if (this.router.url.includes("/add") || this.router.url.includes("/edit")) {
+        //     return false;
+        // } else {
+        //     return true;
+        // }
         // return this.router.url === '/';
     }
 
@@ -269,13 +277,16 @@ export class ProductComponent implements OnInit {
         }
     }
 
+    openAddProductSteps() {
+        this.productModel.resetAddOrEditProductSteps();
+        this.router.navigate(['pages/product/add']);
+    }
 
-    openAddOrEditProductSteps(editMode: boolean) {
-        if (editMode) {
+    onEditProduct(product: Product) {
+        this.productModel.productInformation.detailInformation = product;
+        this.productModel.productInformation.priceInformation = product;
 
-        } else {
-            this.router.navigate(['pages/product/add']);
-        }
+        this.router.navigate(['pages/product/edit/detail']);
     }
 
     onDeleteProduct(productId: string, productName: string) {
@@ -303,7 +314,6 @@ export class ProductComponent implements OnInit {
             },
         });
     }
-
 
     onDeleteSelectedProducts() {
         this.confirmationService.confirm({

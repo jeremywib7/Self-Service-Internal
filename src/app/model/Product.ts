@@ -35,22 +35,24 @@ export class Product {
             },
             totalCalories: null,
             description: '',
-            completed: false,
         },
         priceInformation: {
             unitPrice: null,
-            discount: '',
-            discountPercent: null,
-            sliderPercent: null,
+            discount: null,
             discountedPrice: null,
-            completed: false,
         },
         imageInformation: {
             imageName: [],
         },
     };
 
-    //
+    // discount price state
+    discountPercent: number = null;
+    sliderPercent: number = null;
+
+    // to allow load confirmation page if all
+    detailInformationDone: boolean = false;
+    priceInformationDone: boolean = false;
 
 
     // reset add or edit product steps
@@ -65,15 +67,11 @@ export class Product {
             },
             totalCalories: null,
             description: '',
-            completed: false,
         },
         priceInformation: {
             unitPrice: null,
             discount: '',
-            discountPercent: null,
-            sliderPercent: null,
             discountedPrice: null,
-            completed: false,
         },
         imageInformation: {
             imageName: [],
@@ -89,11 +87,19 @@ export class Product {
         // reset list of file to be displayed in p-file-upload
         this.pFileUploadProductImg = [];
 
-        // reset list of image properties
+        // reset list of image properties to be displayed in carrousel confirmation
         this.productCarrousel = [];
 
         // reset previous image length
         this.previousImageFileLength = -1;
+
+        // reset slider in discount percentage
+        this.discountPercent = 0;
+        this.sliderPercent = 0;
+
+        // reset done status to false
+        this.detailInformationDone = false;
+        this.priceInformationDone = false;
     }
 
 
@@ -128,6 +134,8 @@ export class Product {
 export interface Image {
     imageName: string;
 }
+
+// for lazy loading
 
 export interface Pagination {
     totalElements: number;

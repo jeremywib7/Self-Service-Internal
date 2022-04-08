@@ -47,8 +47,8 @@ export class ProductConfirmationComponent implements OnInit {
 
     ngOnInit(): void {
         this.productInfo = this.productModel.productInformation;
-        if (this.productInfo.detailInformation.completed === false || this.productInfo.detailInformation.completed === false) {
-            this.router.navigate(['pages/product/add/detail']);
+        if (this.productModel.detailInformationDone === false || this.productModel.priceInformationDone === false) {
+            this.router.navigate(['pages/product']);
         } else {
             this.images = this.productModel.productCarrousel;
 
