@@ -32,7 +32,11 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
         CommonModule,
         RouterModule.forChild([
             {path: '', redirectTo: 'detail', pathMatch: 'full'},
-            {path: 'detail', component: ProductDetailComponent},
+            {
+                path: 'detail',
+                component: ProductDetailComponent,
+                data: {breadcrumb: 'Dashboard'},
+            },
             {path: 'price', component: ProductPriceComponent},
             {path: 'image', component: ProductImageComponent},
             {path: 'confirmation', component: ProductConfirmationComponent},

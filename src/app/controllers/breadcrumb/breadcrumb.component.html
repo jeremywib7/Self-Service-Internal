@@ -1,0 +1,14 @@
+<div class="card" >
+    <xng-breadcrumb [separator]="iconTemplate">
+        <ng-container
+            *xngBreadcrumbItem="let breadcrumb; let info = info; let first = first">
+            <i *ngIf="info" class="pi pi-home" style="color: var(--text-color)"></i>
+            <ng-container *ngIf="!first">
+                {{ breadcrumb }}
+            </ng-container>
+        </ng-container>
+        <ng-template #iconTemplate>
+            <i class="pi pi-chevron-right"></i>
+        </ng-template>
+    </xng-breadcrumb>
+</div>

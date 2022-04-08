@@ -12,7 +12,6 @@ import {AutoCompleteModule} from 'primeng/autocomplete';
 import {AvatarModule} from 'primeng/avatar';
 import {AvatarGroupModule} from 'primeng/avatargroup';
 import {BadgeModule} from 'primeng/badge';
-import {BreadcrumbModule} from 'primeng/breadcrumb';
 import {ButtonModule} from 'primeng/button';
 import {CalendarModule} from 'primeng/calendar';
 import {CardModule} from 'primeng/card';
@@ -156,7 +155,6 @@ import {ProductDetailComponent} from './controllers/product/Steps/product-detail
 import {Product} from "./model/Product";
 import {ProductPriceComponent} from './controllers/product/Steps/product-price/product-price.component';
 import {ProductFormComponent} from './controllers/product/Form/product-form/product-form.component';
-import {BreadcrumbComponent} from './controllers/breadcrumb/breadcrumb/breadcrumb.component';
 import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";
 import {HistoryRouteService} from "./service/history.route.service";
 import { WaitingListComponent } from './controllers/waiting-list/waiting-list.component';
@@ -167,6 +165,8 @@ import {WaitingListService} from "./service/waiting-list.service";
 import {CountdownModule} from "ngx-countdown";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import {BreadcrumbModule} from "xng-breadcrumb";
+import { BreadcrumbComponent } from './controllers/breadcrumb/breadcrumb.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -280,6 +280,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         BlockUIModule,
         // loading bar http progress bar:
         LoadingBarHttpClientModule,
+        BreadcrumbModule,
+        BreadcrumbModule,
+        BreadcrumbModule,
     ],
     declarations: [
         AppComponent,
@@ -329,8 +332,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         ProductPriceComponent,
         ProductFormComponent,
         ProductImageComponent,
-        BreadcrumbComponent,
         WaitingListComponent,
+        BreadcrumbComponent,
     ],
     providers: [
         AuthGuard,

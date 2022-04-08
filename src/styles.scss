@@ -9,16 +9,27 @@
 @import "assets/sass/layout/_variables";
 @import "assets/sass/layout/_layout";
 @import "assets/sass/overrides/_overrides";
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 img.ng-lazyloaded {
     animation: fadein 2.5s;
 }
 
 @keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .item-badge {
@@ -39,4 +50,23 @@ img.ng-lazyloaded {
         color: #C63737;
     }
 }
+
+// breadcrumb light and dark modes
+
+app-breadcrumb a {
+    color: var(--text-color) !important;
+}
+
+.xng-breadcrumb-trail {
+    display: flex;
+    align-items: center;
+    color: var(--text-color) !important;
+}
+
+.xng-breadcrumb-separator {
+    color: var(--text-color) !important;
+}
+
+//
+
 

@@ -85,14 +85,14 @@ export class ProductComponent implements OnInit {
             if (this.productFg.valid) {
 
                 // patch image name to form
-                // format imageName = (imageName_index.extension)
+                // format imageName = (index.extension)
                 this.productModel.pFileUploadProductImg.forEach((value, index, array) => {
 
                     // get extension
                     const ext = value.name.substr(value.name.lastIndexOf('.') + 1);
 
                     this.productFg.value.images.push({
-                        imageName: this.productFg.value.name + "_" + index + "." + ext
+                        imageName:index + "." + ext
                     })
                 });
 
@@ -104,6 +104,10 @@ export class ProductComponent implements OnInit {
                     ))
                 ).subscribe({
                     next: () => {
+                        // reset form
+                        this.productFg.reset();
+
+                        // reset global state
                         this.productModel.resetAddOrEditProductSteps();
 
                         if (this.editMode) {

@@ -47,10 +47,13 @@ export class ProductService {
         return this.httpClient.get(`${this.apiServerUrl}/${this.project}/product/uuid`);
     }
 
-    public deleteProductById(id: string): Observable<Product> {
+    deleteProductById(id: string): Observable<Product> {
         return this.httpClient.delete<Product>(`${this.apiServerUrl}/${this.project}/product/delete/${id}`);
     }
 
+    deleteSelectedProductsById(id: string[]): Observable<Product> {
+        return this.httpClient.delete<Product>(`${this.apiServerUrl}/${this.project}/product/delete/${id}`);
+    }
     //aka set to unassigned
     removeProductInCategory(params: HttpParams) {
         return this.httpClient.get(`${this.apiServerUrl}/${this.project}/product/remove`, {params});

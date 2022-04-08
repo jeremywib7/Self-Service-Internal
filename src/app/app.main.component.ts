@@ -120,13 +120,11 @@ export class AppMainComponent implements AfterViewInit, AfterContentChecked, OnD
     }
 
     breadcrumbAllowed(): boolean {
-        if (this.router.url === "/") {
+        if (this.router.url === '/') {
             return false;
         } else {
             return true;
         }
-        // return !(this.router.url.includes("/"));
-        // return this.router.url === '/';
     }
 
     toggleMenu(event: Event) {

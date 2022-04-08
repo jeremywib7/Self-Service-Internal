@@ -81,10 +81,19 @@ export class Product {
     };
 
     resetAddOrEditProductSteps() {
+        // reset global state
         this.productInformation.detailInformation = this.resetProductInformation.detailInformation;
         this.productInformation.priceInformation = this.resetProductInformation.priceInformation;
         this.productInformation.imageInformation = this.resetProductInformation.imageInformation;
+
+        // reset list of file to be displayed in p-file-upload
         this.pFileUploadProductImg = [];
+
+        // reset list of image properties
+        this.productCarrousel = [];
+
+        // reset previous image length
+        this.previousImageFileLength = -1;
     }
 
 

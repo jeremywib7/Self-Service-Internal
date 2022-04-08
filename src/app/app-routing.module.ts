@@ -48,11 +48,16 @@ const routes: Routes = [
         RouterModule.forRoot([
             {
                 path: '',
+                data: {
+                    breadcrumb: {
+                        info: 'home'
+                    }
+                },
                 component: AppMainComponent,
                 children: [
                     {
                         path: '',
-                        // data: {breadcrumb: 'Dashboard'},
+                        data: {breadcrumb: 'Dashboard'},
                         component: DashboardComponent
                     },
 
