@@ -3,6 +3,7 @@ import {Subject} from "rxjs";
 import {FormArray, FormGroup} from "@angular/forms";
 import {ProductCarrousel} from "./ProductCarrousel";
 import {RxFormBuilder} from "@rxweb/reactive-form-validators";
+import {FileStatus} from "./FileStatus";
 
 @Injectable()
 export class Product {
@@ -45,6 +46,10 @@ export class Product {
             imageName: [],
         },
     };
+
+    // for download image as a file
+    filenames: string[] = [];
+    fileStatus: FileStatus = new FileStatus();
 
     // discount price state
     discountPercent: number = null;

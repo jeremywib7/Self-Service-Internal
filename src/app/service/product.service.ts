@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpEvent, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {map, Observable, Subscription} from "rxjs";
 import {Product} from "../model/Product";
@@ -35,7 +35,8 @@ export class ProductService {
             });
 
             return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/product/upload`, formData, {
-                responseType: 'text'
+                reportProgress: true,
+                observe: 'events'
             });
 
         }
@@ -43,8 +44,13 @@ export class ProductService {
         return null;
     }
 
-    downloadProductImage(params: HttpParams) {
-        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/images/product/download`, {params})
+    downloadProductImage(params: HttpParams) : Observable<HttpEvent<Blob>> {
+        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/images/product/download/file`, {
+            params,
+            reportProgress: true,
+            observe: 'events',
+            responseType: 'blob'
+        });
     }
 
     public getUUID() {

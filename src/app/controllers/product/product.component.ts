@@ -1,14 +1,16 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Product} from "../../model/Product";
 import {ConfirmationService, LazyLoadEvent, MenuItem, MessageService} from "primeng/api";
-import {HttpParams} from "@angular/common/http";
+import {HttpEvent, HttpEventType, HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
-import {catchError, debounceTime, map, of, Subscription, switchMap} from "rxjs";
+import {catchError, debounceTime, map, of, shareReplay, Subscription, switchMap} from "rxjs";
+import {saveAs} from 'file-saver';
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Table} from "primeng/table";
+import {FileStatus} from "../../model/FileStatus";
 
 @Component({
     selector: 'app-product',
@@ -16,6 +18,9 @@ import {Table} from "primeng/table";
     styleUrls: ['./product.component.scss'],
 })
 export class ProductComponent implements OnInit {
+    apiBaseUrl = environment.apiBaseUrl;
+    projectName = environment.project;
+
 
     subscription: Subscription;
 
@@ -52,9 +57,6 @@ export class ProductComponent implements OnInit {
 
     productFg: FormGroup;
 
-    apiBaseUrl = environment.apiBaseUrl;
-    projectName = environment.project;
-
     constructor(
         private productService: ProductService,
         public productModel: Product,
@@ -82,10 +84,6 @@ export class ProductComponent implements OnInit {
             this.productFg.patchValue(productInformation['priceInformation']);
             this.productFg.patchValue(productInformation['imageInformation']);
 
-            if (this.productFg.value.images.length >= 0) {
-                console.log(this.productFg.value.images);
-            }
-
             if (this.productFg.valid) {
 
                 // patch image name to form
@@ -101,34 +99,40 @@ export class ProductComponent implements OnInit {
 
                 });
 
-                this.productService.addOrEditProduct(this.productFg.value, this.editMode).pipe(
-                    switchMap(addProductResponse => this.productService.uploadImage(this.productFg.value.name,
-                        this.productModel.pFileUploadProductImg).pipe(
-                        map(uploadImageResponse => ({uploadImageResponse, addProductResponse}))
-                    ))
-                ).subscribe({
-                    next: ({uploadImageResponse, addProductResponse}) => {
+                // add or edit product
+                // save in database
+                this.productService.addOrEditProduct(this.productFg.value, this.editMode).subscribe({
+                    next: () => {
 
-                        // reset form
-                        this.productFg.reset();
+                        // upload image
+                        this.productService.uploadImage(this.productFg.value.name,
+                            this.productModel.pFileUploadProductImg).subscribe({
 
-                        // reset global state
-                        this.productModel.resetAddOrEditProductSteps();
+                            // on completed
+                            complete: () => {
 
-                        if (this.editMode) {
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Success',
-                                detail: 'Product successfully updated'
-                            });
-                        } else {
-                            this.messageService.add({
-                                severity: 'success',
-                                summary: 'Success',
-                                detail: 'Product successfully added'
-                            });
-                        }
-                        this.router.navigate(['pages/product']);
+                                // reset form
+                                this.productFg.reset();
+
+                                // reset global state
+                                this.productModel.resetAddOrEditProductSteps();
+
+                                if (this.editMode) {
+                                    this.messageService.add({
+                                        severity: 'success',
+                                        summary: 'Success',
+                                        detail: 'Product successfully updated'
+                                    });
+                                } else {
+                                    this.messageService.add({
+                                        severity: 'success',
+                                        summary: 'Success',
+                                        detail: 'Product successfully added'
+                                    });
+                                }
+                                this.router.navigate(['pages/product']);
+                            }
+                        })
 
                     },
                 });
@@ -283,24 +287,28 @@ export class ProductComponent implements OnInit {
     }
 
     onEditProduct(product: Product) {
+        // reset from previous state
+        this.productModel.resetAddOrEditProductSteps();
+
+        // fetch into global state from product model
         this.productModel.productInformation.detailInformation = product;
         this.productModel.productInformation.priceInformation = product;
         // @ts-ignore
-        this.productModel.productInformation.imageInformation = product.images;
+        this.productModel.productInformation.imageInformation.imageName = product.images;
 
-        product.images.forEach((value, index, array) => {
-            let params = new HttpParams();
-            params = params.append('imageName', product.images[index].imageName);
-            params = params.append('productName',product.name);
-
-            this.productService.downloadProductImage(params).subscribe({
-                next: response => {
-                    this.productModel.pFileUploadProductImg.push(<File>response);
-                    console.log(this.productModel.pFileUploadProductImg)
-                }
-            });
-
-        });
+        //
+        // product.images.forEach((value, index, array) => {
+        //     let params = new HttpParams();
+        //     params = params.append('imageName', product.images[index].imageName);
+        //     params = params.append('productName', product.name);
+        //
+        //     this.productService.downloadProductImage(params).subscribe({
+        //         next: response => {
+        //             this.reportProgress(response);
+        //         }
+        //     });
+        //
+        // });
 
         this.router.navigate(['pages/product/edit/detail']);
     }

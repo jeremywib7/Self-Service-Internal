@@ -7,13 +7,14 @@
             Upload product image
         </ng-template>
         <ng-template pTemplate="content">
+            <p-progressBar *ngIf="productModel.fileStatus.percent != 100" [value]="productModel.fileStatus.percent"></p-progressBar>
             <div class="mb-5">
-                <p-fileUpload tabindex="1" id="imageUrl" accept="image/*"
+                <p-fileUpload tabindex="1" id="imageUrl" accept="image/*" customUpload="true"
                               [showCancelButton]="false" [showUploadButton]="false"
                               [files]="this.productModel.pFileUploadProductImg"
                               (onSelect)="onSelectedImage($event)" multiple="multiple" fileLimit="3"
                               [chooseLabel]="'Add Product Image'" (onRemove)="onRemovedImage($event)"
-                              maxFileSize="1000000" class="text-center" previewWidth="80">
+                              maxFileSize="10000000000" class="text-center" previewWidth="80">
                 </p-fileUpload>
             </div>
         </ng-template>
