@@ -54,7 +54,11 @@ export class ProductImageComponent implements OnInit {
     }
 
     nextPage() {
-        this.router.navigate(['pages/product/add/confirmation']).then();
+        if (this.router.url.includes("/add")) {
+            this.router.navigate(['pages/product/add/confirmation']).then();
+        } else if (this.router.url.includes("/edit")) {
+            this.router.navigate(['pages/product/edit/confirmation']).then();
+        }
     }
 
     prevPage() {

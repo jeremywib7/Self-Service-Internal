@@ -43,6 +43,10 @@ export class ProductService {
         return null;
     }
 
+    downloadProductImage(params: HttpParams) {
+        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/images/product/download`, {params})
+    }
+
     public getUUID() {
         return this.httpClient.get(`${this.apiServerUrl}/${this.project}/product/uuid`);
     }

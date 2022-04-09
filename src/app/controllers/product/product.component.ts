@@ -285,6 +285,22 @@ export class ProductComponent implements OnInit {
     onEditProduct(product: Product) {
         this.productModel.productInformation.detailInformation = product;
         this.productModel.productInformation.priceInformation = product;
+        // @ts-ignore
+        this.productModel.productInformation.imageInformation = product.images;
+
+        product.images.forEach((value, index, array) => {
+            let params = new HttpParams();
+            params = params.append('imageName', product.images[index].imageName);
+            params = params.append('productName',product.name);
+
+            this.productService.downloadProductImage(params).subscribe({
+                next: response => {
+                    this.productModel.pFileUploadProductImg.push(<File>response);
+                    console.log(this.productModel.pFileUploadProductImg)
+                }
+            });
+
+        });
 
         this.router.navigate(['pages/product/edit/detail']);
     }
