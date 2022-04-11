@@ -109,17 +109,13 @@ export class Product {
 
 
     // array of categories
-
     categoryDropdown = {
         category: []
     }
 
+    productCarrousel: ProductCarrousel[] = []; // for carousel or display array of images
 
-    // for carousel or display array of images
-
-    productCarrousel: ProductCarrousel[] = [];
-
-    pFileUploadProductImg: File[] = []; // list of image file
+    pFileUploadProductImg: File[] = []; // list of image file in p file upload
 
     previousImageFileLength: number = -1; // if there is difference with previous image length then it is true condition
 

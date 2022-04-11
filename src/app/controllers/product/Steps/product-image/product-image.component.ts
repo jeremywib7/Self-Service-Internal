@@ -7,6 +7,7 @@ import {RxFormBuilder} from "@rxweb/reactive-form-validators";
 import {MessageService} from "primeng/api";
 import {HttpEvent, HttpEventType, HttpParams} from "@angular/common/http";
 import {ProductService} from "../../../../service/product.service";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-product-image',
@@ -14,6 +15,8 @@ import {ProductService} from "../../../../service/product.service";
     styleUrls: ['./product-image.component.scss']
 })
 export class ProductImageComponent implements OnInit {
+    apiBaseUrl = environment.apiBaseUrl;
+    projectName = environment.project;
 
     productFg: FormGroup;
 
@@ -22,32 +25,34 @@ export class ProductImageComponent implements OnInit {
     productInfo: any;
 
     constructor(public productModel: Product, private router: Router, private el: ElementRef, private rxFormBuilder:
-        RxFormBuilder, private messageService: MessageService, private productService: ProductService) {
+                    RxFormBuilder, private messageService: MessageService, private productService: ProductService,
+                private sanitizer: DomSanitizer) {
 
         this.productInfo = this.productModel.productInformation;
 
-        if (this.productInfo.detailInformation.completed === false) {
+        // check if previous steps is not completed
+        if (this.productModel.detailInformationDone === false || this.productModel.priceInformationDone === false) {
             this.router.navigate(['pages/product']);
         }
 
-    }
-
-    apiBaseUrl = environment.apiBaseUrl;
-    projectName = environment.project;
-
-    ngOnInit(): void {
-
         // check if edit mode
-        let productFolderName = this.productModel.productInformation.detailInformation.name;
-        let imageInformation = this.productModel.productInformation.imageInformation.imageName;
+        let id = this.productInfo.detailInformation.id;
+        let imageInformation = this.productInfo.imageInformation.imageName;
 
         if (this.router.url.includes("/edit")) {
+            this.editMode = true;
+
+            // reset state
+            this.productModel.pFileUploadProductImg = [];
+            this.productModel.previousImageFileLength = -1;
+            this.productModel.productCarrousel = [];
+
             imageInformation.forEach((value, index, array) => {
                 this.productModel.fileStatus.percent = 0;
 
                 let params = new HttpParams();
                 params = params.append('imageName', imageInformation[index].imageName);
-                params = params.append('productName', productFolderName);
+                params = params.append('productId', id);
 
                 this.productService.downloadProductImage(params).subscribe({
                     next: response => {
@@ -58,6 +63,10 @@ export class ProductImageComponent implements OnInit {
             });
 
         }
+
+    }
+
+    ngOnInit(): void {
     }
 
     private reportProgress(httpEvent: HttpEvent<string[] | Blob>) {
@@ -83,9 +92,17 @@ export class ProductImageComponent implements OnInit {
 
                     // push into global file
 
-                    this.productModel.pFileUploadProductImg.push(new File([httpEvent.body],
+                    let imageFile = new File([httpEvent.body],
                         httpEvent.headers.get('File-Name'),
-                        {type: `${httpEvent.headers.get('Content-Type')};charset=utf-8`}));
+                        {type: `${httpEvent.headers.get('Content-Type')};charset=utf-8`})
+
+                    this.productModel.pFileUploadProductImg.push(imageFile);
+
+                    // update length
+                    this.productModel.previousImageFileLength = this.productModel.pFileUploadProductImg.length;
+
+                    // set image carrousel in confirmation page
+                    this.imageReadAsDataUrl(imageFile);
 
                     this.productModel.pFileUploadProductImg = [...this.productModel.pFileUploadProductImg];
 
@@ -100,11 +117,10 @@ export class ProductImageComponent implements OnInit {
         }
     }
 
-    private updateStatus(loaded: number, total: number, requestType: string) {
+    updateStatus(loaded: number, total: number, requestType: string) {
         this.productModel.fileStatus.status = 'progress';
         this.productModel.fileStatus.requestType = requestType;
         this.productModel.fileStatus.percent = Math.round(100 * loaded / total);
-        console.log(this.productModel.fileStatus.percent);
     }
 
     displayMessage(severity: string, summary: string, detail: string) {
@@ -116,7 +132,7 @@ export class ProductImageComponent implements OnInit {
     }
 
     nextPage() {
-        if (this.router.url.includes("/add")) {
+        if (!this.editMode) {
             this.router.navigate(['pages/product/add/confirmation']).then();
         } else if (this.router.url.includes("/edit")) {
             this.router.navigate(['pages/product/edit/confirmation']).then();
@@ -124,18 +140,22 @@ export class ProductImageComponent implements OnInit {
     }
 
     prevPage() {
-        // this.productModel.productInformation.imageInformation = this.productFg.value;
-        this.router.navigate(['pages/product/add/price']).then();
+        if (!this.editMode) {
+            this.router.navigate(['pages/product/add/price']).then();
+        } else if (this.router.url.includes("/edit")) {
+            this.router.navigate(['pages/product/edit/price']).then();
+        }
     }
 
     onSelectedImage(event: any): void {
+
         let lastIndex = event.currentFiles.length - 1;
         let lastImageFile = event.currentFiles[lastIndex];
         let currentImageLength = event.currentFiles.length;
         let previousImageLength = this.productModel.previousImageFileLength;
 
         // validate maximum 3 image and there is difference with previous length
-        // difference may happen because removal of a image
+        // difference may happen because removal of an image
         // to prevent adding same image
         if (currentImageLength <= 3 && previousImageLength != currentImageLength) {
 
@@ -145,27 +165,34 @@ export class ProductImageComponent implements OnInit {
             // push last file
             this.productModel.pFileUploadProductImg.push(lastImageFile);
 
-            const reader = new FileReader();
+            // to display in carrousel confirmation
+            this.imageReadAsDataUrl(lastImageFile);
 
-            reader.onload = (event: any) => {
-                this.productModel.productCarrousel.push({
-                    imageBase64: event.target.result,
-                    imageFile: lastImageFile
-                });
-            };
-
-            reader.readAsDataURL(lastImageFile);
         }
 
     }
 
     onRemovedImage(event) {
-        let index = this.productModel.productCarrousel.findIndex(image => image.imageFile.name === event.file.name);
+        let index = this.productModel.productCarrousel.findIndex(image => image.imageName === event.file.name);
         this.productModel.pFileUploadProductImg.splice(index, 1); // remove from global store file
         this.productModel.productCarrousel.splice(index, 1);
 
         //minus 1 for previous image length
         this.productModel.previousImageFileLength = this.productModel.previousImageFileLength - 1;
+    }
+
+    imageReadAsDataUrl(file: File) {
+        const reader = new FileReader();
+
+        reader.onload = (event: any) => {
+            this.productModel.productCarrousel.push({
+                // bypassSecurityTrustUrl to ignore warning in browser
+                imageBase64: this.sanitizer.bypassSecurityTrustUrl(event.target.result),
+                imageName: file.name // to find index on delete
+            });
+        };
+
+        reader.readAsDataURL(file);
     }
 
     public validateFormFields(formGroup: FormGroup) {

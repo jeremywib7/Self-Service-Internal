@@ -7,7 +7,7 @@
             Upload product image
         </ng-template>
         <ng-template pTemplate="content">
-            <p-progressBar *ngIf="productModel.fileStatus.percent != 100" [value]="productModel.fileStatus.percent"></p-progressBar>
+            <p-progressBar *ngIf="productModel.fileStatus.percent != 100 && editMode" [value]="productModel.fileStatus.percent"></p-progressBar>
             <div class="mb-5">
                 <p-fileUpload tabindex="1" id="imageUrl" accept="image/*" customUpload="true"
                               [showCancelButton]="false" [showUploadButton]="false"

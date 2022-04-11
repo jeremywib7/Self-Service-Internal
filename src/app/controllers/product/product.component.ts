@@ -77,8 +77,16 @@ export class ProductComponent implements OnInit {
             {label: 'NOT AVAILABLE', value: false},
         ];
 
-        // if confirmation steps completed, this will be triggered
+        // if confirmation steps completed, this will be triggered by .next
         this.subscription = this.productModel.addOrEditCompleteProduct$.subscribe((productInformation) => {
+
+            // check if edit mode
+            // return true if url contains /edit
+            this.editMode = this.router.url.includes("/edit");
+
+            // TODO check if no image is selected
+            // TODO add 1 default image if no image is selected
+
 
             this.productFg.patchValue(productInformation['detailInformation']);
             this.productFg.patchValue(productInformation['priceInformation']);
@@ -86,7 +94,7 @@ export class ProductComponent implements OnInit {
 
             if (this.productFg.valid) {
 
-                // patch image name to form
+                // patch image name to form in a loop
                 // format imageName = (index.extension)
                 this.productModel.pFileUploadProductImg.forEach((value, index, array) => {
 
@@ -105,8 +113,13 @@ export class ProductComponent implements OnInit {
                     next: () => {
 
                         // upload image
-                        this.productService.uploadImage(this.productFg.value.name,
+                        this.productService.uploadImage(this.productFg.value.id,
                             this.productModel.pFileUploadProductImg).subscribe({
+
+                            next: response => {
+                                // update progress bar
+                                this.uploadImageProgressBar(response);
+                            },
 
                             // on completed
                             complete: () => {
@@ -152,6 +165,19 @@ export class ProductComponent implements OnInit {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
+    }
+
+    uploadImageProgressBar(httpEvent: HttpEvent<Object>) {
+        switch (httpEvent.type) {
+            case HttpEventType.UploadProgress:
+                this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Uploading...');
+                break;
+        }
+    }
+
+    updateStatus(loaded: number, total: number, requestType: string) {
+        this.productModel.fileStatus.requestType = requestType;
+        this.productModel.fileStatus.percent = Math.round(100 * loaded / total);
     }
 
     clear(table: Table) {
@@ -287,6 +313,7 @@ export class ProductComponent implements OnInit {
     }
 
     onEditProduct(product: Product) {
+
         // reset from previous state
         this.productModel.resetAddOrEditProductSteps();
 
@@ -295,20 +322,6 @@ export class ProductComponent implements OnInit {
         this.productModel.productInformation.priceInformation = product;
         // @ts-ignore
         this.productModel.productInformation.imageInformation.imageName = product.images;
-
-        //
-        // product.images.forEach((value, index, array) => {
-        //     let params = new HttpParams();
-        //     params = params.append('imageName', product.images[index].imageName);
-        //     params = params.append('productName', product.name);
-        //
-        //     this.productService.downloadProductImage(params).subscribe({
-        //         next: response => {
-        //             this.reportProgress(response);
-        //         }
-        //     });
-        //
-        // });
 
         this.router.navigate(['pages/product/edit/detail']);
     }

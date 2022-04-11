@@ -24,12 +24,12 @@ export class ProductService {
         }
     }
 
-    public uploadImage(productName: string, imageFiles: File[]) {
+    public uploadImage(productId: string, imageFiles: File[]) {
 
         if (imageFiles) {
 
             const formData: FormData = new FormData();
-            formData.append('name', productName);
+            formData.append('productId', productId);
             imageFiles.forEach((obj) => {
                 formData.append('files', obj);
             });

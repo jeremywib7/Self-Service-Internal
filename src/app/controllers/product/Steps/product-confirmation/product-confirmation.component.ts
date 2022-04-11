@@ -3,6 +3,7 @@ import {Product} from "../../../../model/Product";
 import {Router} from "@angular/router";
 import {ProductCarrousel} from "../../../../model/ProductCarrousel";
 import {Galleria} from "primeng/galleria";
+import {ProductService} from "../../../../service/product.service";
 
 @Component({
     selector: 'app-product-confirmation',
@@ -42,13 +43,24 @@ export class ProductConfirmationComponent implements OnInit {
 
     productCarrousel: any;
 
-    constructor(public productModel: Product, private router: Router, private cd: ChangeDetectorRef) {
+    constructor(public productModel: Product, private router: Router, private cd: ChangeDetectorRef, private productService:
+        ProductService) {
+        // generate uuid if add product
+
+        if (this.router.url.includes("/add")) {
+            this.productService.getUUID().subscribe({
+                next: value => {
+                    this.productModel.productInformation.detailInformation.id = value['data']['uuid'];
+                }
+            })
+        }
+
     }
 
     ngOnInit(): void {
         this.productInfo = this.productModel.productInformation;
         if (this.productModel.detailInformationDone === false || this.productModel.priceInformationDone === false) {
-            this.router.navigate(['pages/product']);
+            this.router.navigate(['pages/product']).then();
         } else {
             this.images = this.productModel.productCarrousel;
 
@@ -134,7 +146,11 @@ export class ProductConfirmationComponent implements OnInit {
     }
 
     prevPage() {
-        this.router.navigate(['pages/product/add/image']);
+        if (this.router.url.includes("/add")) {
+            this.router.navigate(['pages/product/add/image']);
+        } else if (this.router.url.includes("/edit")) {
+            this.router.navigate(['pages/product/edit/image']);
+        }
     }
 
 }

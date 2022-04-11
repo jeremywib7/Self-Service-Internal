@@ -187,7 +187,12 @@ export class ProductPriceComponent implements OnInit {
 
     prevPage() {
         this.productModel.productInformation.priceInformation = this.productFg.value;
-        this.router.navigate(['pages/product/add/detail']).then();
+
+        if (this.router.url.includes("/add")) {
+            this.router.navigate(['pages/product/add/detail']).then();
+        } else if (this.router.url.includes("/edit")) {
+            this.router.navigate(['pages/product/edit/detail']).then();
+        }
     }
 
     public validateFormFields(formGroup: FormGroup) {
