@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {Product} from "../../../../model/Product";
+import {Product} from "../../../../model/Product/Product";
 import {Router} from "@angular/router";
 import {FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
@@ -24,13 +24,38 @@ export class ProductPriceComponent implements OnInit {
 
         if (this.router.url.includes("/add") && this.productModel.detailInformationDone === false) {
             this.router.navigate(['pages/product/add/detail']).then();
+
         } else if (this.router.url.includes("/edit") && this.productModel.detailInformationDone === false) {
             this.router.navigate(['pages/product/edit/detail']).then();
+
         }
+
     }
 
     ngOnInit(): void {
         this.initForm();
+
+        this.productFg.patchValue(this.productModel.productInformation.priceInformation);
+
+        //for testing
+        // this.productFg.patchValue({
+        //     unitPrice: 45000,
+        //     discount: false,
+        //     discountPercent: 50,
+        //     discountedPrice: 12500,
+        // })
+
+        this.availableDropdown = [
+            {label: 'AVAILABLE', value: true},
+            {label: 'NOT AVAILABLE', value: false},
+        ];
+
+        // to disable or enable on init based discount status true or false
+        if (this.productFg.value.discount) {
+            this.enableDiscountControls();
+        } else {
+            this.disableDiscountControls();
+        }
     }
 
     initForm() {
@@ -56,30 +81,6 @@ export class ProductPriceComponent implements OnInit {
             ],
         });
 
-
-        this.productFg.patchValue(this.productModel.productInformation.priceInformation);
-
-        //for testing
-        // this.productFg.patchValue({
-        //     unitPrice: 45000,
-        //     discount: false,
-        //     discountPercent: 50,
-        //     discountedPrice: 12500,
-        // })
-
-
-        this.availableDropdown = [
-            {label: 'AVAILABLE', value: true},
-            {label: 'NOT AVAILABLE', value: false},
-        ];
-
-        // to disable or enable on init based discount status
-        if (this.productFg.value.discount) {
-            this.enableDiscountControls();
-        } else {
-            this.disableDiscountControls();
-        }
-
     }
 
     inputUnitPrice(event) {
@@ -94,6 +95,7 @@ export class ProductPriceComponent implements OnInit {
 
     inputDiscountValue(event) {
 
+        // check if input discount percent is 100 % in slider or type
         if (event.value > 100) {
             this.productFg.get('sliderPercent').setValue(100);
             this.productFg.get('discountedPrice').setValue(0);
@@ -137,8 +139,20 @@ export class ProductPriceComponent implements OnInit {
     }
 
     enableDiscountControls() {
-        this.productFg.get('discountedPrice').setValue(this.productFg.value.unitPrice);
 
+        // if discount percent is 0, set discounted price equal with normal price/ unit price
+        if (this.productFg.controls['discountPercent'].value === 0) {
+            this.productFg.get('discountedPrice').setValue(this.productFg.value.unitPrice);
+        }
+
+        // update discount percent and slider percent
+        let discountPercent = ((this.productFg.get('unitPrice').value - this.productFg.get('discountedPrice').value) /
+            this.productFg.get('unitPrice').value) * 100;
+
+        this.productFg.get('discountPercent').setValue(discountPercent);
+        this.productFg.get('sliderPercent').setValue(discountPercent);
+
+        // enable price form controls
         this.productFg.controls['discountedPrice'].enable();
         this.productFg.controls['discountPercent'].enable();
         this.productFg.controls['sliderPercent'].enable();
@@ -147,6 +161,7 @@ export class ProductPriceComponent implements OnInit {
     disableDiscountControls() {
         this.productFg.get('discountedPrice').setValue(this.productFg.value.unitPrice);
 
+        // reset to 0
         this.productFg.get('sliderPercent').setValue(0);
         this.productFg.get('discountPercent').setValue(0);
 

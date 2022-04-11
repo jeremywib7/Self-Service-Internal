@@ -1,16 +1,16 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {ProductCategory} from "../../../model/ProductCategory";
+import {ProductCategory} from "../../../model/Product/ProductCategory";
 import {environment} from "../../../../environments/environment";
 import {ProductCategoryService} from "../../../service/product-category.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {RxwebValidators} from "@rxweb/reactive-form-validators";
-import {Product} from "../../../model/Product";
+import {Product} from "../../../model/Product/Product";
 import {Dropdown} from "../../../model/Dropdown";
 import {EditableRow, Table} from "primeng/table";
 import {ConfirmationService, MessageService, PrimeNGConfig} from "primeng/api";
 import {DatePipe} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
-import {UnassignedProduct} from "../../../model/UnassignedProduct";
+import {UnassignedProduct} from "../../../model/Product/UnassignedProduct";
 import {HttpParams} from "@angular/common/http";
 import {catchError, lastValueFrom, map, of, switchMap} from "rxjs";
 

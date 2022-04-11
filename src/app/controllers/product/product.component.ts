@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Product} from "../../model/Product";
+import {Product} from "../../model/Product/Product";
 import {ConfirmationService, LazyLoadEvent, MenuItem, MessageService} from "primeng/api";
 import {HttpEvent, HttpEventType, HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
@@ -84,15 +84,18 @@ export class ProductComponent implements OnInit {
             // return true if url contains /edit
             this.editMode = this.router.url.includes("/edit");
 
-            // TODO check if no image is selected
-            // TODO add 1 default image if no image is selected
-
-
             this.productFg.patchValue(productInformation['detailInformation']);
             this.productFg.patchValue(productInformation['priceInformation']);
-            this.productFg.patchValue(productInformation['imageInformation']);
 
             if (this.productFg.valid) {
+
+                // if no image is selected, then add a random image name
+                // spring can't find the image path and add default product image instead
+                if (this.productModel.pFileUploadProductImg.length == 0) {
+                    this.productFg.value.images.push({
+                        imageName: "defaultproduct.png"
+                    })
+                }
 
                 // patch image name to form in a loop
                 // format imageName = (index.extension)
@@ -101,6 +104,7 @@ export class ProductComponent implements OnInit {
                     // get extension
                     const ext = value.name.substr(value.name.lastIndexOf('.') + 1);
 
+                    // push into form image name
                     this.productFg.value.images.push({
                         imageName: index + "." + ext
                     })
@@ -108,44 +112,30 @@ export class ProductComponent implements OnInit {
                 });
 
                 // add or edit product
-                // save in database
+                // not using switch map to prevent subscribe hell
+                // because subscribe will trigger 3 times because report progress true
                 this.productService.addOrEditProduct(this.productFg.value, this.editMode).subscribe({
-                    next: () => {
+                    next: (response: any) => {
 
-                        // upload image
-                        this.productService.uploadImage(this.productFg.value.id,
-                            this.productModel.pFileUploadProductImg).subscribe({
+                        // check if no image file to upload
+                        if (this.productModel.pFileUploadProductImg.length >= 1) {
+                            // upload image
+                            // get generated uuid from database
+                            this.productService.uploadImage(response.data.id,
+                                this.productModel.pFileUploadProductImg).subscribe({
 
-                            next: response => {
-                                // update progress bar
-                                this.uploadImageProgressBar(response);
-                            },
+                                next: response => {
+                                    // update progress bar
+                                    this.uploadImageProgressBar(response);
+                                },
 
-                            // on completed
-                            complete: () => {
-
-                                // reset form
-                                this.productFg.reset();
-
-                                // reset global state
-                                this.productModel.resetAddOrEditProductSteps();
-
-                                if (this.editMode) {
-                                    this.messageService.add({
-                                        severity: 'success',
-                                        summary: 'Success',
-                                        detail: 'Product successfully updated'
-                                    });
-                                } else {
-                                    this.messageService.add({
-                                        severity: 'success',
-                                        summary: 'Success',
-                                        detail: 'Product successfully added'
-                                    });
+                                complete: () => {
+                                    this.onCompleteAddOrEditProduct();
                                 }
-                                this.router.navigate(['pages/product']);
-                            }
-                        })
+                            })
+                        } else {
+                            this.onCompleteAddOrEditProduct();
+                        }
 
                     },
                 });
@@ -159,6 +149,29 @@ export class ProductComponent implements OnInit {
             }
         });
 
+    }
+
+    onCompleteAddOrEditProduct() {
+        // reset form
+        this.productFg.reset();
+
+        // reset global state
+        this.productModel.resetAddOrEditProductSteps();
+
+        if (this.editMode) {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Product successfully updated'
+            });
+        } else {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Product successfully added'
+            });
+        }
+        this.router.navigate(['pages/product']);
     }
 
     ngOnDestroy() {
@@ -323,10 +336,11 @@ export class ProductComponent implements OnInit {
         // @ts-ignore
         this.productModel.productInformation.imageInformation.imageName = product.images;
 
-        this.router.navigate(['pages/product/edit/detail']);
+        this.router.navigate(['pages/product/edit/detail']).then();
     }
 
     onDeleteProduct(productId: string, productName: string) {
+
         this.confirmationService.confirm({
             message:
                 `
@@ -337,20 +351,22 @@ export class ProductComponent implements OnInit {
             header: `Delete Product`,
             accept: () => {
                 this.productService.deleteProductById(productId).subscribe({
-                    next: value => {
+                    next: (response: any) => {
                         this.dataTblProducts = this.dataTblProducts.filter(val => val.id !== productId);
                         this.dataTblProducts = [...this.dataTblProducts];
 
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Success',
-                            detail: 'Product successfully deleted'
+                            detail: response.message
                         });
                     }
-                })
+                });
             },
         });
+
     }
+
 
     onDeleteSelectedProducts() {
         this.confirmationService.confirm({
@@ -362,7 +378,34 @@ export class ProductComponent implements OnInit {
                 `,
             header: `Delete Selected Product`,
             accept: () => {
-                console.log(this.selectedProducts);
+                // show only id
+                // const result = this.selectedProducts.map(({ id }) => ({ id }));
+
+                let params = new HttpParams();
+
+                this.selectedProducts.forEach(value => {
+                    params = params.append("id", value.id);
+                });
+
+                this.productService.deleteSelectedProductsById(params).subscribe({
+                    next: (response: any) => {
+                        this.selectedProducts.forEach(value => {
+                            this.dataTblProducts = this.dataTblProducts.filter(val => val.id !== value.id);
+                        });
+
+                        this.selectedProducts = [];
+
+                        // refresh table array
+                        this.dataTblProducts = [...this.dataTblProducts];
+
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: response.message
+                        });
+                    }
+                });
+
             },
         });
     }

@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {Product} from "../../../../model/Product";
+import {Product} from "../../../../model/Product/Product";
 import {Router} from "@angular/router";
-import {ProductCarrousel} from "../../../../model/ProductCarrousel";
+import {ProductCarrousel} from "../../../../model/Product/ProductCarrousel";
 import {Galleria} from "primeng/galleria";
 import {ProductService} from "../../../../service/product.service";
 
@@ -45,16 +45,6 @@ export class ProductConfirmationComponent implements OnInit {
 
     constructor(public productModel: Product, private router: Router, private cd: ChangeDetectorRef, private productService:
         ProductService) {
-        // generate uuid if add product
-
-        if (this.router.url.includes("/add")) {
-            this.productService.getUUID().subscribe({
-                next: value => {
-                    this.productModel.productInformation.detailInformation.id = value['data']['uuid'];
-                }
-            })
-        }
-
     }
 
     ngOnInit(): void {

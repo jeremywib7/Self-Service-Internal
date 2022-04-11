@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {Product} from "../../../../model/Product";
+import {Product} from "../../../../model/Product/Product";
 import {FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {environment} from "../../../../../environments/environment";
@@ -132,6 +132,7 @@ export class ProductImageComponent implements OnInit {
     }
 
     nextPage() {
+
         if (!this.editMode) {
             this.router.navigate(['pages/product/add/confirmation']).then();
         } else if (this.router.url.includes("/edit")) {
