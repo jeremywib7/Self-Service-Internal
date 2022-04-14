@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpEvent, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpEvent, HttpHeaders, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {map, Observable, Subscription} from "rxjs";
 import {Product} from "../model/Product/Product";
@@ -12,6 +12,10 @@ export class ProductService {
 
     private apiServerUrl = environment.apiBaseUrl;
     private project = environment.project;
+
+    requestHeader = new HttpHeaders(
+        {"No-Auth": "True"}
+    )
 
     constructor(private httpClient: HttpClient) {
     }

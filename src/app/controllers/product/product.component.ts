@@ -10,7 +10,6 @@ import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Table} from "primeng/table";
-import {FileStatus} from "../../model/FileStatus";
 
 @Component({
     selector: 'app-product',
@@ -20,7 +19,6 @@ import {FileStatus} from "../../model/FileStatus";
 export class ProductComponent implements OnInit {
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
-
 
     subscription: Subscription;
 

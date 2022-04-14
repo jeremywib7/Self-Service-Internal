@@ -18,7 +18,6 @@ import {LoaderService} from "../service/loader.service";
 })
 export class AuthInterceptor implements HttpInterceptor {
 
-    service_count = 0; // initialize the counter.
 
     constructor(
         private userAuthService: UserAuthService,
@@ -43,6 +42,7 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(req).pipe(
             catchError(
                 (err: HttpErrorResponse) => {
+
                     if (err.status === 401) {
                         this.userAuthService.clear();
                         this.messageService.add({
@@ -60,6 +60,7 @@ export class AuthInterceptor implements HttpInterceptor {
                             detail: err.error.message
                         });
                     }
+
                     return EMPTY;
                 }
             ),

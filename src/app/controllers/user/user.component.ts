@@ -112,6 +112,10 @@ export class UserComponent implements OnInit {
 
     initForm() {
         this.reactiveForm = this.fb.group({
+            id: new FormControl(
+                '', {
+                    validators: []
+                }),
             imageUrl: new FormControl(null,
                 {
                     validators: this.user ? [] : [Validators.required]
@@ -250,6 +254,8 @@ export class UserComponent implements OnInit {
     // open dialog method
 
     openAddOrEditUserDialog(editMode?: boolean, user?: User) {
+
+        console.log(user);
 
         if (editMode) {
             this.editMode = true;
