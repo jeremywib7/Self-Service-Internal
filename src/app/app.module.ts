@@ -120,7 +120,6 @@ import {CrudComponent} from './components/crud/crud.component';
 import {TimelineComponent} from './components/timeline/timeline.component';
 import {IconsComponent} from './components/icons/icons.component';
 import {BlocksComponent} from './components/blocks/blocks.component';
-import {PaymentComponent} from './components/menus/payment.component';
 import {ConfirmationComponent} from './components/menus/confirmation.component';
 import {PersonalComponent} from './components/menus/personal.component';
 import {SeatComponent} from './components/menus/seat.component';
@@ -157,7 +156,7 @@ import {ProductPriceComponent} from './controllers/product/Steps/product-price/p
 import {ProductFormComponent} from './controllers/product/Form/product-form/product-form.component';
 import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";
 import {HistoryRouteService} from "./service/history.route.service";
-import { WaitingListComponent } from './controllers/waiting-list/waiting-list.component';
+import { PaymentComponent } from './controllers/payment/payment.component';
 import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environment";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
@@ -167,6 +166,9 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {BreadcrumbModule} from "xng-breadcrumb";
 import { BreadcrumbComponent } from './controllers/breadcrumb/breadcrumb.component';
+import {ZXingScannerModule} from "@zxing/ngx-scanner";
+import { WaitingListComponent } from './controllers/waiting-list/waiting-list.component';
+import {ProgressSpinnerModule} from "primeng/progressspinner";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -283,6 +285,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         BreadcrumbModule,
         BreadcrumbModule,
         BreadcrumbModule,
+        ZXingScannerModule,
+        ProgressSpinnerModule,
     ],
     declarations: [
         AppComponent,
@@ -332,8 +336,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         ProductPriceComponent,
         ProductFormComponent,
         ProductImageComponent,
-        WaitingListComponent,
+        PaymentComponent,
         BreadcrumbComponent,
+        WaitingListComponent,
     ],
     providers: [
         AuthGuard,

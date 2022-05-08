@@ -33,7 +33,7 @@ import {LoginComponent} from "./controllers/login/login.component";
 import {ProductDetailComponent} from "./controllers/product/Steps/product-detail/product-detail.component";
 import {ProductPriceComponent} from "./controllers/product/Steps/product-price/product-price.component";
 import {ProductFormComponent} from "./controllers/product/Form/product-form/product-form.component";
-import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.component";
+import {PaymentComponent} from "./controllers/payment/payment.component";
 import {ProductCategory} from "./model/Product/ProductCategory";
 import {ProductCategoryComponent} from "./controllers/product/product-category/product-category.component";
 
@@ -86,7 +86,7 @@ const routes: Routes = [
                     },
 
                     // waiting list
-                    {path: 'pages/waitingList', data: {breadcrumb: 'Waiting List'}, component: WaitingListComponent},
+                    {path: 'pages/waitingList', data: {breadcrumb: 'Waiting List'}, component: PaymentComponent},
 
                     // report
                     {path: 'pages/report', data: {breadcrumb: 'User'}, component: UserComponent},

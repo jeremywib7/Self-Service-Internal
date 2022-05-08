@@ -267,8 +267,7 @@
                   header="Add Product Category"
                   [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-                <form *ngIf="productCategoryFg" [formGroup]="productCategoryFg" (ngSubmit)="submit()">
-
+                <form  [formGroup]="productCategoryFg" (ngSubmit)="submit()">
                     <div class="field">
                         <label>Name</label>
                         <input type="text" pInputText formControlName="categoryName"

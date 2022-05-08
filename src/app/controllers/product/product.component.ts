@@ -91,7 +91,7 @@ export class ProductComponent implements OnInit {
                 // spring can't find the image path and add default product image instead
                 if (this.productModel.pFileUploadProductImg.length == 0) {
                     this.productFg.value.images.push({
-                        imageName: "defaultproduct.png"
+                        imageName: this.productFg.value.name
                     })
                 }
 
@@ -104,8 +104,8 @@ export class ProductComponent implements OnInit {
 
                     // push into form image name
                     this.productFg.value.images.push({
-                        imageName: index + "." + ext
-                    })
+                        imageName: this.productFg.value.id + "_" + index + "." + ext
+                    });
 
                 });
 
@@ -117,20 +117,20 @@ export class ProductComponent implements OnInit {
 
                         // check if no image file to upload
                         if (this.productModel.pFileUploadProductImg.length >= 1) {
+
                             // upload image
                             // get generated uuid from database
-                            this.productService.uploadImage(response.data.id,
-                                this.productModel.pFileUploadProductImg).subscribe({
-
+                            this.productService.uploadImage(response.data.id, this.productModel.pFileUploadProductImg)
+                                .subscribe({
                                 next: response => {
                                     // update progress bar
                                     this.uploadImageProgressBar(response);
                                 },
-
                                 complete: () => {
                                     this.onCompleteAddOrEditProduct();
                                 }
-                            })
+                            });
+
                         } else {
                             this.onCompleteAddOrEditProduct();
                         }
@@ -145,8 +145,8 @@ export class ProductComponent implements OnInit {
                     detail: 'Please double check required fields'
                 });
             }
-        });
 
+        });
     }
 
     onCompleteAddOrEditProduct() {

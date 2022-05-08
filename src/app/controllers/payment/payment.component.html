@@ -1,0 +1,213 @@
+<div class="grid">
+    <div class="col-12">
+
+        <div class="card">
+            <h5>Waiting List</h5>
+            <p-dataView #dv [value]="waitingLists" [paginator]="true" [rows]="9" filterBy="customerName"
+                        [loading]="isLoadingWaitingList" layout="grid">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between">
+                        <button
+                            (click)="showAddOrEditDialogWaitingList()"
+                            pButton pRipple label="Payment" icon="pi pi-plus"
+                            class="p-button-success mb-2 md:mb-0">
+                        </button>
+                        <span class="p-input-icon-left mb-2 md:mb-0">
+                            <i class="pi pi-search"></i>
+                            <input type="search" pInputText placeholder="Search customer"
+                                   (input)="dv.filter($event.target.value)">
+                        </span>
+                        <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                    </div>
+                </ng-template>
+
+                <ng-template let-waitingList pTemplate="listItem">
+                    <div class="col-12">
+                        <div class="flex flex-column md:flex-row align-items-center p-3 w-full">
+                            <div class="flex-1 text-center md:text-left">
+                                <div class="font-bold text-2xl">{{waitingList.number}}</div>
+                                <div class="mb-3">
+                                    <countdown [config]="{ stopTime: waitingList.estTime}"
+                                               (event)="onTimerFinished($event, waitingList.status, waitingList.id)">
+                                    </countdown>
+                                </div>
+                                <div class="flex align-items-center mt-2">
+                                    <i class="pi pi-user mr-2"></i>
+                                    <span class="font-semibold">{{waitingList.customerName}}</span>
+                                </div>
+                            </div>
+                            <div
+                                class="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
+                                <div class="mb-2">
+                                    <button pButton pRipple
+                                            icon="pi pi-pencil"
+                                            class="p-button-rounded p-button-warning mr-2"
+                                    ></button>
+                                    <button pButton pRipple
+                                            [disabled]="waitingList.status != 'READY'"
+                                            icon="pi pi-volume-up"
+                                            pTooltip="Call"
+                                            tooltipPosition="bottom"
+                                            class="p-button-rounded p-button-info">
+                                    </button>
+                                </div>
+                                <span
+                                    [class]="'waiting-list-badge status-' + waitingList.status.toLowerCase()">
+                                    {{waitingList.status}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <ng-template let-waitingList pTemplate="gridItem">
+                    <div class="col-12 md:col-4">
+                        <div class="card m-3 border-1 surface-border">
+                            <div class="flex align-items-center justify-content-between">
+                                <div class="flex align-items-center">
+                                    <i class="pi pi-user mr-2"></i>
+                                    <span class="font-semibold">{{waitingList.customerName}}</span>
+                                </div>
+                                <span [class]="'sm:ml-2 waiting-list-badge status-' + waitingList.status.toLowerCase()">
+                                    {{waitingList.status}}
+                                </span>
+                            </div>
+                            <div class="text-center my-3 mx-0">
+                                <div class="text-2xl font-bold">{{waitingList.number}}</div>
+                                <countdown [config]="{ stopTime: waitingList.estTime}"
+                                           (event)="onTimerFinished($event, waitingList.status, waitingList.id)">
+                                </countdown>
+                            </div>
+                            <div class="flex align-items-center justify-content-center">
+                                <!--                                <span class="text-2xl font-semibold">${{waitingList.price}}</span>-->
+                                <button pButton pRipple
+                                        icon="pi pi-pencil"
+                                        pTooltip="Edit"
+                                        tooltipPosition="bottom"
+                                        class="p-button-rounded p-button-warning mr-2">
+                                </button>
+                                <button pButton pRipple
+                                        [disabled]="waitingList.status != 'READY'"
+                                        icon="pi pi-volume-up"
+                                        pTooltip="Call"
+                                        tooltipPosition="bottom"
+                                        class="p-button-rounded p-button-info">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+            </p-dataView>
+        </div>
+
+        <p-dialog [(visible)]="showPaymentDialog" [style]="{width: '450px'}" [draggable]="false"
+                  header="Payment" (onHide)="waitingListFg.reset()"
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+
+                <div *ngIf="!isCameraLoaded" class="flex justify-content-center align-items-center">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
+
+                <form *ngIf="waitingListFg" [formGroup]="waitingListFg" (ngSubmit)="submit()">
+
+                    <div [ngSwitch]="customerId">
+                        <!-- the same view can be shown in more than one case -->
+                        <div *ngSwitchCase="null" [hidden]="!isCameraLoaded">
+                            <zxing-scanner
+                                (camerasFound)="this.isCameraLoaded = true"
+                                (scanSuccess)="onConfirmPayment($event)">
+                            </zxing-scanner>
+
+                            <p-divider align="center" type="dashed">
+                                <b>OR</b>
+                            </p-divider>
+
+                            <div class="field col-12">
+                                <label>Username</label>
+                                <input type="text" pInputText formControlName="username"
+                                       (keydown.enter)="onConfirmPayment($event.target.value)"
+                                       [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.username.errors &&
+                                            (waitingListFg.controls.username.touched || waitingListFg.controls.username.dirty)}"/>
+                            </div>
+
+                            <div class="col-12">
+                                <p-messages></p-messages>
+                            </div>
+                        </div>
+
+                        <!--default case when there are no matches -->
+                        <div *ngSwitchDefault>
+                            <div class="p-fluid p-formgrid grid">
+
+                                <div class="field col-12">
+                                    <label for="id">Customer ID</label>
+                                    <input type="text" pInputText [readOnly]="true" id="id" formControlName="id"
+                                           [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.id.errors &&
+                                            (waitingListFg.controls.id.touched || waitingListFg.controls.id.dirty)}"/>
+                                </div>
+
+                                <div class="field col-12">
+                                    <label for="Username">Username</label>
+                                    <input type="text" pInputText [readOnly]="true" id="Username"
+                                           formControlName="username"
+                                           [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.username.errors &&
+                                            (waitingListFg.controls.username.touched || waitingListFg.controls.username.dirty)}"/>
+                                </div>
+
+
+                                <div class="col-12">
+                                    <label>Estimated Time</label>
+                                </div>
+
+                                <div class="field col-4">
+                                    <p-inputNumber [showButtons]="true" formControlName="estHour" [min]="0" [max]="24"
+                                                   buttonLayout="vertical" inputId="vertical"
+                                                   suffix=" Hour" decrementButtonClass="p-button-secondary"
+                                                   incrementButtonClass="p-button-secondary"
+                                                   incrementButtonIcon="pi pi-plus"
+                                                   decrementButtonIcon="pi pi-minus">
+                                    </p-inputNumber>
+                                </div>
+
+                                <div class="field col-4">
+                                    <p-inputNumber [showButtons]="true" formControlName="estMinute" [min]="0" [max]="60"
+                                                   buttonLayout="vertical" inputId="vertical" suffix=" Minute"
+                                                   decrementButtonClass="p-button-secondary"
+                                                   incrementButtonClass="p-button-secondary"
+                                                   incrementButtonIcon="pi pi-plus"
+                                                   decrementButtonIcon="pi pi-minus">
+                                    </p-inputNumber>
+                                </div>
+
+                                <div class="field col-4">
+                                    <p-inputNumber [showButtons]="true" formControlName="estSecond" [min]="0" [max]="60"
+                                                   buttonLayout="vertical" inputId="vertical" suffix=" Second"
+                                                   decrementButtonClass="p-button-secondary"
+                                                   incrementButtonClass="p-button-secondary"
+                                                   incrementButtonIcon="pi pi-plus"
+                                                   decrementButtonIcon="pi pi-minus">
+                                    </p-inputNumber>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+                <button pButton pRipple *ngIf="editMode" label="Reset Password"
+                        icon="pi pi-refresh"
+                        class="p-button-danger"></button>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <div *ngIf="customerId">
+                    <button pButton pRipple (click)="onResetQrCode()"
+                            label="Reset" icon="pi pi-restart" class="p-button-text"></button>
+                    <button pButton pRipple label="Confirm" icon="pi pi-check"
+                            class="p-button-text"></button>
+                </div>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {map, Observable, Subscription} from "rxjs";
+import {map, Observable} from "rxjs";
 import {Product} from "../model/Product/Product";
 import {UnassignedProduct} from "../model/Product/UnassignedProduct";
 

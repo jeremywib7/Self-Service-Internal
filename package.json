@@ -27,6 +27,7 @@
     "@ngx-translate/http-loader": "^6.0.0",
     "@rxweb/reactive-form-validators": "^2.1.6",
     "@types/jspdf": "^2.0.0",
+    "@zxing/ngx-scanner": "^3.5.0",
     "chart.js": "^3.3.2",
     "file-saver": "^2.0.5",
     "jquery": "^3.6.0",

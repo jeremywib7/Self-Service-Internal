@@ -1,8 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Subject} from "rxjs";
-import {FormArray, FormGroup} from "@angular/forms";
 import {ProductCarrousel} from "./ProductCarrousel";
-import {RxFormBuilder} from "@rxweb/reactive-form-validators";
 import {FileStatus} from "../FileStatus";
 
 @Injectable()
