@@ -97,44 +97,52 @@
                         </div>
                     </div>
                 </ng-template>
-
             </p-dataView>
         </div>
 
         <p-dialog [(visible)]="showPaymentDialog" [style]="{width: '450px'}" [draggable]="false"
-                  header="Payment" (onHide)="waitingListFg.reset()"
-                  [modal]="true" class="p-fluid">
+                  header="Payment" [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
 
-                <div *ngIf="!isCameraLoaded" class="flex justify-content-center align-items-center">
+                <div *ngIf="!isDoneCheckingCamera" class="flex justify-content-center align-items-center">
                     <p-progressSpinner></p-progressSpinner>
                 </div>
 
-                <form *ngIf="waitingListFg" [formGroup]="waitingListFg" (ngSubmit)="submit()">
+                <form [formGroup]="waitingListFg" (ngSubmit)="submit()">
 
                     <div [ngSwitch]="customerId">
-                        <!-- the same view can be shown in more than one case -->
-                        <div *ngSwitchCase="null" [hidden]="!isCameraLoaded">
-                            <zxing-scanner
-                                (camerasFound)="this.isCameraLoaded = true"
-                                (scanSuccess)="onConfirmPayment($event)">
-                            </zxing-scanner>
 
-                            <p-divider align="center" type="dashed">
-                                <b>OR</b>
-                            </p-divider>
+                        <!-- the same view can be shown in more than one case -->
+                        <div *ngSwitchCase="null">
+                            <div *ngIf="!isDoneCheckingCamera && !isCameraAvl">
+                                <zxing-scanner
+                                    [enable]="true"
+                                    [autofocusEnabled]="true"
+                                    [device]="currentDevice"
+                                    [tryHarder]="true"
+                                    (camerasFound)="onCheckingCamera($event)"
+                                    (camerasNotFound)="onCheckingCamera($event)"
+                                    (scanSuccess)="onConfirmPaymentByQrCode($event)">
+                                </zxing-scanner>
+
+                                <p-divider align="center" type="dashed">
+                                    <b>OR</b>
+                                </p-divider>
+                            </div>
 
                             <div class="field col-12">
                                 <label>Username</label>
                                 <input type="text" pInputText formControlName="username"
-                                       (keydown.enter)="onConfirmPayment($event.target.value)"
+                                       (keydown.enter)="onConfirmPaymentByUsername($event.target.value)"
                                        [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.username.errors &&
-                                            (waitingListFg.controls.username.touched || waitingListFg.controls.username.dirty)}"/>
+                                            (waitingListFg.controls.username.touched ||
+                                            waitingListFg.controls.username.dirty)}"/>
                             </div>
 
                             <div class="col-12">
-                                <p-messages></p-messages>
+                                <p-messages [value]="searchByUsernameMsg"></p-messages>
                             </div>
+
                         </div>
 
                         <!--default case when there are no matches -->
@@ -156,6 +164,61 @@
                                             (waitingListFg.controls.username.touched || waitingListFg.controls.username.dirty)}"/>
                                 </div>
 
+                                <div class="field col-12">
+                                    <label>Ordered productLists</label>
+                                    <p-dataView [value]="customerOrder" emptyMessage="No productList found">
+                                        <ng-template pTemplate="header">
+                                            <input type="text" pInputText placeholder="Search productList..."/>
+                                        </ng-template>
+
+                                        <ng-template let-productList pTemplate="listItem">
+                                            <div class="product-item">
+                                                <div class="image-container">
+                                                    <img [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/customer/product/download/file?' +
+                                                        'imageName=' + productList?.product?.images[0].imageName + '&' +
+                                                        'productId=' + productList?.product?.id "
+                                                         [alt]="productList.name" class="product-image"/>
+                                                </div>
+                                                <div class="product-list-detail">
+                                                    <h5 class="mb-2">{{productList.name}}</h5>
+                                                    <i class="pi pi-tag productList-category-icon"></i>
+                                                    <!--                                                        <span-->
+                                                    <!--                                                            class="productList-category">{{productList.category}}</span>-->
+                                                </div>
+                                                <div class="product-list-action">
+                                                    <h6 class="mb-2">{{productList.discountedPrice * productList.quantity
+                                                        | currency:'Rp. ':'symbol':'3.0'}}</h6>
+                                                    <!--                                                        <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>-->
+                                                </div>
+                                            </div>
+                                            <!--                                                <div-->
+                                            <!--                                                    class="flex align-items-start sm:align-items-center mb-4">-->
+                                            <!--                                                    <img [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/customer/productList/download/file?' +-->
+                                            <!--                                                'imageName=' + productListList?.productList?.images[0].imageName + '&' +-->
+                                            <!--                                                'productListId=' + productListList?.productList?.id "-->
+                                            <!--                                                         class="w-6rem sm:w-8rem flex-shrink-0"/>-->
+                                            <!--                                                    <div class="flex-auto px-3">-->
+                                            <!--                                                        <div class="flex align-items-center justify-content-between mb-3">-->
+                                            <!--                                                            <span class="text-900 font-medium">{{productListList.productList.name}}</span>-->
+                                            <!--                                                            <span-->
+                                            <!--                                                                class="text-900 font-bold">{{productListList.productList.discountedPrice * productListList.quantity-->
+                                            <!--                                                                | currency:'Rp. ':'symbol':'3.0'}}</span>-->
+                                            <!--                                                        </div>-->
+                                            <!--                                                        &lt;!&ndash;                    <div class="text-600 text-sm mb-3">Green | Small</div>&ndash;&gt;-->
+                                            <!--                                                        <div class="flex flex-auto justify-content-between align-items-center">-->
+                                            <!--                                                            <div *ngIf="productListList.productList.active === false ||-->
+                                            <!--                                       productListList.productList.deleted === true">-->
+                                            <!--                                                                <span class="text-pink-500">productList is not available</span>-->
+                                            <!--                                                            </div>-->
+                                            <!--                                                        </div>-->
+                                            <!--                                                    </div>-->
+                                            <!--                                                </div>-->
+                                        </ng-template>
+
+                                        <ng-template pTemplate="footer">
+                                        </ng-template>
+                                    </p-dataView>
+                                </div>
 
                                 <div class="col-12">
                                     <label>Estimated Time</label>

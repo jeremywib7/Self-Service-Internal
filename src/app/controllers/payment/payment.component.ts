@@ -3,8 +3,10 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {WaitingList} from "../../model/WaitingList";
 import {WaitingListService} from "../../service/waiting-list.service";
-import {MessageService} from "primeng/api";
+import {Message, MessageService} from "primeng/api";
 import {CountdownEvent} from "ngx-countdown";
+import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
+import {environment} from "../../../environments/environment";
 
 @Component({
     selector: 'app-waiting-list',
@@ -13,19 +15,31 @@ import {CountdownEvent} from "ngx-countdown";
 })
 export class PaymentComponent implements OnInit {
 
+    // global environment
+    apiBaseUrl = environment.apiBaseUrl;
+    projectName = environment.project;
+
     showPaymentDialog: boolean = false;
 
     editMode: boolean = false;
 
     customerId: string;
 
+    currentDevice: MediaDeviceInfo = null;
+
+    searchByUsernameMsg: Message[];
+
 
     isSendingWaitingList: boolean = false;
 
     isLoadingWaitingList: boolean = false;
 
-    isCameraLoaded: boolean = false;
+    isDoneCheckingCamera: boolean = false;
 
+    isCameraAvl: boolean = false;
+
+
+    customerOrder: CustomerOrder[] = [];
 
     waitingListFg: FormGroup;
 
@@ -82,6 +96,10 @@ export class PaymentComponent implements OnInit {
                 this.waitingListService.update_WaitingListStatus(id, "WAITING");
             }
         }
+    }
+
+    onCameraNotFound() {
+        console.log("camera not found");
     }
 
     // WL = Waiting List
@@ -147,19 +165,41 @@ export class PaymentComponent implements OnInit {
         }
     }
 
-    onResetQrCode() {
-        this.customerId = null;
+    onCheckingCamera(cameraAvl: any) {
+        console.log(cameraAvl);
+        this.isCameraAvl = cameraAvl;
+        this.isDoneCheckingCamera = true;
     }
 
-    onConfirmPayment(customerId: string) {
-        console.log(customerId);
+    onResetQrCode() {
+        this.customerId = null;
+        this.waitingListFg.reset();
+        console.log(this.waitingListFg.value);
+    }
+
+    onConfirmPaymentByQrCode(customerId: string) {
+        this.searchByUsernameMsg = [];
 
         this.waitingListService.getCustomerById(customerId).subscribe({
             next: (value: any) => {
                 this.customerId = customerId;
                 this.waitingListFg.get("id").setValue(customerId);
+            }
+        })
 
-                console.log(value);
+    }
+
+    onConfirmPaymentByUsername(username: string) {
+        this.searchByUsernameMsg = [];
+
+        // check order by this customer username
+        this.waitingListService.getCustomerByUsername(username).subscribe({
+            next: (value: any) => {
+                this.customerId = value.data.customerProfile.id;
+                this.waitingListFg.patchValue(value.data.customerProfile);
+                this.customerOrder = value.data.historyProductOrders;
+
+                console.log(value.data);
             }
         })
 

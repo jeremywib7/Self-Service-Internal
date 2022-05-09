@@ -166,9 +166,9 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {BreadcrumbModule} from "xng-breadcrumb";
 import { BreadcrumbComponent } from './controllers/breadcrumb/breadcrumb.component';
-import {ZXingScannerModule} from "@zxing/ngx-scanner";
 import { WaitingListComponent } from './controllers/waiting-list/waiting-list.component';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
+import {ZXingScannerModule} from "@zxing/ngx-scanner";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -285,8 +285,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         BreadcrumbModule,
         BreadcrumbModule,
         BreadcrumbModule,
-        ZXingScannerModule,
         ProgressSpinnerModule,
+        ZXingScannerModule,
     ],
     declarations: [
         AppComponent,

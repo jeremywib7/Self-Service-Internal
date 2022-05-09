@@ -24,6 +24,10 @@ export class WaitingListService {
         return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/customer/profile/${id}`);
     }
 
+    public getCustomerByUsername(username: string): Observable<User> {
+        return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/order/view/byUsername/${username}`);
+    }
+
     create_NewWaitingList(waitingList: WaitingList) {
         return this.fireServices.collection('Waiting_List').add(waitingList);
     }
