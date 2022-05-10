@@ -1,3 +1,16 @@
 <router-outlet></router-outlet>
+
 <p-toast></p-toast>
+
+<p-confirmDialog #cd [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{minWidth: '450px'}"
+                 icon="pi pi-exclamation-triangle">
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                (click)="cd.reject()"></button>
+        <button pButton pRipple
+                (click)="cd.accept()"
+                icon="pi pi-check" class="p-button-text" label="Yes"
+        ></button>
+    </ng-template>
+</p-confirmDialog>
 

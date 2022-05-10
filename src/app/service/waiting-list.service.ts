@@ -3,7 +3,7 @@ import {WaitingList} from "../model/WaitingList";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {Observable} from "rxjs";
 import {User} from "../model/User";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -26,6 +26,11 @@ export class WaitingListService {
 
     public getCustomerByUsername(username: string): Observable<User> {
         return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/order/view/byUsername/${username}`);
+    }
+
+    public completePayment(params: HttpParams) {
+        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/order/pay`, null, {
+            params: params});
     }
 
     create_NewWaitingList(waitingList: WaitingList) {

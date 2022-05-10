@@ -77,7 +77,6 @@ export class WaitingListComponent implements OnInit {
     initForm() {
         this.waitingListFg = this.fb.group({
             id: ['', [RxwebValidators.required()]],
-            username: ['', [RxwebValidators.required()]],
             number: ['', [RxwebValidators.required()]],
             customerName: ['', [RxwebValidators.required(),]],
             status: ['', [RxwebValidators.required()]],
@@ -86,7 +85,6 @@ export class WaitingListComponent implements OnInit {
             estMinute: [0, [RxwebValidators.required()]],
             estSecond: [0, [RxwebValidators.required()]],
         }, {updateOn: 'change'})
-
     }
 
     onTimerFinished(e: CountdownEvent, status: string, id: string) {
@@ -188,7 +186,6 @@ export class WaitingListComponent implements OnInit {
     }
 
     onConfirmPaymentByUsername(username: string) {
-        this.searchByUsernameMsg = [];
 
         // check order by this customer username
         this.waitingListService.getCustomerByUsername(username).subscribe({

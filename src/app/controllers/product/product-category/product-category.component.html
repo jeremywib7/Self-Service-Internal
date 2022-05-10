@@ -302,17 +302,5 @@
             </ng-template>
         </p-dialog>
 
-        <p-confirmDialog #cd [breakpoints]="{'960px': '75vw', '640px': '100vw'}"
-                         icon="pi pi-exclamation-triangle">
-            <ng-template pTemplate="footer">
-                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
-                        (click)="cd.reject()"></button>
-                <button pButton pRipple
-                        (click)="cd.accept()"
-                        icon="pi pi-check" class="p-button-text" label="Yes"
-                ></button>
-            </ng-template>
-        </p-confirmDialog>
-
     </div>
 </div>

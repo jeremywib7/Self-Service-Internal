@@ -170,6 +170,10 @@ import { WaitingListComponent } from './controllers/waiting-list/waiting-list.co
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {ZXingScannerModule} from "@zxing/ngx-scanner";
 
+import { registerLocaleData } from '@angular/common';
+import localeId from '@angular/common/locales/id';
+registerLocaleData(localeId, 'id');
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -351,6 +355,9 @@ export function HttpLoaderFactory(http: HttpClient) {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
             multi: true
+        },
+        {
+            provide: LOCALE_ID, useValue: "id-ID"
         },
         {
             provide: LOADING_BAR_CONFIG,

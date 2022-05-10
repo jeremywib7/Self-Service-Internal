@@ -1,281 +1,90 @@
-<div class="grid">
-    <div class="col-12">
+<div class="card">
+    <h5>Payment</h5>
 
-        <div class="card">
-            <h5>Payment</h5>
+    <div *ngIf="!isDoneCheckingCamera" class="flex justify-content-center align-items-center">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
 
-            <div *ngIf="!isDoneCheckingCamera" class="flex justify-content-center align-items-center">
-                <p-progressSpinner></p-progressSpinner>
-            </div>
+    <div [ngSwitch]="customerId">
+        <form [formGroup]="waitingListFg" (ngSubmit)="submit()">
 
-            <div [ngSwitch]="customerId">
-                <form [formGroup]="waitingListFg" (ngSubmit)="submit()">
-
-                    <!-- the same view can be shown in more than one case -->
-                    <div *ngSwitchCase="null">
-
-                        <div [hidden]="!isDoneCheckingCamera && !isCameraAvl"
-                            class="surface-section px-4 py-8 md:px-6 lg:px-8">
-                            <div class="flex flex-wrap">
-                                <div *ngIf="isDoneCheckingCamera && !isCameraAvl"
-                                    class="w-full xl:w-6 p-3 pr-5">
-                                    <div class="relative w-full xl:w-30rem">
-                                        <input pInputText formControlName="username" type="text"
-                                               placeholder="Enter customer username"
-                                               class="py-3 pl-3 w-full"
-                                               style="border-radius: 30px;padding-right: 8rem"
-                                               (keydown.enter)="onConfirmPaymentByUsername($event.target.value)"
-                                               [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.username.errors &&
+            <!-- the same view can be shown in more than one case -->
+            <div *ngSwitchCase="null">
+                <div class="p-fluid p-formgrid grid px-4 py-4">
+                    <div class="field col-12">
+                        <div class="relative">
+                            <input #username pInputText formControlName="username" type="text"
+                                   placeholder="Enter customer username"
+                                   class="py-3 pl-3 w-full"
+                                   style="border-radius: 30px;padding-right: 8rem"
+                                   [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.username.errors &&
                                             (waitingListFg.controls.username.touched ||
                                             waitingListFg.controls.username.dirty)}"/>
-                                        <button
-                                            class="p-3 absolute appearance-none p-component border-none bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white outline-none h-full cursor-pointer"
-                                            style="border-radius: 30px; top: 0; right: 0">Confirm
-                                        </button>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <p-messages [value]="searchByUsernameMsg"></p-messages>
-                                    </div>
-                                </div>
-
-                                <div
-                                    class="w-full xl:w-6 p-3 flex align-items-center justify-content-center bg-indigo-50 p-4 lg:p-8  xl:mt-0"
-                                    style="border-radius: 30px">
-                                    <div class="relative w-full" style="padding-bottom:56.25%;height:0;">
-                                        <zxing-scanner
-                                            [autofocusEnabled]="true"
-                                            [device]="currentDevice"
-                                            [tryHarder]="true"
-                                            (camerasFound)="onCheckingCamera($event)"
-                                            (camerasNotFound)="onCheckingCamera($event)"
-                                            (scanSuccess)="onConfirmPaymentByQrCode($event)">
-                                        </zxing-scanner>
-
-                                    </div>
-                                </div>
-                            </div>
+                            <button (click)="onConfirmPaymentByUsername(username.value)"
+                                    class="p-3 absolute appearance-none p-component border-none bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white outline-none h-full cursor-pointer"
+                                    style="border-radius: 30px; top: 0; right: 0">Confirm
+                            </button>
                         </div>
+                        <p-messages [value]="searchByUsernameMsg"></p-messages>
                     </div>
 
-                    <!--default case when there are no matches -->
-                    <div *ngSwitchDefault>
-                        <div class="surface-section">
-                            <div class="grid grid-nogutter">
-                                <div class="col-12 lg:col-6 h-full px-4 py-8 md:px-6 lg:px-8">
-                                    <div class="grid formgrid">
-                                        <div class="col-12 field mb-4">
-                                            <span
-                                                class="text-900 text-2xl block font-medium">Customer Information</span>
-                                        </div>
-                                        <div class="col-12 field mb-4">
-                                            <label>Customer ID</label>
-                                            <input id="address" placeholder="Customer Id" type="text"
-                                                   class="p-inputtext w-full">
-                                        </div>
-                                        <div class="col-12 field mb-4">
-                                            <label>Username</label>
-                                            <input id="address2" placeholder="Username" type="text"
-                                                   class="p-inputtext w-full">
-                                        </div>
+                    <div class="field col-12">
+                        <zxing-scanner *ngIf="isCameraAvl"
+                                       [autofocusEnabled]="true"
+                                       [device]="currentDevice"
+                                       [tryHarder]="true"
+                                       (camerasFound)="onCheckingCamera(true)"
+                                       (camerasNotFound)="onCheckingCamera(false)"
+                                       (scanSuccess)="onConfirmPaymentByQrCode($event)">
+                        </zxing-scanner>
 
-                                        <div
-                                            class="col-12 flex flex-column lg:flex-row justify-content-center align-items-center lg:justify-content-end mt-6">
-                                            <button pButton pRipple
-                                                    class="p-button-text mt-3 lg:mt-0 w-full lg:w-auto lg:px-6 flex-order-2 lg:flex-order-1 lg:mr-4"
-                                                    label="Reset"></button>
-                                            <button pButton pRipple
-                                                    class="p-button-primary w-full lg:w-auto lg:px-6 flex-order-1 lg:flex-order-2"
-                                                    label="Confirm"></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 lg:col-6 px-4 py-8 md:px-6 lg:px-8 surface-50">
-                                    <div class="border-bottom-1 pb-3 surface-border">
-                                        <span class="text-900 font-medium text-xl">Your Cart</span>
-                                    </div>
-
-                                    <div *ngFor="let product of customerOrder['historyProductOrders']"
-                                         class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 border-bottom-1 surface-border">
-                                        <img src="assets/images/blocks/ecommerce/checkoutform/checkoutform-1-2.png"
-                                             class="w-8rem h-8rem flex-shrink-0 mb-3"/>
-                                        <div class="flex-auto lg:ml-3">
-                                            <div class="flex align-items-center justify-content-between mb-3">
-                                                <span class="text-900 font-medium">Product Name</span>
-                                                <span class="text-900 font-bold">$123.00</span>
-                                            </div>
-                                            <div class="text-600 text-sm mb-3">Black | Large</div>
-                                            <div class="flex flex-auto justify-content-between align-items-center">
-                                                <p-inputNumber [showButtons]="true" buttonLayout="horizontal"
-                                                               spinnerMode="horizontal" min="0"
-                                                               inputStyleClass="w-2rem text-center py-2 px-1 border-transparent"
-                                                               class="border-1 surface-border border-round"
-                                                               decrementButtonClass="p-button-text text-600 hover:text-primary py-1 px-1"
-                                                               incrementButtonClass="p-button-text text-600 hover:text-primary py-1 px-1"
-                                                               incrementButtonIcon="pi pi-plus"
-                                                               decrementButtonIcon="pi pi-minus"></p-inputNumber>
-                                                <button pButton pRipple icon="pi pi-trash"
-                                                        class="p-button-text p-button-rounded"></button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="py-2 mt-3 border-bottom-1 surface-border">
-                                        <div class="p-inputgroup mb-3">
-                                            <input type="text" pInputText placeholder="Promo code" class="w-full">
-                                            <button type="button" pButton pRipple label="Apply"></button>
-                                        </div>
-                                    </div>
-                                    <div class="py-2 mt-3">
-                                        <div class="flex justify-content-between align-items-center mb-3">
-                                            <span class="text-900 font-medium">Subtotal</span>
-                                            <span class="text-900">$123.00</span>
-                                        </div>
-                                        <div class="flex justify-content-between align-items-center mb-3">
-                                            <span class="text-900 font-medium">Shipping</span>
-                                            <span class="text-primary font-bold">Free</span>
-                                        </div>
-                                        <div class="flex justify-content-between align-items-center mb-3">
-                                            <span class="text-900 font-bold">Total</span>
-                                            <span class="text-900 font-medium text-xl">$123.00</span>
-                                        </div>
-                                    </div>
-                                    <div class="py-2 mt-3 bg-yellow-100 flex align-items-center justify-content-center">
-                                        <img src="assets/images/blocks/ecommerce/checkoutform/checkoutform-1-3.png"
-                                             class="mr-2"
-                                             alt="Country Flag"><span class="text-black-alpha-90 font-medium">No additional duties or taxes.</span>
-                                    </div>
-                                </div>
+                        <div *ngIf="!isCameraAvl"
+                             class="flex align-items-start p-4 bg-yellow-100 border-round border-1 border-yellow-300">
+                            <i class="pi pi-info-circle text-yellow-900 text-2xl mr-3"></i>
+                            <div class="mr-3">
+                                <p class="m-0 p-0 text-yellow-700 mb-3 line-height-3">Camera not detected on this device.
+                                    QR Scan method not available.</p>
+                            </div>
+                            <div class="ml-auto">
+                                <a pRipple
+                                   class="inline-flex align-items-center justify-content-center ml-auto border-circle hover:bg-yellow-50 no-underline cursor-pointer transition-colors transition-duration-150"
+                                   style="width:1.5rem;height:1.5rem">
+                                </a>
                             </div>
                         </div>
+
                     </div>
-                </form>
-            </div>
-
-
-        </div>
-
-        <p-dialog [(visible)]="showPaymentDialog" [style]="{width: '450px'}" [draggable]="false"
-                  header="Payment" [modal]="true" class="p-fluid">
-            <ng-template pTemplate="content">
-
-                <div *ngIf="!isDoneCheckingCamera" class="flex justify-content-center align-items-center">
-                    <p-progressSpinner></p-progressSpinner>
                 </div>
+            </div>
 
-                <form [formGroup]="waitingListFg" (ngSubmit)="submit()">
-
-                    <div [ngSwitch]="customerId">
-
-                        <!-- the same view can be shown in more than one case -->
-                        <div *ngSwitchCase="null">
-                            <div [hidden]="!isDoneCheckingCamera && !isCameraAvl">
-                                <zxing-scanner
-                                    [autofocusEnabled]="true"
-                                    [device]="currentDevice"
-                                    [tryHarder]="true"
-                                    (camerasFound)="onCheckingCamera($event)"
-                                    (camerasNotFound)="onCheckingCamera($event)"
-                                    (scanSuccess)="onConfirmPaymentByQrCode($event)">
-                                </zxing-scanner>
-
-                                <p-divider align="center" type="dashed">
-                                    <b>OR</b>
-                                </p-divider>
-                            </div>
-
-                            <div class="field col-12">
-                                <label>Username</label>
-                                <input type="text" pInputText formControlName="username"
-                                       (keydown.enter)="onConfirmPaymentByUsername($event.target.value)"
-                                       [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.username.errors &&
-                                            (waitingListFg.controls.username.touched ||
-                                            waitingListFg.controls.username.dirty)}"/>
-                            </div>
-
-                            <div class="col-12">
-                                <p-messages [value]="searchByUsernameMsg"></p-messages>
-                            </div>
-
-                        </div>
-
-                        <!--default case when there are no matches -->
-                        <div *ngSwitchDefault>
+            <!--default case when there are no matches -->
+            <div *ngSwitchDefault>
+                <div class="surface-section">
+                    <div class="grid grid-nogutter">
+                        <div class="col-12 lg:col-6 h-full px-4 py-8 md:px-6 lg:px-8">
                             <div class="p-fluid p-formgrid grid">
-
-                                <div class="field col-12">
-                                    <label for="id">Customer ID</label>
-                                    <input type="text" pInputText [readOnly]="true" id="id" formControlName="id"
-                                           [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.id.errors &&
-                                            (waitingListFg.controls.id.touched || waitingListFg.controls.id.dirty)}"/>
+                                <div class="col-12 field mb-4">
+                                    <span class="text-900 text-2xl block font-medium">
+                                        Customer Information
+                                    </span>
                                 </div>
 
-                                <div class="field col-12">
-                                    <label for="Username">Username</label>
-                                    <input type="text" pInputText [readOnly]="true" id="Username"
+                                <div class="col-12 field mb-4">
+                                    <label>Customer ID</label>
+                                    <input id="address" placeholder="Customer Id" [readonly]="true" type="text"
+                                           formControlName="id"
+                                           class="p-inputtext w-full">
+                                </div>
+
+                                <div class="col-12 field mb-4">
+                                    <label>Username</label>
+                                    <input id="address2" placeholder="Username" [readonly]="true" type="text"
                                            formControlName="username"
-                                           [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.username.errors &&
-                                            (waitingListFg.controls.username.touched || waitingListFg.controls.username.dirty)}"/>
-                                </div>
-
-                                <div class="field col-12">
-                                    <label>Ordered productLists</label>
-                                    <p-dataView [value]="customerOrder" emptyMessage="No productList found">
-                                        <ng-template pTemplate="header">
-                                            <input type="text" pInputText placeholder="Search productList..."/>
-                                        </ng-template>
-
-                                        <ng-template let-productList pTemplate="listItem">
-                                            <div class="product-item">
-                                                <div class="image-container">
-                                                    <img [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/customer/product/download/file?' +
-                                                        'imageName=' + productList?.product?.images[0].imageName + '&' +
-                                                        'productId=' + productList?.product?.id "
-                                                         [alt]="productList.name" class="product-image"/>
-                                                </div>
-                                                <div class="product-list-detail">
-                                                    <h5 class="mb-2">{{productList.name}}</h5>
-                                                    <i class="pi pi-tag productList-category-icon"></i>
-                                                    <!--                                                        <span-->
-                                                    <!--                                                            class="productList-category">{{productList.category}}</span>-->
-                                                </div>
-                                                <div class="product-list-action">
-                                                    <h6 class="mb-2">{{productList.discountedPrice * productList.quantity
-                                                        | currency:'Rp. ':'symbol':'3.0'}}</h6>
-                                                    <!--                                                        <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>-->
-                                                </div>
-                                            </div>
-                                            <!--                                                <div-->
-                                            <!--                                                    class="flex align-items-start sm:align-items-center mb-4">-->
-                                            <!--                                                    <img [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/customer/productList/download/file?' +-->
-                                            <!--                                                'imageName=' + productListList?.productList?.images[0].imageName + '&' +-->
-                                            <!--                                                'productListId=' + productListList?.productList?.id "-->
-                                            <!--                                                         class="w-6rem sm:w-8rem flex-shrink-0"/>-->
-                                            <!--                                                    <div class="flex-auto px-3">-->
-                                            <!--                                                        <div class="flex align-items-center justify-content-between mb-3">-->
-                                            <!--                                                            <span class="text-900 font-medium">{{productListList.productList.name}}</span>-->
-                                            <!--                                                            <span-->
-                                            <!--                                                                class="text-900 font-bold">{{productListList.productList.discountedPrice * productListList.quantity-->
-                                            <!--                                                                | currency:'Rp. ':'symbol':'3.0'}}</span>-->
-                                            <!--                                                        </div>-->
-                                            <!--                                                        &lt;!&ndash;                    <div class="text-600 text-sm mb-3">Green | Small</div>&ndash;&gt;-->
-                                            <!--                                                        <div class="flex flex-auto justify-content-between align-items-center">-->
-                                            <!--                                                            <div *ngIf="productListList.productList.active === false ||-->
-                                            <!--                                       productListList.productList.deleted === true">-->
-                                            <!--                                                                <span class="text-pink-500">productList is not available</span>-->
-                                            <!--                                                            </div>-->
-                                            <!--                                                        </div>-->
-                                            <!--                                                    </div>-->
-                                            <!--                                                </div>-->
-                                        </ng-template>
-
-                                        <ng-template pTemplate="footer">
-                                        </ng-template>
-                                    </p-dataView>
+                                           class="p-inputtext w-full">
                                 </div>
 
                                 <div class="col-12">
-                                    <label>Estimated Time</label>
+                                    <label class="font-bold">Estimated Time</label>
                                 </div>
 
                                 <div class="field col-4">
@@ -307,24 +116,76 @@
                                                    decrementButtonIcon="pi pi-minus">
                                     </p-inputNumber>
                                 </div>
+
+                                <!--                                <button pButton pRipple class="p-button-success" label="Save" icon="pi pi-check"></button>-->
+                                <!--                                <button pButton pRipple class="p-button-warning" label="Reset" icon="pi pi-trash"></button>-->
+                                <!--                                <button pButton pRipple class="p-button-danger" label="Cancel" icon="pi pi-times"></button>-->
+
+                                <div class="col-12 md:col-6">
+                                    <button pButton pRipple (click)="onResetQrCode()"
+                                            class="p-button-text"
+                                            label="Reset"></button>
+                                </div>
+
+                                <div class="col-12 md:col-6">
+                                    <button pButton pRipple (click)="onCompletePayment()"
+                                            class="p-button-primary"
+                                            label="Confirm"></button>
+                                </div>
+
                             </div>
 
                         </div>
-                    </div>
-                </form>
-                <button pButton pRipple *ngIf="editMode" label="Reset Password"
-                        icon="pi pi-refresh"
-                        class="p-button-danger"></button>
-            </ng-template>
+                        <div class="col-12 lg:col-6 px-4 py-8 md:px-6 lg:px-8 surface-50">
+                            <div class="border-bottom-1 pb-3 surface-border">
+                                <span class="text-900 font-medium text-xl">Customer Cart</span>
+                            </div>
 
-            <ng-template pTemplate="footer">
-                <div *ngIf="customerId">
-                    <button pButton pRipple (click)="onResetQrCode()"
-                            label="Reset" icon="pi pi-restart" class="p-button-text"></button>
-                    <button pButton pRipple label="Confirm" icon="pi pi-check"
-                            class="p-button-text"></button>
+                            <div *ngFor="let product of productList"
+                                 class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 border-bottom-1 surface-border">
+                                <img defaultImage="/assets/demo/images/galleria/spinner.gif"
+                                     [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download/file?' +
+                                'imageName=' + product?.product.images[0]?.imageName + '&' +
+                                'productId=' + product.id "
+                                     class="w-8rem h-8rem flex-shrink-0 mb-3"/>
+                                <div class="flex-auto lg:ml-3">
+                                    <div class="flex align-items-center justify-content-between mb-3">
+                                        <span class="text-900 font-medium">{{product.name}}</span>
+                                        <span
+                                            class="text-900 font-bold">{{product.discountedPrice | currency :
+                                            'Rp. '}}</span>
+                                    </div>
+                                    <div class="flex flex-auto justify-content-between align-items-center">
+                                        <p-inputNumber [showButtons]="false" [readonly]="true"
+                                                       ngModel="{{product.quantity}}"
+                                                       [ngModelOptions]="{standalone: true}"
+                                                       buttonLayout="horizontal" spinnerMode="horizontal" min="0"
+                                                       inputStyleClass="w-2rem text-center py-2 px-1 border-transparent"
+                                                       class="border-1 surface-border border-round"
+                                        ></p-inputNumber>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="py-2 mt-3">
+                                <div class="flex justify-content-between align-items-center mb-3">
+                                    <span class="text-900 font-medium">Subtotal</span>
+                                    <span class="text-900">{{totalPrice | currency: 'Rp. '}}</span>
+                                </div>
+                                <div class="flex justify-content-between align-items-center mb-3">
+                                    <span class="text-900 font-medium">Tax</span>
+                                    <span class="text-primary font-bold">Free</span>
+                                </div>
+                                <div class="flex justify-content-between align-items-center mb-3">
+                                    <span class="text-900 font-bold">Total</span>
+                                    <span class="text-900 font-medium text-xl">{{totalPrice | currency: 'Rp. '}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </ng-template>
-        </p-dialog>
+            </div>
+        </form>
     </div>
 </div>

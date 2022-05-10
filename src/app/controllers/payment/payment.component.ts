@@ -1,12 +1,11 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {RxwebValidators} from "@rxweb/reactive-form-validators";
-import {WaitingList} from "../../model/WaitingList";
 import {WaitingListService} from "../../service/waiting-list.service";
-import {Message, MessageService} from "primeng/api";
-import {CountdownEvent} from "ngx-countdown";
-import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
+import {ConfirmationService, Message, MessageService} from "primeng/api";
 import {environment} from "../../../environments/environment";
+import {HistoryProductOrder} from "../../model/customerOrder/HistoryProductOrder";
+import {HttpParams} from "@angular/common/http";
 
 @Component({
     selector: 'app-waiting-list',
@@ -25,6 +24,8 @@ export class PaymentComponent implements OnInit {
 
     customerId: string;
 
+    totalPrice: number = 0;
+
     currentDevice: MediaDeviceInfo = null;
 
     searchByUsernameMsg: Message[];
@@ -32,48 +33,26 @@ export class PaymentComponent implements OnInit {
 
     isSendingWaitingList: boolean = false;
 
-    isLoadingWaitingList: boolean = false;
-
     isDoneCheckingCamera: boolean = false;
 
-    isCameraAvl: boolean = false;
+    isCameraAvl: boolean = true;
 
 
-    customerOrder: CustomerOrder[] = [];
+    productList: HistoryProductOrder[] = [];
 
     waitingListFg: FormGroup;
-
-    waitingLists: WaitingList[] = [];
-
-    waitingList: WaitingList;
 
     constructor(
         private fb: FormBuilder,
         private waitingListService: WaitingListService,
         private messageService: MessageService,
+        private confirmationService: ConfirmationService,
         private el: ElementRef) {
     }
 
     ngOnInit(): void {
         this.initForm();
-        this.isLoadingWaitingList = true;
-        this.waitingListService.get_AllWaitingList().subscribe({
-            next: value => {
-                this.waitingLists = value.map(e => {
-                    return {
-                        id: e.payload.doc.id,
-                        number: e.payload.doc.data()['number'],
-                        customerName: e.payload.doc.data()['customerName'],
-                        status: e.payload.doc.data()['status'],
-                        estTime: e.payload.doc.data()['estTime'],
-                    } as WaitingList;
-                });
-                this.isLoadingWaitingList = false;
-            },
-        });
-
     }
-
 
     initForm() {
         this.waitingListFg = this.fb.group({
@@ -88,32 +67,6 @@ export class PaymentComponent implements OnInit {
             estSecond: [0, [RxwebValidators.required()]],
         }, {updateOn: 'change'})
 
-    }
-
-    onTimerFinished(e: CountdownEvent, status: string, id: string) {
-        if (e["action"] == "done") {
-            if (status !== "WAITING") {
-                this.waitingListService.update_WaitingListStatus(id, "WAITING");
-            }
-        }
-    }
-
-    onCameraNotFound() {
-        console.log("camera not found");
-    }
-
-    // WL = Waiting List
-    updateStatusWL(id, status) {
-        this.waitingListService.update_WaitingListStatus(id, status);
-    }
-
-    showAddOrEditDialogWaitingList() {
-        this.waitingListFg.patchValue({
-            estHour: 0,
-            estMinute: 0,
-            estSecond: 0
-        });
-        this.showPaymentDialog = true;
     }
 
     submit() {
@@ -142,7 +95,6 @@ export class PaymentComponent implements OnInit {
 
                 this.showPaymentDialog = false;
                 this.isSendingWaitingList = false;
-                this.waitingList = null;
             });
 
         } else {
@@ -165,15 +117,23 @@ export class PaymentComponent implements OnInit {
         }
     }
 
-    onCheckingCamera(cameraAvl: any) {
+    onCheckingCamera(cameraAvl: boolean) {
         this.isCameraAvl = cameraAvl;
         this.isDoneCheckingCamera = true;
     }
 
     onResetQrCode() {
-        this.customerId = null;
-        this.waitingListFg.reset();
-        console.log(this.waitingListFg.value);
+        this.confirmationService.confirm({
+            message: `
+                 <div>
+                    <span>Are you sure you want to clear current session?</span>
+                 </div>`,
+            header: `Reset Session`,
+            accept: () => {
+                this.customerId = null;
+                this.waitingListFg.reset();
+            },
+        });
     }
 
     onConfirmPaymentByQrCode(customerId: string) {
@@ -181,8 +141,13 @@ export class PaymentComponent implements OnInit {
 
         this.waitingListService.getCustomerById(customerId).subscribe({
             next: (value: any) => {
-                this.customerId = customerId;
-                this.waitingListFg.get("id").setValue(customerId);
+                this.waitingListFg.patchValue(value.data.customerProfile);
+
+                // list of ordered products
+                this.productList = value.data.historyProductOrders;
+
+                this.customerId = value.data.customerProfile.id;
+                this.totalPrice = value.data.totalPrice;
             }
         })
 
@@ -191,16 +156,50 @@ export class PaymentComponent implements OnInit {
     onConfirmPaymentByUsername(username: string) {
         this.searchByUsernameMsg = [];
 
-        // check order by this customer username
-        this.waitingListService.getCustomerByUsername(username).subscribe({
-            next: (value: any) => {
-                this.customerId = value.data.customerProfile.id;
-                this.waitingListFg.patchValue(value.data.customerProfile);
-                this.customerOrder = value.data.historyProductOrders;
+        if (username.length != 0) {
+            // check order by this customer username
+            this.waitingListService.getCustomerByUsername(username).subscribe({
+                next: (value: any) => {
+                    this.waitingListFg.patchValue(value.data.customerProfile);
 
-                console.log(value.data);
-            }
-        })
+                    // list of ordered products
+                    this.productList = value.data.historyProductOrders;
+
+                    this.customerId = value.data.customerProfile.id;
+                    this.totalPrice = value.data.totalPrice;
+
+                }
+            })
+        }
+    }
+
+    onCompletePayment() {
+
+        this.confirmationService.confirm({
+            message: `
+                 <div>
+                    <span>Complete payment for customer <b> "${this.waitingListFg.get("username").value}"</b> ?</span>
+                 </div>`,
+            header: `Complete Payment`,
+            accept: () => {
+
+                let params = new HttpParams().append("customerId", this.customerId)
+                    .append("estHour", this.waitingListFg.get("estHour").value)
+                    .append("estMinute", this.waitingListFg.get("estMinute").value)
+                    .append("estSecond", this.waitingListFg.get("estSecond").value);
+
+                this.waitingListService.completePayment(params).subscribe({
+                    next: (value: any) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'Order Completed'
+                        });
+                    }
+                })
+
+            },
+        });
 
     }
 }
