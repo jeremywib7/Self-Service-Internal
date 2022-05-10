@@ -36,6 +36,7 @@ import {ProductFormComponent} from "./controllers/product/Form/product-form/prod
 import {PaymentComponent} from "./controllers/payment/payment.component";
 import {ProductCategory} from "./model/Product/ProductCategory";
 import {ProductCategoryComponent} from "./controllers/product/product-category/product-category.component";
+import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.component";
 
 const routes: Routes = [
     {path: '', redirectTo: 'detail', pathMatch: 'full'},
@@ -85,10 +86,8 @@ const routes: Routes = [
                         component: ProductCategoryComponent
                     },
 
-                    // waiting list
-                    {path: 'pages/waitingList', data: {breadcrumb: 'Waiting List'}, component: PaymentComponent},
-
-                    // report
+                    {path: 'pages/payment', data: {breadcrumb: 'Payment'}, component: PaymentComponent},
+                    {path: 'pages/waitingList', data: {breadcrumb: 'Waiting List'}, component: WaitingListComponent},
                     {path: 'pages/report', data: {breadcrumb: 'User'}, component: UserComponent},
 
                     {path: 'uikit/formlayout', component: FormLayoutComponent},

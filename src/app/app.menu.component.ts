@@ -56,6 +56,7 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Order',
                 items: [
+                    {label: 'Payment', icon: 'pi pi-fw pi-user', routerLink: ['/pages/payment']},
                     {label: 'Waiting List', icon: 'pi pi-fw pi-user', routerLink: ['/pages/waitingList']},
                 ]
             },

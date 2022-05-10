@@ -166,7 +166,6 @@ export class PaymentComponent implements OnInit {
     }
 
     onCheckingCamera(cameraAvl: any) {
-        console.log(cameraAvl);
         this.isCameraAvl = cameraAvl;
         this.isDoneCheckingCamera = true;
     }
