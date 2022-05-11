@@ -1,27 +1,3 @@
-.waiting-list-badge {
-    border-radius: var(--border-radius);
-    padding: .25em .5rem;
-    text-transform: uppercase;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: .3px;
-
-    &.status-ready {
-        background: #C8E6C9;
-        color: #256029;
-    }
-
-    &.status-preparing {
-        background: #B3E5FC;
-        color: #23547B;
-    }
-
-    &.status-waiting {
-        background: #FEEDAF;
-        color: #8A5340;
-    }
-}
-
 .product-item {
     display: flex;
     align-items: center;

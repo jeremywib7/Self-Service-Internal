@@ -89,14 +89,10 @@ export class WaitingListComponent implements OnInit {
 
     onTimerFinished(e: CountdownEvent, status: string, id: string) {
         if (e["action"] == "done") {
-            if (status !== "WAITING") {
-                this.waitingListService.update_WaitingListStatus(id, "WAITING");
+            if (status !== "PROCESSING") {
+                this.waitingListService.update_WaitingListStatus(id, "PROCESSING");
             }
         }
-    }
-
-    onCameraNotFound() {
-        console.log("camera not found");
     }
 
     // WL = Waiting List
