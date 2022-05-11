@@ -141,13 +141,7 @@ export class PaymentComponent implements OnInit {
 
         this.waitingListService.getCustomerById(customerId).subscribe({
             next: (value: any) => {
-                this.waitingListFg.patchValue(value.data.customerProfile);
-
-                // list of ordered products
-                this.productList = value.data.historyProductOrders;
-
-                this.customerId = value.data.customerProfile.id;
-                this.totalPrice = value.data.totalPrice;
+                this.patchData(value);
             }
         })
 
@@ -160,17 +154,20 @@ export class PaymentComponent implements OnInit {
             // check order by this customer username
             this.waitingListService.getCustomerByUsername(username).subscribe({
                 next: (value: any) => {
-                    this.waitingListFg.patchValue(value.data.customerProfile);
-
-                    // list of ordered products
-                    this.productList = value.data.historyProductOrders;
-
-                    this.customerId = value.data.customerProfile.id;
-                    this.totalPrice = value.data.totalPrice;
-
+                    this.patchData(value);
                 }
             })
         }
+    }
+
+    patchData(value: any) {
+        this.waitingListFg.patchValue(value.data.customerProfile);
+
+        // list of ordered products
+        this.productList = value.data.historyProductOrders;
+
+        this.customerId = value.data.customerProfile.id;
+        this.totalPrice = value.data.totalPrice;
     }
 
     onCompletePayment() {
