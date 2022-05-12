@@ -3,9 +3,4 @@ export class WaitingList {
     customerName: string;
     status: string;
     estTime: number;
-
-    constructor(number: number, customerName: string) {
-        this.number = number;
-        this.customerName = customerName;
-    }
 }

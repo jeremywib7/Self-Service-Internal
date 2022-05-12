@@ -6,7 +6,7 @@
     </div>
 
     <div [ngSwitch]="customerId">
-        <form [formGroup]="waitingListFg" (ngSubmit)="submit()">
+        <form [formGroup]="waitingListFg">
 
             <!-- the same view can be shown in more than one case -->
             <div *ngSwitchCase="null">

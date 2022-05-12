@@ -9,9 +9,9 @@ import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {CountdownEvent} from "ngx-countdown";
 
 @Component({
-  selector: 'app-waiting-list',
-  templateUrl: './waiting-list.component.html',
-  styleUrls: ['./waiting-list.component.scss']
+    selector: 'app-waiting-list',
+    templateUrl: './waiting-list.component.html',
+    styleUrls: ['./waiting-list.component.scss']
 })
 export class WaitingListComponent implements OnInit {
     // global environment
@@ -56,16 +56,12 @@ export class WaitingListComponent implements OnInit {
     ngOnInit(): void {
         this.initForm();
         this.isLoadingWaitingList = true;
-        this.waitingListService.get_AllWaitingList().subscribe({
-            next: value => {
-                this.waitingLists = value.map(e => {
-                    return {
-                        id: e.payload.doc.id,
-                        number: e.payload.doc.data()['number'],
-                        customerName: e.payload.doc.data()['customerName'],
-                        status: e.payload.doc.data()['status'],
-                        estTime: e.payload.doc.data()['estTime'],
-                    } as WaitingList;
+        this.waitingListService.getAllWaitingList().subscribe({
+            next: res => {
+                this.waitingLists  = res.map(a => {
+                    const data = a.payload.doc.data(); // DB Questions
+                    const id = a.payload.doc.id;
+                    return { id, ...data as WaitingList };
                 });
                 this.isLoadingWaitingList = false;
             },

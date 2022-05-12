@@ -28,16 +28,15 @@ export class WaitingListService {
         return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/order/view/byUsername/${username}`);
     }
 
-    public completePayment(params: HttpParams) {
-        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/order/pay`, null, {
-            params: params});
+    public completePayment(waitingList: WaitingList) {
+        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/order/pay`, waitingList);
     }
 
     create_NewWaitingList(waitingList: WaitingList) {
         return this.fireServices.collection('Waiting_List').add(waitingList);
     }
 
-    get_AllWaitingList() {
+    getAllWaitingList() {
         return this.fireServices.collection('Waiting_List').snapshotChanges();
     }
 

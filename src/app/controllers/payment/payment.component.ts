@@ -6,6 +6,7 @@ import {ConfirmationService, Message, MessageService} from "primeng/api";
 import {environment} from "../../../environments/environment";
 import {HistoryProductOrder} from "../../model/customerOrder/HistoryProductOrder";
 import {HttpParams} from "@angular/common/http";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-waiting-list',
@@ -47,6 +48,7 @@ export class PaymentComponent implements OnInit {
         private waitingListService: WaitingListService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
+        private router: Router,
         private el: ElementRef) {
     }
 
@@ -59,7 +61,6 @@ export class PaymentComponent implements OnInit {
             id: ['', [RxwebValidators.required()]],
             username: ['', [RxwebValidators.required()]],
             number: ['', [RxwebValidators.required()]],
-            customerName: ['', [RxwebValidators.required(),]],
             status: ['', [RxwebValidators.required()]],
             estTime: ['', []],
             estHour: [0, [RxwebValidators.required()]],
@@ -67,39 +68,6 @@ export class PaymentComponent implements OnInit {
             estSecond: [0, [RxwebValidators.required()]],
         }, {updateOn: 'change'})
 
-    }
-
-    submit() {
-        this.waitingListFg.get('status').setValue("PREPARING");
-
-        if (this.waitingListFg.valid) {
-            this.isSendingWaitingList = true; // for loading button effect
-
-            // convert estimated time in seconds and total them
-            const hourToSecond: number = (this.waitingListFg.get('estHour').value * 60) * 60;
-            const minuteToSecond: number = this.waitingListFg.get('estMinute').value * 60;
-            const estSecond: number = this.waitingListFg.get('estSecond').value;
-
-            const totalSecond: number = (1000 * ((hourToSecond) +
-                (minuteToSecond) + (Number(estSecond))));
-            //
-
-            this.waitingListFg.get('estTime').setValue(new Date().getTime() + totalSecond);
-            this.waitingListService.create_NewWaitingList(this.waitingListFg.value).then(r => {
-
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: 'Waiting list added'
-                });
-
-                this.showPaymentDialog = false;
-                this.isSendingWaitingList = false;
-            });
-
-        } else {
-            this.validateFormFields(this.waitingListFg);
-        }
     }
 
     validateFormFields(formGroup: FormGroup) {
@@ -180,18 +148,22 @@ export class PaymentComponent implements OnInit {
             header: `Complete Payment`,
             accept: () => {
 
-                let params = new HttpParams().append("customerId", this.customerId)
-                    .append("estHour", this.waitingListFg.get("estHour").value)
-                    .append("estMinute", this.waitingListFg.get("estMinute").value)
-                    .append("estSecond", this.waitingListFg.get("estSecond").value);
+                // let params = new HttpParams().append("customerId", this.customerId)
+                //     .append("estHour", this.waitingListFg.get("estHour").value)
+                //     .append("estMinute", this.waitingListFg.get("estMinute").value)
+                //     .append("estSecond", this.waitingListFg.get("estSecond").value);
 
-                this.waitingListService.completePayment(params).subscribe({
+                this.waitingListService.completePayment(this.waitingListFg.value).subscribe({
                     next: (value: any) => {
                         this.messageService.add({
                             severity: 'success',
                             summary: 'Success',
                             detail: 'Order Completed'
                         });
+
+                        this.customerId = null;
+                        this.waitingListFg.reset();
+
                     }
                 })
 
