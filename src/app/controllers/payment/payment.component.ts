@@ -66,6 +66,12 @@ export class PaymentComponent implements OnInit {
             estHour: [0, [RxwebValidators.required()]],
             estMinute: [0, [RxwebValidators.required()]],
             estSecond: [0, [RxwebValidators.required()]],
+            totalPaid: [null, [
+                RxwebValidators.required(),
+                RxwebValidators.greaterThanEqualTo({fieldName: 'totalPrice'})
+            ]],
+            totalChange: [null, [RxwebValidators.required()]],
+            totalPrice: [null, [RxwebValidators.required()]],
         }, {updateOn: 'change'})
 
     }
@@ -83,6 +89,10 @@ export class PaymentComponent implements OnInit {
                 break;
             }
         }
+    }
+
+    onInputPayment(totalPaid: number) {
+        this.waitingListFg.get("totalPaid").setValue(totalPaid);
     }
 
     onCheckingCamera(cameraAvl: boolean) {
@@ -131,11 +141,13 @@ export class PaymentComponent implements OnInit {
     patchData(value: any) {
         this.waitingListFg.patchValue(value.data.customerProfile);
 
+        console.log(value.data);
+
         // list of ordered products
         this.productList = value.data.historyProductOrders;
 
         this.customerId = value.data.customerProfile.id;
-        this.totalPrice = value.data.totalPrice;
+        this.waitingListFg.get("totalPrice").setValue(value.data.totalPrice);
     }
 
     onCompletePayment() {
