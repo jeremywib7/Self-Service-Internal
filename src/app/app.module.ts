@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, LOCALE_ID, NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
-import {LocationStrategy, HashLocationStrategy, CommonModule, CurrencyPipe, DatePipe} from '@angular/common';
+import {LocationStrategy, HashLocationStrategy, CommonModule, DatePipe} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AppRoutingModule} from './app-routing.module';
 

@@ -5,8 +5,10 @@ import {WaitingListService} from "../../service/waiting-list.service";
 import {ConfirmationService, Message, MessageService} from "primeng/api";
 import {environment} from "../../../environments/environment";
 import {HistoryProductOrder} from "../../model/customerOrder/HistoryProductOrder";
-import {HttpParams} from "@angular/common/http";
+import * as moment from 'moment';
 import {Router} from "@angular/router";
+import {interval, Subscription} from "rxjs";
+import {DatePipe} from "@angular/common";
 
 @Component({
     selector: 'app-waiting-list',
@@ -19,9 +21,9 @@ export class PaymentComponent implements OnInit {
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
 
-    showPaymentDialog: boolean = false;
+    estimatedTime: string;
 
-    editMode: boolean = false;
+    dateCreated: string;
 
     customerId: string;
 
@@ -32,11 +34,13 @@ export class PaymentComponent implements OnInit {
     searchByUsernameMsg: Message[];
 
 
-    isSendingWaitingList: boolean = false;
+    onPaymentConfirmedButtonLoading: boolean = false;
 
     isDoneCheckingCamera: boolean = false;
 
     isCameraAvl: boolean = true;
+
+    showConfirmPaymentDialog: boolean = false;
 
 
     productList: HistoryProductOrder[] = [];
@@ -49,29 +53,44 @@ export class PaymentComponent implements OnInit {
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private router: Router,
+        public datePipe: DatePipe,
         private el: ElementRef) {
     }
 
+    subscription: Subscription;
+
+
     ngOnInit(): void {
         this.initForm();
+
+        //emit value in sequence every 1 second
+        const source = interval(1000);
+        this.subscription = source.subscribe(val => this.calculateEstimatedTime());
+    }
+
+    calculateEstimatedTime() {
+        let estimatedDate = this.datePipe.transform(new Date(), 'dd/MM/yyyy h:mm:ss');
+
+        this.estimatedTime = moment(estimatedDate, 'dd/mm/yyyy h:mm:ss')
+            .add(this.waitingListFg.get("estSecond").value, 'seconds')
+            .add(this.waitingListFg.get("estMinute").value, 'minutes')
+            .add(this.waitingListFg.get("estHour").value, 'hours')
+            .format('LTS');
     }
 
     initForm() {
         this.waitingListFg = this.fb.group({
             id: ['', [RxwebValidators.required()]],
             username: ['', [RxwebValidators.required()]],
-            number: ['', [RxwebValidators.required()]],
-            status: ['', [RxwebValidators.required()]],
-            estTime: ['', []],
             estHour: [0, [RxwebValidators.required()]],
             estMinute: [0, [RxwebValidators.required()]],
             estSecond: [0, [RxwebValidators.required()]],
-            totalPaid: [null, [
+            totalPaid: [0, [
                 RxwebValidators.required(),
                 RxwebValidators.greaterThanEqualTo({fieldName: 'totalPrice'})
             ]],
-            totalChange: [null, [RxwebValidators.required()]],
-            totalPrice: [null, [RxwebValidators.required()]],
+            totalChange: [0, [RxwebValidators.required()]],
+            totalPrice: [0, [RxwebValidators.required()]],
         }, {updateOn: 'change'})
 
     }
@@ -91,8 +110,15 @@ export class PaymentComponent implements OnInit {
         }
     }
 
-    onInputPayment(totalPaid: number) {
-        this.waitingListFg.get("totalPaid").setValue(totalPaid);
+    onInputPayment(amount: number) {
+        this.waitingListFg.get("totalPaid").setValue(amount);
+
+        // calculate change
+        let totalPrice = this.waitingListFg.get("totalPrice").value;
+        let totalPaid = this.waitingListFg.get("totalPaid").value;
+
+        let change = totalPaid - totalPrice;
+        this.waitingListFg.get("totalChange").setValue(change);
     }
 
     onCheckingCamera(cameraAvl: boolean) {
@@ -141,7 +167,7 @@ export class PaymentComponent implements OnInit {
     patchData(value: any) {
         this.waitingListFg.patchValue(value.data.customerProfile);
 
-        console.log(value.data);
+        this.dateCreated = value.data.dateCreated;
 
         // list of ordered products
         this.productList = value.data.historyProductOrders;
@@ -150,37 +176,35 @@ export class PaymentComponent implements OnInit {
         this.waitingListFg.get("totalPrice").setValue(value.data.totalPrice);
     }
 
-    onCompletePayment() {
+    showPaymentDialog() {
+        console.log(this.waitingListFg.value);
 
-        this.confirmationService.confirm({
-            message: `
-                 <div>
-                    <span>Complete payment for customer <b> "${this.waitingListFg.get("username").value}"</b> ?</span>
-                 </div>`,
-            header: `Complete Payment`,
-            accept: () => {
+        if (this.waitingListFg.valid) {
+            this.showConfirmPaymentDialog = true;
+        } else {
+            this.waitingListFg.markAllAsTouched();
+        }
 
-                // let params = new HttpParams().append("customerId", this.customerId)
-                //     .append("estHour", this.waitingListFg.get("estHour").value)
-                //     .append("estMinute", this.waitingListFg.get("estMinute").value)
-                //     .append("estSecond", this.waitingListFg.get("estSecond").value);
+    }
 
-                this.waitingListService.completePayment(this.waitingListFg.value).subscribe({
-                    next: (value: any) => {
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Success',
-                            detail: 'Order Completed'
-                        });
+    onPaymentConfirmed() {
+        this.onPaymentConfirmedButtonLoading = true;
 
-                        this.customerId = null;
-                        this.waitingListFg.reset();
+        this.waitingListService.completePayment(this.waitingListFg.value).subscribe({
+            next: (value: any) => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'Order Completed'
+                });
 
-                    }
-                })
+                this.customerId = null;
+                this.waitingListFg.reset();
 
-            },
-        });
-
+            }
+        }).add(() => {
+            this.onPaymentConfirmedButtonLoading = false;
+            this.showConfirmPaymentDialog = false;
+        })
     }
 }

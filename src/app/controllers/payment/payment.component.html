@@ -61,6 +61,13 @@
             <!--default case when there are no matches -->
             <div *ngSwitchDefault>
                 <div class="surface-section">
+
+                    <div class="surface-section px-4 py-5 md:px-6 lg:px-8">
+                        <div class="border-bottom-1 surface-border">
+                            <span class="block text-3xl font-medium text-900 mb-4">Created : {{dateCreated}}</span>
+                        </div>
+                    </div>
+
                     <div class="grid grid-nogutter">
                         <div class="col-12 lg:col-6 h-full px-4 py-8 md:px-6 lg:px-8">
                             <div class="p-fluid p-formgrid grid">
@@ -85,11 +92,19 @@
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="font-bold">Estimated Time</label>
+                                    <label>Estimated Time</label>
                                 </div>
 
-                                <div class="field col-4">
+                                <div class="field col-12">
+                                    <input [ngModel]="estimatedTime" [ngModelOptions]="{standalone: true}"
+                                           [readonly]="true" type="text"
+                                           class="p-inputtext w-full">
+                                </div>
+
+                                <div class=" col-4 mb-4">
                                     <p-inputNumber [showButtons]="true" formControlName="estHour" [min]="0" [max]="24"
+                                                   (onInput)="$event.value > 24 || $event.value < 0 ?
+                                                   null: waitingListFg.get('estHour').setValue($event.value)"
                                                    buttonLayout="vertical" inputId="vertical"
                                                    suffix=" Hour" decrementButtonClass="p-button-secondary"
                                                    incrementButtonClass="p-button-secondary"
@@ -98,8 +113,10 @@
                                     </p-inputNumber>
                                 </div>
 
-                                <div class="field col-4">
+                                <div class=" col-4">
                                     <p-inputNumber [showButtons]="true" formControlName="estMinute" [min]="0" [max]="60"
+                                                   (onInput)="$event.value > 60 || $event.value < 0 ?
+                                                   null: waitingListFg.get('estMinute').setValue($event.value)"
                                                    buttonLayout="vertical" inputId="vertical" suffix=" Minute"
                                                    decrementButtonClass="p-button-secondary"
                                                    incrementButtonClass="p-button-secondary"
@@ -108,8 +125,10 @@
                                     </p-inputNumber>
                                 </div>
 
-                                <div class="field col-4">
+                                <div class=" col-4">
                                     <p-inputNumber [showButtons]="true" formControlName="estSecond" [min]="0" [max]="60"
+                                                   (onInput)="$event.value > 60 || $event.value < 0 ?
+                                                   null: waitingListFg.get('estSecond').setValue($event.value)"
                                                    buttonLayout="vertical" inputId="vertical" suffix=" Second"
                                                    decrementButtonClass="p-button-secondary"
                                                    incrementButtonClass="p-button-secondary"
@@ -121,11 +140,22 @@
                                 <div class="col-12 field mb-4">
                                     <label for="payment">Payment</label>
                                     <p-inputNumber id="payment" formControlName="totalPaid"
+                                                   [max]="999999999"
                                                    (onInput)="onInputPayment($event.value)"
                                                    [ngClass]="{'ng-invalid ng-dirty' : waitingListFg.controls.totalPaid.errors &&
                                             (waitingListFg.controls.totalPaid.touched ||
                                             waitingListFg.controls.totalPaid.dirty)}"
                                                    mode="currency" currency="IDR" locale="id"></p-inputNumber>
+                                    <div *ngIf="waitingListFg.controls.totalPaid.errors &&
+                                    (waitingListFg.controls.totalPaid.touched ||waitingListFg.controls.totalPaid.dirty) ">
+                                        <div *ngIf="waitingListFg.hasError('required','totalPaid')">
+                                            <small class="p-error">Payment amount is required</small>
+                                        </div>
+                                        <div *ngIf="waitingListFg.hasError('greaterThanEqualTo','totalPaid')">
+                                            <small class="p-error">Payment amount must be equal or greater than amount
+                                                to be paid</small>
+                                        </div>
+                                    </div>
                                 </div>
 
 
@@ -136,7 +166,7 @@
                                 </div>
 
                                 <div class="col-12 md:col-6">
-                                    <button pButton pRipple (click)="onCompletePayment()"
+                                    <button pButton pRipple (click)="showPaymentDialog()"
                                             class="p-button-primary"
                                             label="Confirm"></button>
                                 </div>
@@ -206,3 +236,56 @@
         </form>
     </div>
 </div>
+
+<p-dialog [(visible)]="showConfirmPaymentDialog" appendTo="body" [modal]="true"
+          [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '40vw'}" [closable]="false"
+          [showHeader]="false">
+    <div class="flex flex-column align-items-center my-4">
+        <span class="flex align-items-center justify-content-center bg-cyan-100 text-cyan-800 mr-3 border-circle mb-3"
+              style="width:64px;height:64px">
+            <i class="pi pi-money-bill text-5xl"></i>
+        </span>
+        <div class="font-medium text-2xl text-900">Payment Confirmation</div>
+    </div>
+
+    <p class="line-height-3 p-0 m-0 text-center mb-2">
+        Complete payment for <span class="font-bold">{{this.waitingListFg.get("username").value}}</span> ?
+    </p>
+
+    <p class="line-height-3 p-0 m-0 text-center mb-2">
+        Est. {{this.estimatedTime}}
+    </p>
+
+
+    <div class="w-full align-items-end mt-5">
+        <ul class="list-none p-0 m-0 w-full">
+            <li class="mb-3"><span class="font-medium text-900">Summary</span></li>
+            <div class="flex justify-content-between align-items-center mb-3">
+                <span class="text-900 font-medium">Subtotal</span>
+                <span class="text-900">{{this.waitingListFg.get("totalPrice").value | currency: 'Rp. '}}</span>
+            </div>
+            <div class="flex justify-content-between align-items-center mb-3">
+                <span class="text-900 font-medium">Payment</span>
+                <span class="text-900">{{this.waitingListFg.get("totalPaid").value | currency:
+                    'Rp. '}}</span>
+            </div>
+            <div class="flex justify-content-between align-items-center mb-3">
+                <span class="text-900 font-medium">Change</span>
+                <span class="text-900">{{this.waitingListFg.get("totalChange").value | currency:
+                    'Rp. '}}</span>
+            </div>
+            <li class="flex justify-content-between border-top-1 surface-border py-3">
+                <span class="text-900 font-medium">Total</span>
+                <span class="text-900">{{this.waitingListFg.get("totalPrice").value | currency: 'Rp. '}}</span>
+            </li>
+        </ul>
+    </div>
+    <ng-template pTemplate="footer">
+        <div class=" border-top-1 surface-border pt-3 flex">
+            <button pButton pRipple icon="pi pi-times" (click)="showConfirmPaymentDialog = false" label="Cancel"
+                    class="p-button-outlined w-6 mr-2"></button>
+            <button pButton pRipple [loading]="onPaymentConfirmedButtonLoading" icon="pi pi-check" (click)="onPaymentConfirmed()" label="Save"
+                    class="w-6 ml-2"></button>
+        </div>
+    </ng-template>
+</p-dialog>
