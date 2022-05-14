@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import {Router} from "@angular/router";
 import {interval, Subscription} from "rxjs";
 import {DatePipe} from "@angular/common";
+import {HttpParams} from "@angular/common/http";
 
 @Component({
     selector: 'app-waiting-list',
@@ -45,7 +46,9 @@ export class PaymentComponent implements OnInit {
 
     productList: HistoryProductOrder[] = [];
 
-    waitingListFg: FormGroup;
+    customerOrderFg: FormGroup;
+
+    currentCustomerProfile: any = {id: '', username: ''};
 
     constructor(
         private fb: FormBuilder,
@@ -72,16 +75,15 @@ export class PaymentComponent implements OnInit {
         let estimatedDate = this.datePipe.transform(new Date(), 'dd/MM/yyyy h:mm:ss');
 
         this.estimatedTime = moment(estimatedDate, 'dd/mm/yyyy h:mm:ss')
-            .add(this.waitingListFg.get("estSecond").value, 'seconds')
-            .add(this.waitingListFg.get("estMinute").value, 'minutes')
-            .add(this.waitingListFg.get("estHour").value, 'hours')
+            .add(this.customerOrderFg.get("estSecond").value, 'seconds')
+            .add(this.customerOrderFg.get("estMinute").value, 'minutes')
+            .add(this.customerOrderFg.get("estHour").value, 'hours')
             .format('LTS');
     }
 
     initForm() {
-        this.waitingListFg = this.fb.group({
-            id: ['', [RxwebValidators.required()]],
-            username: ['', [RxwebValidators.required()]],
+        this.customerOrderFg = this.fb.group({
+            id: [0, [RxwebValidators.required()]],
             estHour: [0, [RxwebValidators.required()]],
             estMinute: [0, [RxwebValidators.required()]],
             estSecond: [0, [RxwebValidators.required()]],
@@ -91,6 +93,9 @@ export class PaymentComponent implements OnInit {
             ]],
             totalChange: [0, [RxwebValidators.required()]],
             totalPrice: [0, [RxwebValidators.required()]],
+            customerProfile: this.fb.group({
+                id: [0, [RxwebValidators.required()]],
+            })
         }, {updateOn: 'change'})
 
     }
@@ -111,14 +116,14 @@ export class PaymentComponent implements OnInit {
     }
 
     onInputPayment(amount: number) {
-        this.waitingListFg.get("totalPaid").setValue(amount);
+        this.customerOrderFg.get("totalPaid").setValue(amount);
 
         // calculate change
-        let totalPrice = this.waitingListFg.get("totalPrice").value;
-        let totalPaid = this.waitingListFg.get("totalPaid").value;
+        let totalPrice = this.customerOrderFg.get("totalPrice").value;
+        let totalPaid = this.customerOrderFg.get("totalPaid").value;
 
         let change = totalPaid - totalPrice;
-        this.waitingListFg.get("totalChange").setValue(change);
+        this.customerOrderFg.get("totalChange").setValue(change);
     }
 
     onCheckingCamera(cameraAvl: boolean) {
@@ -135,7 +140,7 @@ export class PaymentComponent implements OnInit {
             header: `Reset Session`,
             accept: () => {
                 this.customerId = null;
-                this.waitingListFg.reset();
+                this.customerOrderFg.reset();
             },
         });
     }
@@ -158,6 +163,7 @@ export class PaymentComponent implements OnInit {
             // check order by this customer username
             this.waitingListService.getCustomerByUsername(username).subscribe({
                 next: (value: any) => {
+                    console.log(value);
                     this.patchData(value);
                 }
             })
@@ -165,24 +171,21 @@ export class PaymentComponent implements OnInit {
     }
 
     patchData(value: any) {
-        this.waitingListFg.patchValue(value.data.customerProfile);
-
+        this.currentCustomerProfile = value.data.customerProfile;
         this.dateCreated = value.data.dateCreated;
-
-        // list of ordered products
         this.productList = value.data.historyProductOrders;
-
         this.customerId = value.data.customerProfile.id;
-        this.waitingListFg.get("totalPrice").setValue(value.data.totalPrice);
+        this.customerOrderFg.get("totalPrice").setValue(value.data.totalPrice);
+        this.customerOrderFg.get("customerProfile").get("id").setValue(value.data.customerProfile.id);
     }
 
     showPaymentDialog() {
-        console.log(this.waitingListFg.value);
+        console.log(this.customerOrderFg.value);
 
-        if (this.waitingListFg.valid) {
+        if (this.customerOrderFg.valid) {
             this.showConfirmPaymentDialog = true;
         } else {
-            this.waitingListFg.markAllAsTouched();
+            this.customerOrderFg.markAllAsTouched();
         }
 
     }
@@ -190,7 +193,7 @@ export class PaymentComponent implements OnInit {
     onPaymentConfirmed() {
         this.onPaymentConfirmedButtonLoading = true;
 
-        this.waitingListService.completePayment(this.waitingListFg.value).subscribe({
+        this.waitingListService.completePayment(this.customerOrderFg.value).subscribe({
             next: (value: any) => {
                 this.messageService.add({
                     severity: 'success',
@@ -199,7 +202,7 @@ export class PaymentComponent implements OnInit {
                 });
 
                 this.customerId = null;
-                this.waitingListFg.reset();
+                this.customerOrderFg.reset();
 
             }
         }).add(() => {
