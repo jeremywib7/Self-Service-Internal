@@ -10,6 +10,7 @@ import {Router} from "@angular/router";
 import {interval, Subscription} from "rxjs";
 import {DatePipe} from "@angular/common";
 import {HttpParams} from "@angular/common/http";
+import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
 
 @Component({
     selector: 'app-waiting-list',
@@ -48,6 +49,8 @@ export class PaymentComponent implements OnInit {
 
     customerOrderFg: FormGroup;
 
+    customerOrder: CustomerOrder;
+
     currentCustomerProfile: any = {id: '', username: ''};
 
     constructor(
@@ -58,6 +61,7 @@ export class PaymentComponent implements OnInit {
         private router: Router,
         public datePipe: DatePipe,
         private el: ElementRef) {
+        this.initForm();
     }
 
     subscription: Subscription;
@@ -163,7 +167,6 @@ export class PaymentComponent implements OnInit {
             // check order by this customer username
             this.waitingListService.getCustomerByUsername(username).subscribe({
                 next: (value: any) => {
-                    console.log(value);
                     this.patchData(value);
                 }
             })
@@ -180,8 +183,6 @@ export class PaymentComponent implements OnInit {
     }
 
     showPaymentDialog() {
-        console.log(this.customerOrderFg.value);
-
         if (this.customerOrderFg.valid) {
             this.showConfirmPaymentDialog = true;
         } else {

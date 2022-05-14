@@ -1,6 +1,7 @@
 export class WaitingList {
+    id: string;
+    username: string;
     number: number;
-    customerName: string;
     status: string;
     estTime: number;
 }
