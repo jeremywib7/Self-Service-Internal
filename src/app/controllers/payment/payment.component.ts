@@ -68,8 +68,6 @@ export class PaymentComponent implements OnInit {
 
 
     ngOnInit(): void {
-        this.initForm();
-
         //emit value in sequence every 1 second
         const source = interval(1000);
         this.subscription = source.subscribe(val => this.calculateEstimatedTime());
