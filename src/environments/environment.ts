@@ -1,4 +1,4 @@
-// This file can be replaced during build by using the `fileReplacements` array.
+    // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
@@ -11,12 +11,12 @@ export const environment = {
     firebase: {
         apiKey: "AIzaSyDCiCWjf3tms077CnqgiP0zWhFqQjzLdRc",
         authDomain: "self-service-4820d.firebaseapp.com",
+        databaseURL: "https://self-service-4820d-default-rtdb.asia-southeast1.firebasedatabase.app",
         projectId: "self-service-4820d",
         storageBucket: "self-service-4820d.appspot.com",
         messagingSenderId: "602646727662",
         appId: "1:602646727662:web:a323db94f3dea8e9e49cff",
-        measurementId: "G-Q3EQ96CHJP",
-        databaseURL: '<your-database-URL>',
+        measurementId: "G-Q3EQ96CHJP"
     }
 };
 

@@ -86,7 +86,7 @@ export class WaitingListComponent implements OnInit {
     onTimerFinished(e: CountdownEvent, status: string, id: string) {
         if (e["action"] == "done") {
             if (status !== "PROCESSING") {
-                this.waitingListService.update_WaitingListStatus(id, "PROCESSING");
+                // this.waitingListService.update_WaitingListStatus(id, "PROCESSING");
             }
         }
     }
