@@ -9,7 +9,6 @@ import * as moment from 'moment';
 import {Router} from "@angular/router";
 import {interval, Subscription} from "rxjs";
 import {DatePipe} from "@angular/common";
-import {HttpParams} from "@angular/common/http";
 import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
 
 @Component({
