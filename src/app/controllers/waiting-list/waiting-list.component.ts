@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {environment} from "../../../environments/environment";
-import {Message, MessageService} from "primeng/api";
+import {ConfirmationService, Message, MessageService} from "primeng/api";
 import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {WaitingList} from "../../model/WaitingList";
@@ -49,6 +49,7 @@ export class WaitingListComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private waitingListService: WaitingListService,
+        private confirmationService: ConfirmationService,
         private messageService: MessageService,
         private el: ElementRef) {
     }
@@ -190,5 +191,17 @@ export class WaitingListComponent implements OnInit {
             }
         })
 
+    }
+
+    onNotifyCustomer(waitingList: WaitingList) {
+        console.log(waitingList);
+
+        this.confirmationService.confirm({
+            message: `Notify <b> ${waitingList.username} </b> device ?`,
+            header: 'Notify',
+            accept: () => {
+                console.log("ok");
+            },
+        });
     }
 }

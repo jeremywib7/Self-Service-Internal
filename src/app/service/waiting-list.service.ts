@@ -28,6 +28,11 @@ export class WaitingListService {
         return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/order/view/byUsername/${username}`);
     }
 
+    public notifyCustomer() {
+        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/waitingList/send-notification`,
+            null);
+    }
+
     public completePayment(waitingList: WaitingList) {
         return this.httpClient.post(`${this.apiServerUrl}/${this.project}/order/pay`, waitingList);
     }
