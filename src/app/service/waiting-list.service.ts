@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {User} from "../model/User";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
+import {Note} from "../model/Note";
 
 @Injectable({
     providedIn: 'root'
@@ -28,9 +29,9 @@ export class WaitingListService {
         return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/order/view/byUsername/${username}`);
     }
 
-    public notifyCustomer() {
+    public notifyCustomer(note: Note) {
         return this.httpClient.post(`${this.apiServerUrl}/${this.project}/waitingList/send-notification`,
-            null);
+            note);
     }
 
     public completePayment(waitingList: WaitingList) {

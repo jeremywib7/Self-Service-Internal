@@ -7,6 +7,7 @@ import {WaitingList} from "../../model/WaitingList";
 import {WaitingListService} from "../../service/waiting-list.service";
 import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {CountdownEvent} from "ngx-countdown";
+import {Note} from "../../model/Note";
 
 @Component({
     selector: 'app-waiting-list',
@@ -14,6 +15,7 @@ import {CountdownEvent} from "ngx-countdown";
     styleUrls: ['./waiting-list.component.scss']
 })
 export class WaitingListComponent implements OnInit {
+
     // global environment
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
@@ -23,8 +25,6 @@ export class WaitingListComponent implements OnInit {
     editMode: boolean = false;
 
     customerId: string;
-
-    currentDevice: MediaDeviceInfo = null;
 
     searchByUsernameMsg: Message[];
 
@@ -36,6 +36,8 @@ export class WaitingListComponent implements OnInit {
     isDoneCheckingCamera: boolean = false;
 
     isCameraAvl: boolean = false;
+
+    isOnHttpRequest: boolean = false;
 
 
     customerOrder: CustomerOrder[] = [];
@@ -59,15 +61,14 @@ export class WaitingListComponent implements OnInit {
         this.isLoadingWaitingList = true;
         this.waitingListService.getAllWaitingList().subscribe({
             next: res => {
-                this.waitingLists  = res.map(a => {
+                this.waitingLists = res.map(a => {
                     const data = a.payload.doc.data(); // DB Questions
                     const id = a.payload.doc.id;
-                    return { id, ...data as WaitingList };
+                    return {id, ...data as WaitingList};
                 });
                 this.isLoadingWaitingList = false;
             },
         });
-
     }
 
 
@@ -194,12 +195,28 @@ export class WaitingListComponent implements OnInit {
     }
 
     onNotifyCustomer(waitingList: WaitingList) {
-        console.log(waitingList);
 
         this.confirmationService.confirm({
             message: `Notify <b> ${waitingList.username} </b> device ?`,
             header: 'Notify',
             accept: () => {
+                this.isOnHttpRequest = true;
+
+                const note = new Note();
+                note.username = waitingList.username;
+                note.messagingToken = waitingList.messagingToken;
+
+                this.waitingListService.notifyCustomer(note).subscribe({
+                    next: value => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'Customer notified'
+                        });
+                    }
+                }).add(() => {
+                    this.isOnHttpRequest = false;
+                });
                 console.log("ok");
             },
         });

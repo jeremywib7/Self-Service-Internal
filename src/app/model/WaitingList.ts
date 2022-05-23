@@ -4,4 +4,5 @@ export class WaitingList {
     number: number;
     status: string;
     estTime: number;
+    messagingToken: string;
 }
