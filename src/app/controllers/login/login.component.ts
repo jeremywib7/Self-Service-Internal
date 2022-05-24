@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AppConfig} from "../../api/appconfig";
-import {Subscription} from "rxjs";
+import {firstValueFrom, Subscription} from "rxjs";
 import {ConfigService} from "../../service/app.config.service";
 import {NgForm} from "@angular/forms";
 import {UserService} from "../../service/user.service";
@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     public login(loginForm: NgForm) {
-        this.userService.login(loginForm.value).subscribe(
+        firstValueFrom(this.userService.login(loginForm.value)).then(
             (response: any) => {
 
                 // set in cookies

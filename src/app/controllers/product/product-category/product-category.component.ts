@@ -12,7 +12,7 @@ import {DatePipe} from "@angular/common";
 import {TranslateService} from "@ngx-translate/core";
 import {UnassignedProduct} from "../../../model/Product/UnassignedProduct";
 import {HttpParams} from "@angular/common/http";
-import {catchError, lastValueFrom, map, of, switchMap} from "rxjs";
+import {catchError, firstValueFrom, last, lastValueFrom, map, of, switchMap} from "rxjs";
 
 @Component({
     selector: 'app-product-category',
@@ -129,7 +129,7 @@ export class ProductCategoryComponent implements OnInit {
                 });
             }
 
-        })
+        });
         this.productCategory = [...this.productCategory]; // refresh by recreating array
     }
 
@@ -310,8 +310,8 @@ export class ProductCategoryComponent implements OnInit {
     submit() {
         if (this.productCategoryFg.valid) {
 
-            this.productCategoryService.addProductCategory(this.productCategoryFg.value).subscribe({
-                next: value => {
+            lastValueFrom(this.productCategoryService.addProductCategory(this.productCategoryFg.value)).then(
+                value => {
                     // insert row in table
                     this.productCategory = [...this.productCategory, value.data];
 
@@ -323,11 +323,10 @@ export class ProductCategoryComponent implements OnInit {
                         summary: 'Success',
                         detail: 'Category added!'
                     });
-
-                },
-                complete: () => {
-                    this.showAddOrEditProductCategoryDialog = false;
-                }
+                }).catch((err: any) => {
+                console.log(err);
+            }).finally(() => {
+                this.showAddOrEditProductCategoryDialog = false;
             });
 
         } else {
