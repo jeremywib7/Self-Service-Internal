@@ -26,7 +26,8 @@
                                     <button pButton pRipple pTooltip="Edit" tooltipPosition="bottom" [loading]="isOnHttpRequest"
                                             [disabled]="waitingList.status.toUpperCase() != 'WAITING'" icon="pi pi-pencil"
                                             class="p-button-rounded p-button-warning mr-2"></button>
-                                    <button pButton pRipple pTooltip="Complete" tooltipPosition="bottom"
+                                    <button pButton pRipple pTooltip="Set ready to pickup" tooltipPosition="bottom"
+                                            (click)="onSetOrderStatus(true, waitingList)"
                                             [disabled]="waitingList.status.toUpperCase() != 'WAITING'" [loading]="isOnHttpRequest"
                                             icon="pi pi-check" class="p-button-rounded p-button-success mr-2">
                                     </button>

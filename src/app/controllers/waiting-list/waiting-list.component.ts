@@ -194,6 +194,11 @@ export class WaitingListComponent implements OnInit {
 
     }
 
+    onSetOrderStatus(ready: boolean, waitingList: WaitingList) {
+        console.log(ready);
+        console.log(waitingList);
+    }
+
     onNotifyCustomer(waitingList: WaitingList) {
 
         this.confirmationService.confirm({
