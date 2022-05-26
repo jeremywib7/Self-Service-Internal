@@ -8,6 +8,8 @@ import {WaitingListService} from "../../service/waiting-list.service";
 import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {CountdownEvent} from "ngx-countdown";
 import {Note} from "../../model/Note";
+import {firstValueFrom, lastValueFrom} from "rxjs";
+import {HttpParams} from "@angular/common/http";
 
 @Component({
     selector: 'app-waiting-list',
@@ -95,7 +97,7 @@ export class WaitingListComponent implements OnInit {
 
     // WL = Waiting List
     updateStatusWL(id, status) {
-        this.waitingListService.update_WaitingListStatus(id, status);
+        // this.waitingListService.update_WaitingListStatus(id, status);
     }
 
     showAddOrEditDialogWaitingList() {
@@ -194,9 +196,22 @@ export class WaitingListComponent implements OnInit {
 
     }
 
-    onSetOrderStatus(ready: boolean, waitingList: WaitingList) {
-        console.log(ready);
+    async onSetOrderStatus(waitingList: WaitingList) {
         console.log(waitingList);
+
+        waitingList.status = "WAITING FOR PICKUP";
+        waitingList.steps = 3;
+
+        await firstValueFrom(this.waitingListService.updateStatusToReadyToPickup(waitingList)).then(
+            () => {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Successful',
+                    detail: 'Order completed',
+                    life: 3000
+                });
+            }
+        )
     }
 
     onNotifyCustomer(waitingList: WaitingList) {
@@ -224,6 +239,15 @@ export class WaitingListComponent implements OnInit {
                 });
                 console.log("ok");
             },
+        });
+    }
+
+    onCompleteOrder(customerId: string) {
+        let params = new HttpParams().append("customerId", customerId);
+        this.waitingListService.completeOrder(params).subscribe({
+            next: value => {
+                console.log(value);
+            }
         });
     }
 }

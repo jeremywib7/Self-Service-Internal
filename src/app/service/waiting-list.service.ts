@@ -46,8 +46,27 @@ export class WaitingListService {
         return this.fireServices.collection('Waiting_List').snapshotChanges();
     }
 
-    update_WaitingListStatus(id: string, status: string) {
-        this.fireServices.doc(`Waiting_List/${id}`).update({status: status.toUpperCase()}).then(r => null);
+    // in firebase
+
+    // updateWaitingListStatus(waitingList: WaitingList) {
+    //     return this.httpClient.put(`${this.apiServerUrl}/${this.project}/waitingList/update/status`,
+    //         waitingList);
+    // }
+
+    // in firebase
+    updateStatusToReadyToPickup(waitingList: WaitingList) {
+        return this.httpClient.put(`${this.apiServerUrl}/${this.project}/waitingList/update/status/ready-to-pickup`,
+            waitingList);
     }
+
+    completeOrder(params: HttpParams) {
+        return this.httpClient.put(`${this.apiServerUrl}/${this.project}/order/completed`,
+            null, {params: params})
+    }
+
+    // in firebase
+    // update_WaitingListStatus(id: string, status: string) {
+    //     this.fireServices.doc(`Waiting_List/${id}`).update({status: status.toUpperCase()}).then(r => null);
+    // }
 
 }
