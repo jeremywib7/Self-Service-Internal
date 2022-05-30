@@ -4,6 +4,7 @@
 
 export const environment = {
     production: false,
+    // apiBaseUrl: 'https://selfserviceonline.herokuapp.com',
     apiBaseUrl: 'http://localhost:8080',
     project: 'selfservice',
     accessToken: '1234',
