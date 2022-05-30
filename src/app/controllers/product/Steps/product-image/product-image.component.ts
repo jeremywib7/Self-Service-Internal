@@ -56,6 +56,7 @@ export class ProductImageComponent implements OnInit {
 
                 this.productService.downloadProductImage(params).subscribe({
                     next: response => {
+                        console.log(response);
                         this.reportProgress(response);
                     }
                 });
