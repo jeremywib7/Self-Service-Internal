@@ -43,13 +43,13 @@ export class UserService implements OnInit {
 
             observable = observable.pipe(
                 switchMap(() => {
-                    user.imageUrl = user.username + ext;
+                    // user.imageUrl = user.username + ext;
 
                     const formData: FormData = new FormData();
                     formData.append('file', selectedImage);
 
                     let params = new HttpParams();
-                    params = params.append('name', user.imageUrl);
+                    params = params.append('userId', user.id);
 
                     return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload/`, formData,
                         {params});
