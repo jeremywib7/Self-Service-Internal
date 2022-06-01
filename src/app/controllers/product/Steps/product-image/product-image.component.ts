@@ -8,6 +8,7 @@ import {MessageService} from "primeng/api";
 import {HttpEvent, HttpEventType, HttpParams} from "@angular/common/http";
 import {ProductService} from "../../../../service/product.service";
 import {DomSanitizer} from "@angular/platform-browser";
+import * as FileSaver from 'file-saver';
 
 @Component({
     selector: 'app-product-image',
@@ -55,9 +56,21 @@ export class ProductImageComponent implements OnInit {
                 params = params.append('productId', id);
 
                 this.productService.downloadProductImage(params).subscribe({
-                    next: response => {
-                        console.log(response);
-                        this.reportProgress(response);
+                    next: (response: any) => {
+                        let file = new File([response], imageInformation[index].imageName, { type: "image/jpeg", });
+
+                        this.productModel.pFileUploadProductImg.push(file);
+
+                        // update length
+                        this.productModel.previousImageFileLength = this.productModel.pFileUploadProductImg.length;
+
+                        // set image carrousel in confirmation page
+                        this.imageReadAsDataUrl(file);
+
+                        this.productModel.pFileUploadProductImg = [...this.productModel.pFileUploadProductImg];
+
+                        // for saving file
+                        // let file: File = FileSaver.saveAs(response, `fuck.jpg`);
                     }
                 });
 
@@ -70,53 +83,51 @@ export class ProductImageComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    private reportProgress(httpEvent: HttpEvent<string[] | Blob>) {
-        switch (httpEvent.type) {
-            case HttpEventType.UploadProgress:
-                this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Uploading...');
-                break;
-            case HttpEventType.DownloadProgress:
-                this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Downloading...');
-                break;
-            case HttpEventType.ResponseHeader:
-                break;
-            case HttpEventType.Response:
 
-                if (httpEvent.body instanceof Array) {
-                    this.productModel.fileStatus.status = 'done';
-                    for (const filename of httpEvent.body) {
-                        this.productModel.filenames.unshift(filename);
-                    }
-                } else {
-                    // download logic
-                    // set tsconfig.json strict: false or add ! in httpEven.body
-
-                    // push into global file
-
-                    let imageFile = new File([httpEvent.body],
-                        httpEvent.headers.get('File-Name'),
-                        {type: `${httpEvent.headers.get('Content-Type')};charset=utf-8`})
-
-                    this.productModel.pFileUploadProductImg.push(imageFile);
-
-                    // update length
-                    this.productModel.previousImageFileLength = this.productModel.pFileUploadProductImg.length;
-
-                    // set image carrousel in confirmation page
-                    this.imageReadAsDataUrl(imageFile);
-
-                    this.productModel.pFileUploadProductImg = [...this.productModel.pFileUploadProductImg];
-
-                    // download as file
-                    // saveAs(new File([httpEvent.body!], httpEvent.headers.get('File-Name')!,
-                    //     {type: `${httpEvent.headers.get('Content-Type')};charset=utf-8`}));
-                }
-                this.productModel.fileStatus.status = 'done';
-                break;
-            default:
-                break;
-        }
-    }
+    // private reportProgress(httpEvent: HttpEvent<string[] | Blob>) {
+    //     switch (httpEvent.type) {
+    //         case HttpEventType.UploadProgress:
+    //             this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Uploading...');
+    //             break;
+    //         case HttpEventType.DownloadProgress:
+    //             this.updateStatus(httpEvent.loaded, httpEvent.total!, 'Downloading...');
+    //             break;
+    //         case HttpEventType.ResponseHeader:
+    //             break;
+    //         case HttpEventType.Response:
+    //
+    //             if (httpEvent.body instanceof Array) {
+    //                 this.productModel.fileStatus.status = 'done';
+    //                 for (const filename of httpEvent.body) {
+    //                     this.productModel.filenames.unshift(filename);
+    //                 }
+    //             } else {
+    //                 // download logic
+    //                 // set tsconfig.json strict: false or add ! in httpEven.body
+    //
+    //                 // push into global file
+    //
+    //                 let imageFile = new File([httpEvent.body],
+    //                     httpEvent.headers.get('Content-Type'),
+    //                     {type: `${httpEvent.headers.get('Content-Type')};charset=utf-8`});
+    //
+    //                 this.productModel.pFileUploadProductImg.push(imageFile);
+    //
+    //                 // update length
+    //                 this.productModel.previousImageFileLength = this.productModel.pFileUploadProductImg.length;
+    //
+    //                 // set image carrousel in confirmation page
+    //                 this.imageReadAsDataUrl(imageFile);
+    //
+    //                 this.productModel.pFileUploadProductImg = [...this.productModel.pFileUploadProductImg];
+    //
+    //             }
+    //             this.productModel.fileStatus.status = 'done';
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
 
     updateStatus(loaded: number, total: number, requestType: string) {
         this.productModel.fileStatus.status = 'progress';

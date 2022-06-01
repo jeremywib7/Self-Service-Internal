@@ -11,6 +11,7 @@ import * as FileSaver from 'file-saver';
 import "jspdf-autotable";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"
+import {firstValueFrom, lastValueFrom} from "rxjs";
 
 @Component({
     selector: 'app-user',
@@ -164,7 +165,7 @@ export class UserComponent implements OnInit {
                 {
                     validators: [Validators.required, Validators.compose(
                         [Validators.pattern('[0-9+ ]*'), Validators.min(12345),
-                            Validators.max(1234567891)])]
+                            Validators.max(123456789000)])]
                 }
             ),
             phoneNumber: new FormControl('',
@@ -259,7 +260,6 @@ export class UserComponent implements OnInit {
 
         if (editMode) {
             this.editMode = true;
-            console.log(user);
             this.reactiveForm.patchValue(user);
             this.userImgUrl = user.imageUrl;
         } else {
@@ -338,9 +338,15 @@ export class UserComponent implements OnInit {
 
     //
 
-    submit() {
+    async submit() {
 
         if (this.reactiveForm.valid) {
+
+            // get extension
+            if (this.uploadedFiles) {
+                const ext = this.uploadedFiles.name.substr(this.uploadedFiles.name.lastIndexOf('.') + 1);
+                this.reactiveForm.get('imageUrl').setValue("profile_picture." + ext);
+            }
 
             this.reactiveForm.patchValue({
 
@@ -354,39 +360,77 @@ export class UserComponent implements OnInit {
                 }
             });
 
+            let userId = "";
+
             if (this.editMode === true) {
                 this.mode = 'edit';
+                await lastValueFrom(this.userService.updateUser(this.reactiveForm.value)).then((res: any) => {
+                    userId = res.data.id;
+                    let index = this.users.findIndex(user => user['username'] === res['data']['username']);
+                    this.users[index] = res['data'];
+                    this.users = [...this.users]; // refresh table
+                })
             } else {
                 this.mode = 'add';
                 this.reactiveForm.get('userPassword').setValue("1234");
+                await lastValueFrom(this.userService.addUser(this.reactiveForm.value)).then((res: any) => {
+                    userId = res.data.id;
+                    this.users = [...this.users, res['data']]; // insert row
+                    this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
+                })
             }
 
-            this.userService.addOrUpdateUser(this.reactiveForm.value, this.mode, this.uploadedFiles).subscribe({
-                next: (userResponse: User) => {
-                    if (this.editMode) {
-                        let index = this.users.findIndex(user => user['username'] === userResponse['data']['username']);
-                        this.users[index] = userResponse['data'];
-                        this.users = [...this.users]; // refresh table
+            // upload user image
+            if (this.uploadedFiles) {
+                await lastValueFrom(this.userService.uploadImageFile(this.uploadedFiles, userId)).then(res => {
+                });
+            }
 
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Success',
-                            detail: 'User updated'
-                        });
-                    } else {
-                        this.users = [...this.users, userResponse['data']]; // insert row
-                        this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
+            if (this.editMode) {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'User updated'
+                });
+            }
 
-                        this.messageService.add({
-                            severity: 'success',
-                            summary: 'Success',
-                            detail: 'User registered'
-                        });
-                    }
+            if (!this.editMode) {
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'User registered'
+                });
+            }
 
-                    this.showAddOrEditUserDialog = false;
-                },
-            });
+            this.showAddOrEditUserDialog = false;
+
+
+            // this.userService.addOrUpdateUser(this.reactiveForm.value, this.mode, this.uploadedFiles).subscribe({
+            //     next: (userResponse: User) => {
+            //         if (this.editMode) {
+            //             let index = this.users.findIndex(user => user['username'] === userResponse['data']['username']);
+            //             this.users[index] = userResponse['data'];
+            //             this.users = [...this.users]; // refresh table
+            //
+            //             this.messageService.add({
+            //                 severity: 'success',
+            //                 summary: 'Success',
+            //                 detail: 'User updated'
+            //             });
+            //         } else {
+            //             this.users = [...this.users, userResponse['data']]; // insert row
+            //             this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
+            //
+            //             this.messageService.add({
+            //                 severity: 'success',
+            //                 summary: 'Success',
+            //                 detail: 'User registered'
+            //             });
+            //         }
+            //
+            //         this.showAddOrEditUserDialog = false;
+            //     },
+            // });
 
         } else {
             this.validateFormFields(this.reactiveForm);

@@ -48,11 +48,9 @@ export class ProductService {
         return null;
     }
 
-    downloadProductImage(params: HttpParams): Observable<HttpEvent<Blob>> {
-        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/images/product/download/file`, {
+    downloadProductImage(params: HttpParams): Observable<any> {
+        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/images/product/download`, {
             params,
-            reportProgress: true,
-            observe: 'events',
             responseType: 'blob'
         });
     }

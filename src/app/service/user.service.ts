@@ -2,7 +2,7 @@ import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {UserAuthService} from "./user-auth.service";
 import {environment} from "../../environments/environment";
-import {observable, Observable, of, switchMap, tap} from "rxjs";
+import {lastValueFrom, Observable, of, switchMap} from "rxjs";
 import {User} from "../model/User";
 
 @Injectable({
@@ -34,39 +34,101 @@ export class UserService implements OnInit {
             loginData, {headers: this.requestHeader});
     }
 
-    public addOrUpdateUser(user: User, mode: string, selectedImage?: File): Observable<User> {
-        let observable = of({});
+    public addUser(user: User): Observable<User> {
+        return this.httpClient.post<User>(`${this.apiServerUrl}/${this.project}/user/register`, user);
+    }
 
-        if (selectedImage) {
-            //get file extension
-            const ext = selectedImage.type.replace('image/', '');
+    public updateUser(user: User): Observable<User> {
+        return this.httpClient.put<User>(`${this.apiServerUrl}/${this.project}/user/update`, user);
+    }
 
-            observable = observable.pipe(
-                switchMap(() => {
-                    // user.imageUrl = user.username + ext;
 
-                    const formData: FormData = new FormData();
-                    formData.append('file', selectedImage);
+    // public addOrUpdateUser(user: User, mode: string, selectedImage?: File) : Observable<User> {
+    //
+    //     if (selectedImage) {
+    //         //get file extension
+    //         const ext = selectedImage.type.replace('image/', '');
+    //
+    //         if (mode === "edit") {
+    //              return this.httpClient.put<User>(`${this.apiServerUrl}/${this.project}/user/update`, user);
+    //         }
+    //
+    //         if (mode !== "edit") {
+    //             return this.httpClient.post<User>(`${this.apiServerUrl}/${this.project}/user/register`, user);
+    //         }
+    //
+    //         // const formData: FormData = new FormData();
+    //         // formData.append('file', selectedImage);
+    //         //
+    //         // let params = new HttpParams();
+    //         // params = params.append('userId', user.id);
+    //         //
+    //         // await lastValueFrom(this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload/`, formData,
+    //         //     {params})).then();
+    //
+    //         // observable = observable.pipe(
+    //         //     switchMap(() => {
+    //         //         if (mode === "edit") {
+    //         //             return this.httpClient.put<User>(`${this.apiServerUrl}/${this.project}/user/update`, user);
+    //         //         } else {
+    //         //             return this.httpClient.post<User>(`${this.apiServerUrl}/${this.project}/user/register`, user);
+    //         //         }
+    //         //     })
+    //         // );
+    //
+    //         // observable.pipe(
+    //         //     switchMap(() => {
+    //         //         // user.imageUrl = user.username + ext;
+    //         //
+    //         //         const formData: FormData = new FormData();
+    //         //         formData.append('file', selectedImage);
+    //         //
+    //         //         let params = new HttpParams();
+    //         //         params = params.append('userId', user.id);
+    //         //
+    //         //         return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload/`, formData,
+    //         //             {params});
+    //         //     })
+    //         // )
+    //
+    //
+    //         // observable = observable.pipe(
+    //         //     switchMap(() => {
+    //         //         // user.imageUrl = user.username + ext;
+    //         //
+    //         //         const formData: FormData = new FormData();
+    //         //         formData.append('file', selectedImage);
+    //         //
+    //         //         let params = new HttpParams();
+    //         //         params = params.append('userId', user.id);
+    //         //
+    //         //         return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload/`, formData,
+    //         //             {params});
+    //         //     })
+    //         // )
+    //     }
+    //
+    //     // return observable.pipe(
+    //     //     switchMap(() => {
+    //     //         if (mode === "edit") {
+    //     //             return this.httpClient.put<User>(`${this.apiServerUrl}/${this.project}/user/update`, user);
+    //     //         } else {
+    //     //             return this.httpClient.post<User>(`${this.apiServerUrl}/${this.project}/user/register`, user);
+    //     //         }
+    //     //     })
+    //     // );
+    //
+    // }
 
-                    let params = new HttpParams();
-                    params = params.append('userId', user.id);
+    public uploadImageFile(selectedFile: File, id: string) : Observable<any> {
+        const formData: FormData = new FormData();
+        formData.append('file', selectedFile);
 
-                    return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload/`, formData,
-                        {params});
-                })
-            )
-        }
+        let params = new HttpParams();
+        params = params.append('id', id);
 
-        return observable.pipe(
-            switchMap(() => {
-                if (mode === "edit") {
-                    return this.httpClient.put<User>(`${this.apiServerUrl}/${this.project}/user/update`, user);
-                } else {
-                    return this.httpClient.post<User>(`${this.apiServerUrl}/${this.project}/user/register`, user);
-                }
-            })
-        );
-
+        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/images/user/upload/`, formData,
+            {params});
     }
 
     public deleteUser(username: string): Observable<User> {
