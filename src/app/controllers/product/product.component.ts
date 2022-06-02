@@ -4,7 +4,17 @@ import {ConfirmationService, LazyLoadEvent, MenuItem, MessageService} from "prim
 import {HttpEvent, HttpEventType, HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
-import {catchError, debounceTime, map, of, shareReplay, Subscription, switchMap} from "rxjs";
+import {
+    catchError,
+    debounceTime,
+    firstValueFrom,
+    lastValueFrom,
+    map,
+    of,
+    shareReplay,
+    Subscription,
+    switchMap
+} from "rxjs";
 import {saveAs} from 'file-saver';
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
@@ -76,7 +86,7 @@ export class ProductComponent implements OnInit {
         ];
 
         // if confirmation steps completed, this will be triggered by .next
-        this.subscription = this.productModel.addOrEditCompleteProduct$.subscribe((productInformation) => {
+        this.subscription = this.productModel.addOrEditCompleteProduct$.subscribe(async (productInformation) => {
 
             // check if edit mode
             // return true if url contains /edit
@@ -87,6 +97,15 @@ export class ProductComponent implements OnInit {
 
             if (this.productFg.valid) {
 
+                // if not edit mode
+                // set id manually
+                // get id or uuid from database
+                if (!this.editMode) {
+                    await lastValueFrom(this.productService.getUUID()).then(value => {
+                        this.productFg.get('id').setValue(value.data.uuid);
+                    });
+                }
+
                 // if no image is selected, then add a random image name
                 // spring can't find the image path and add default product image instead
                 if (this.productModel.pFileUploadProductImg.length == 0) {
@@ -96,7 +115,7 @@ export class ProductComponent implements OnInit {
                 }
 
                 // patch image name to form in a loop
-                // format imageName = (index.extension)
+                // format imageName = (uuid_index.extension)
                 this.productModel.pFileUploadProductImg.forEach((value, index, array) => {
 
                     // get extension
@@ -122,14 +141,14 @@ export class ProductComponent implements OnInit {
                             // get generated uuid from database
                             this.productService.uploadImage(response.data.id, this.productModel.pFileUploadProductImg)
                                 .subscribe({
-                                next: response => {
-                                    // update progress bar
-                                    this.uploadImageProgressBar(response);
-                                },
-                                complete: () => {
-                                    this.onCompleteAddOrEditProduct();
-                                }
-                            });
+                                    next: response => {
+                                        // update progress bar
+                                        this.uploadImageProgressBar(response);
+                                    },
+                                    complete: () => {
+                                        this.onCompleteAddOrEditProduct();
+                                    }
+                                });
 
                         } else {
                             this.onCompleteAddOrEditProduct();

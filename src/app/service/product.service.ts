@@ -55,7 +55,7 @@ export class ProductService {
         });
     }
 
-    public getUUID() {
+    public getUUID() : Observable<any> {
         return this.httpClient.get(`${this.apiServerUrl}/${this.project}/product/uuid`);
     }
 
