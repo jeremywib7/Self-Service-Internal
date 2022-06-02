@@ -101,10 +101,13 @@ export class ProductCategoryComponent implements OnInit {
     }
 
     loadAllProductCategory() {
+        this.tableProductCategoryLoading = true;
 
         this.productCategoryService.loadProductCategories().subscribe({
             next: productCategory => {
                 this.responseProductCategory(productCategory['data']);
+                this.tableProductCategoryLoading = false;
+
             }
         })
 

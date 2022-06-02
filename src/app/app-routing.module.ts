@@ -37,6 +37,7 @@ import {PaymentComponent} from "./controllers/payment/payment.component";
 import {ProductCategory} from "./model/Product/ProductCategory";
 import {ProductCategoryComponent} from "./controllers/product/product-category/product-category.component";
 import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.component";
+import {SalesReportComponent} from "./controllers/sales-report/sales-report.component";
 
 const routes: Routes = [
     {path: '', redirectTo: 'detail', pathMatch: 'full'},
@@ -88,7 +89,7 @@ const routes: Routes = [
 
                     {path: 'pages/payment', data: {breadcrumb: 'Payment'}, component: PaymentComponent},
                     {path: 'pages/waitingList', data: {breadcrumb: 'Waiting List'}, component: WaitingListComponent},
-                    {path: 'pages/report', data: {breadcrumb: 'User'}, component: UserComponent},
+                    {path: 'pages/report', data: {breadcrumb: 'Sales Report'}, component: SalesReportComponent},
 
                     {path: 'uikit/formlayout', component: FormLayoutComponent},
                     {path: 'uikit/input', component: InputComponent},

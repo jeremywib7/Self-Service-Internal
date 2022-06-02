@@ -172,6 +172,7 @@ import {ZXingScannerModule} from "@zxing/ngx-scanner";
 
 import { registerLocaleData } from '@angular/common';
 import localeId from '@angular/common/locales/id';
+import { SalesReportComponent } from './controllers/sales-report/sales-report.component';
 registerLocaleData(localeId, 'id');
 
 // AoT requires an exported function for factories
@@ -343,6 +344,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         PaymentComponent,
         BreadcrumbComponent,
         WaitingListComponent,
+        SalesReportComponent,
     ],
     providers: [
         AuthGuard,
