@@ -10,6 +10,10 @@ export class SalesReportComponent implements OnInit {
 
     customerOrders: CustomerOrder[] = [];
 
+    dateFrom: Date;
+
+    dateTill: Date;
+
     constructor() {
     }
 

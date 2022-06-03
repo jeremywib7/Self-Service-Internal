@@ -3,10 +3,11 @@
         <div class="card">
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
-                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+                    <h5 class="m-0">View Sales Report</h5>
                 </ng-template>
 
                 <ng-template pTemplate="right">
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
                     <!--                    <p-calendar placeholder="Date Started" [showIcon]="true" inputId="icon"></p-calendar>-->
                     <!--                    - -->
                     <!--                    <p-calendar placeholder="Date End" [showIcon]="true" inputId="icon"></p-calendar>-->
@@ -16,71 +17,31 @@
             <p-table #dt [value]="customerOrders" sortField="representative.name" sortMode="single" [scrollable]="true"
                      scrollHeight="400px" rowGroupMode="subheader" groupRowsBy="representative.name">
                 <ng-template pTemplate="caption">
+
                     <div class="p-fluid grid formgrid">
+
                         <!--       RIGHT                -->
-                        <div class="flex align-items-center mb-2 ml-2">
-                            <button type="button" pButton pRipple icon="pi pi-file" (click)="dt.exportCSV()"
-                                    class="mr-2"
-                                    pTooltip="CSV" tooltipPosition="bottom"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
-                                    class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"
-                                    class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+                        <div class="flex col-12 md:col-4 align-items-center">
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text"
+                                       (input)="dt.filterGlobal($event.target['value'], 'contains')"
+                                       placeholder="Search..."/>
+                            </span>
                         </div>
 
                         <!--       LEFT (ml-auto)                 -->
-                        <div class="field col-12 md:col-4 ml-auto">
-                            <label>Date Started</label>
-                            <p-calendar [(ngModel)]="date3" [showIcon]="true" inputId="icon"></p-calendar>
+                        <div class="flex align-items-center col-12 md:col-3 ml-auto my-3 md:my-0">
+                            <p-calendar placeholder="Date From" [(ngModel)]="dateFrom" appendTo="body" [showIcon]="true"
+                                        inputId="icon"></p-calendar>
                         </div>
 
-                        <div class="flex align-items-center">
-                            -
+                        <div class="flex align-items-center col-12 md:col-3">
+                            <p-calendar placeholder="Date Till" [(ngModel)]="dateTill" appendTo="body" [showIcon]="true"
+                                        inputId="icon"></p-calendar>
                         </div>
 
-
-                        <div class="field col-12 md:col-4">
-                            <label>Date End</label>
-                            <p-calendar [(ngModel)]="date3" [showIcon]="true" inputId="icon"></p-calendar>
-                        </div>
                     </div>
-                    <!--                    <div class="p-fluid grid formgrid">-->
-                    <!--                        <div class="field col-12 md:col-4">-->
-                    <!--                            <label>Search</label>-->
-                    <!--                            <span class="p-input-icon-left">-->
-                    <!--                                <i class="pi pi-search"></i>-->
-                    <!--                                <input pInputText type="text"-->
-                    <!--                                       (input)="dt.filterGlobal($event.target['value'], 'contains')"-->
-                    <!--                                       placeholder="Search..."/>-->
-                    <!--                            </span>-->
-                    <!--                        </div>-->
-
-                    <!--                        <div class="field col-12 md:col-4">-->
-                    <!--                            <label for="icon">Icon</label>-->
-                    <!--                            <p-calendar [(ngModel)]="date3" [showIcon]="true" inputId="icon"></p-calendar>-->
-                    <!--                        </div>-->
-
-                    <!--                        <div class="field col-12 md:col-4">-->
-                    <!--                            <label for="min-max">MinMax</label>-->
-                    <!--                            <p-calendar [(ngModel)]="date4" [minDate]="minDate" [maxDate]="maxDate"-->
-                    <!--                                        [readonlyInput]="true" inputId="min-max"></p-calendar>-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="flex align-items-center justify-content-between">-->
-                    <!--                        &lt;!&ndash;                        <h5 class="m-0">View Sales Report</h5>&ndash;&gt;-->
-                    <!--                        <span class="p-input-icon-left">-->
-                    <!--                            <i class="pi pi-search"></i>-->
-                    <!--                            <input pInputText type="text" (input)="dt.filterGlobal($event.target['value'], 'contains')"-->
-                    <!--                                   placeholder="Search..."/>-->
-                    <!--                        </span>-->
-                    <!--                        <span>-->
-                    <!--                            <p-calendar class="mr-2" placeholder="Date Started" [showIcon]="true"-->
-                    <!--                                        inputId="icon"></p-calendar>-->
-                    <!--                                                - -->
-                    <!--                            <p-calendar class="ml-2" placeholder="Date End" [showIcon]="true"-->
-                    <!--                                        inputId="icon"></p-calendar>-->
-                    <!--                        </span>-->
-                    <!--                    </div>-->
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
