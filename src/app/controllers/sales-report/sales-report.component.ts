@@ -5,6 +5,7 @@ import {firstValueFrom, lastValueFrom} from "rxjs";
 import * as FileSaver from 'file-saver';
 import {DatePipe} from "@angular/common";
 import {MessageService} from "primeng/api";
+import {HttpParams} from "@angular/common/http";
 
 @Component({
     selector: 'app-sales-report',
@@ -15,9 +16,17 @@ export class SalesReportComponent implements OnInit {
 
     customerOrders: CustomerOrder[] = [];
 
+    totalsProfit : number = 0;
+
+    todayDate: Date = new Date();
+
+    isTblSalesReportLoading: boolean = true;
+
     dateFrom: Date;
+    defaultDateFrom: Date;
 
     dateTill: Date;
+    defaultDateTill: Date;
 
     constructor(
         private reportService: ReportService,
@@ -27,23 +36,48 @@ export class SalesReportComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loadSalesReport().then(r => null);
+
+        this.dateFrom = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), 1);
+        this.dateTill = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth() + 1, 0);
+        // this.defaultDateTill = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    }
+
+    dateFromChanged() {
+        if (this.dateFrom == null) {
+            this.dateFrom =  new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), 1);
+        }
+    }
+
+    dateTillChanged() {
+
     }
 
     async loadSalesReport() {
+        let params = new HttpParams();
+        await lastValueFrom(this.reportService.loadSalesReport(params)).then((res:any) => {
+            this.customerOrders = res.data;
 
+            this.customerOrders.forEach((customerOrder) => {
+                this.totalsProfit += customerOrder.totalPrice
+            });
+
+        }).finally(() => {
+            this.isTblSalesReportLoading = false;
+        })
     }
 
     async downloadSalesReport() {
-        let dateFromFormatted = this.datePipe.transform(this.dateFrom, 'dd-MM-yyyy');
-        let dateTillFormatted = this.datePipe.transform(this.dateTill, 'dd-MM-yyyy');
+        let dateFromFormatted = this.datePipe.transform(this.dateFrom, 'dd-MM-yyyy') + " 00:00:00";
+        let dateTillFormatted = this.datePipe.transform(this.dateTill, 'dd-MM-yyyy') + " 23:59:59";
 
         await lastValueFrom(this.reportService.downloadSalesReportPdf(dateFromFormatted, dateTillFormatted)).then(response => {
 
-            if (response.type == "application/json") {
+            if (response.type === "application/json") {
                 return this.messageService.add({severity: 'info', summary: '', detail: 'No data to export'});
             }
 
-            FileSaver.saveAs(response, "Sales Report (" + dateFromFormatted + ") - (" + dateTillFormatted + ")");
+            // FileSaver.saveAs(response, "Sales Report (" + dateFromFormatted + ") - (" + dateTillFormatted + ")");
         })
     }
 
