@@ -1,5 +1,5 @@
 {
-  "name": "sakai-ng",
+  "name": "self-service-internal",
   "version": "13.1.1",
   "scripts": {
     "ng": "ng",

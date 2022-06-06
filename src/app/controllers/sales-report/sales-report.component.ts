@@ -77,7 +77,7 @@ export class SalesReportComponent implements OnInit {
                 return this.messageService.add({severity: 'info', summary: '', detail: 'No data to export'});
             }
 
-            // FileSaver.saveAs(response, "Sales Report (" + dateFromFormatted + ") - (" + dateTillFormatted + ")");
+            FileSaver.saveAs(response, "Sales Report (" + dateFromFormatted + ") - (" + dateTillFormatted + ")");
         })
     }
 

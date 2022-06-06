@@ -180,9 +180,9 @@
                             <div *ngFor="let product of productList"
                                  class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 border-bottom-1 surface-border">
                                 <img defaultImage="/assets/demo/images/galleria/spinner.gif"
-                                     [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download/file?' +
+                                     [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/product/download?' +
                                 'imageName=' + product?.product.images[0]?.imageName + '&' +
-                                'productId=' + product.id "
+                                'productId=' + product?.product.id "
                                      class="w-8rem h-8rem flex-shrink-0 mb-3"/>
                                 <div class="flex-auto lg:ml-3">
                                     <div class="flex align-items-center justify-content-between mb-3">
