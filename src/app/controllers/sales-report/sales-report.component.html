@@ -46,7 +46,7 @@
 
                         <div class="flex align-items-center col-12 md:col-3">
                             <p-calendar placeholder="Date Till" dateFormat="dd-mm-yy" [(ngModel)]="dateTill"
-                                        appendTo="body" [showIcon]="true"
+                                        appendTo="body" [showIcon]="true" (ngModelChange)="dateTillChanged()"
                                         inputId="icon"></p-calendar>
                         </div>
 

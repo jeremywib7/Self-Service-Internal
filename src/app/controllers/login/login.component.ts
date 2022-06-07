@@ -8,6 +8,8 @@ import {UserAuthService} from "../../service/user-auth.service";
 import {Router} from "@angular/router";
 import {MessageService} from "primeng/api";
 import {HistoryRouteService} from "../../service/history.route.service";
+import {ProfileService} from "../../service/profile.service";
+import {EncryptDecryptService} from "../../service/encrypt-decrypt.service";
 
 @Component({
     selector: 'app-login',
@@ -26,9 +28,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     previousUrl: string = '';
 
-    constructor(public configService: ConfigService, public userService: UserService,
+    constructor(public configService: ConfigService, public userService: UserService, private profileService: ProfileService,
                 public userAuthService: UserAuthService, public router: Router, public messageService: MessageService,
-                private historyRouteService: HistoryRouteService) {
+                private historyRouteService: HistoryRouteService, private encryptDecryptService: EncryptDecryptService) {
 
         if (userAuthService.isLoggedIn()) {
             this.router.navigate(['/']).then(r => null);
@@ -53,13 +55,15 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    public login(loginForm: NgForm) {
-        firstValueFrom(this.userService.login(loginForm.value)).then(
+    async login(loginForm: NgForm) {
+        await firstValueFrom(this.userService.login(loginForm.value)).then(
             (response: any) => {
+                this.profileService.formProfile =  response.data;
 
                 // set in cookies
                 this.userAuthService.setRoles(response.user.role);
                 this.userAuthService.setToken(response.jwtToken);
+                this.userAuthService.setUsername(this.encryptDecryptService.encrypt(response.user.username));
 
                 const userRole = response.user.role.roleName;
 

@@ -143,8 +143,8 @@ export class UserService implements OnInit {
         return this.httpClient.get<User[]>(`${this.apiServerUrl}/${this.project}/user/all`);
     }
 
-    public getUserByUsername(username: string): Observable<User> {
-        return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/user/find/${username}`);
+    public getUserByUsername(params: HttpParams): Observable<User> {
+        return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/user/find`, {params: params});
     }
 
     public forUser() {

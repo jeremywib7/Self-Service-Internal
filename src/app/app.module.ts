@@ -173,6 +173,8 @@ import {ZXingScannerModule} from "@zxing/ngx-scanner";
 import { registerLocaleData } from '@angular/common';
 import localeId from '@angular/common/locales/id';
 import { SalesReportComponent } from './controllers/sales-report/sales-report.component';
+import { ProfileComponent } from './controllers/profile/profile.component';
+import {EncryptDecryptService} from "./service/encrypt-decrypt.service";
 registerLocaleData(localeId, 'id');
 
 // AoT requires an exported function for factories
@@ -345,6 +347,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         BreadcrumbComponent,
         WaitingListComponent,
         SalesReportComponent,
+        ProfileComponent,
     ],
     providers: [
         AuthGuard,
@@ -366,6 +369,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             useValue: {latencyThreshold: 0}
         },
         ConfirmationService,
+        EncryptDecryptService,
         MessageService,
         Product,
         HistoryRouteService,

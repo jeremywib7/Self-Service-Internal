@@ -16,17 +16,15 @@ export class SalesReportComponent implements OnInit {
 
     customerOrders: CustomerOrder[] = [];
 
-    totalsProfit : number = 0;
+    totalsProfit: number = 0;
 
     todayDate: Date = new Date();
 
     isTblSalesReportLoading: boolean = true;
 
     dateFrom: Date;
-    defaultDateFrom: Date;
 
     dateTill: Date;
-    defaultDateTill: Date;
 
     constructor(
         private reportService: ReportService,
@@ -40,22 +38,35 @@ export class SalesReportComponent implements OnInit {
 
         this.dateFrom = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), 1);
         this.dateTill = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth() + 1, 0);
-        // this.defaultDateTill = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     }
 
     dateFromChanged() {
         if (this.dateFrom == null) {
-            this.dateFrom =  new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), 1);
+            this.dateFrom = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), 1);
         }
+
+        this.isTblSalesReportLoading = true;
+        this.loadSalesReportBetweenDate().then(() => {
+                this.isTblSalesReportLoading = false;
+            }
+        );
+
     }
 
     dateTillChanged() {
+        if (this.dateTill == null) {
+            this.dateTill = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth() + 1, 0);
+        }
 
+        this.isTblSalesReportLoading = true;
+        this.loadSalesReportBetweenDate().then(() =>
+            this.isTblSalesReportLoading = false
+        );
     }
 
     async loadSalesReport() {
         let params = new HttpParams();
-        await lastValueFrom(this.reportService.loadSalesReport(params)).then((res:any) => {
+        await lastValueFrom(this.reportService.loadSalesReport(params)).then((res: any) => {
             this.customerOrders = res.data;
 
             this.customerOrders.forEach((customerOrder) => {
@@ -64,6 +75,24 @@ export class SalesReportComponent implements OnInit {
 
         }).finally(() => {
             this.isTblSalesReportLoading = false;
+        })
+    }
+
+    async loadSalesReportBetweenDate() {
+        let dateFromFormatted = this.datePipe.transform(this.dateFrom, 'dd-MM-yyyy') + " 00:00:00";
+        let dateTillFormatted = this.datePipe.transform(this.dateTill, 'dd-MM-yyyy') + " 23:59:59";
+
+        let params = new HttpParams()
+            .append("dateFrom", dateFromFormatted)
+            .append("dateTill", dateTillFormatted);
+
+        await lastValueFrom(this.reportService.loadSalesReport(params)).then((res: any) => {
+            this.customerOrders = res.data;
+
+            this.customerOrders.forEach((customerOrder) => {
+                this.totalsProfit += customerOrder.totalPrice
+            });
+
         })
     }
 

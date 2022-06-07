@@ -2,41 +2,50 @@ import {Injectable} from '@angular/core';
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class UserAuthService {
 
-  secretKey = "nih71h8dh1j2spaksnjabx1092k1osom1inu1b27y17u2e9109io1ksoj2ih1udubfkkvk12j819291kd00k[pkajkncwniq";
+    public secretKey = "o9szYIOq1rRMiouNhNvaq96lqUvCekxR";
 
-  constructor() {
-  }
+    constructor() {
+    }
 
-  public setRoles(roles: []) {
-    localStorage.setItem('_security_role', JSON.stringify(roles['roleName'].toString())
-    );
-  }
+    public setRoles(roles: []) {
+        localStorage.setItem('_security_role', JSON.stringify(roles['roleName'].toString())
+        );
+    }
 
-  public getRoles() {
-    return JSON.parse(
-      localStorage.getItem('_security_role'));
-  }
+    public getRoles() {
+        return JSON.parse(
+            localStorage.getItem('_security_role'));
+    }
 
-  public setToken(accessToken: string) {
-    localStorage.setItem('_security_accessToken',
-      JSON.stringify(accessToken)
-    );
-  }
+    public setToken(accessToken: string) {
+        localStorage.setItem('_security_accessToken',
+            JSON.stringify(accessToken)
+        );
+    }
 
-  public getToken() {
-    return JSON.parse(localStorage.getItem('_security_accessToken'));
-  }
+    public getUsername() {
+        return JSON.parse(
+            localStorage.getItem('_security_username'));
+    }
 
-  public clear() {
-    localStorage.clear();
-  }
+    public setUsername(username: string) {
+        localStorage.setItem('_security_username', JSON.stringify(username));
+    }
 
-  public isLoggedIn() {
-    return this.getRoles() && this.getToken();
-  }
+    public getToken() {
+        return JSON.parse(localStorage.getItem('_security_accessToken'));
+    }
+
+    public clear() {
+        localStorage.clear();
+    }
+
+    public isLoggedIn() {
+        return this.getRoles() && this.getToken();
+    }
 
 }

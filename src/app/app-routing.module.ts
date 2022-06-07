@@ -38,6 +38,7 @@ import {ProductCategory} from "./model/Product/ProductCategory";
 import {ProductCategoryComponent} from "./controllers/product/product-category/product-category.component";
 import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.component";
 import {SalesReportComponent} from "./controllers/sales-report/sales-report.component";
+import {ProfileComponent} from "./controllers/profile/profile.component";
 
 const routes: Routes = [
     {path: '', redirectTo: 'detail', pathMatch: 'full'},
@@ -85,6 +86,12 @@ const routes: Routes = [
                         path: 'pages/product/category',
                         data: {breadcrumb: 'Product Category'},
                         component: ProductCategoryComponent
+                    },
+
+                    {
+                        path: 'pages/profile',
+                        data: {breadcrumb: 'Profile'},
+                        component: ProfileComponent
                     },
 
                     {path: 'pages/payment', data: {breadcrumb: 'Payment'}, component: PaymentComponent},

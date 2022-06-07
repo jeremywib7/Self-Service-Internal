@@ -1,0 +1,70 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h4>Profile</h4>
+            <form *ngIf="profileService.formProfile.value" [formGroup]="profileService.formProfile">
+                <div class="grid formgrid p-fluid">
+                    <div class="field mb-4 col-12 md:col-6">
+                        <label for="username" class="font-medium">Username</label>
+                        <input id="username" formControlName="username"  type="text" pInputText>
+                    </div>
+
+                    <div class="field mb-4 col-12 md:col-6">
+                        <label for="avatar" class="font-medium">Avatar</label>
+                        <div class="flex align-items-center">
+                            <img
+                                *ngIf="profileService.formProfile.get('id').value && profileService.formProfile.get('imageUrl').value"
+                                defaultImage="/assets/demo/images/galleria/spinner.gif"
+                                [lazyLoad]=" apiBaseUrl +'/'+ projectName +'/images/user/download?' +
+                         'userId='+ profileService.formProfile.get('id').value + '&'+ 'imageName=' + profileService.formProfile.get('imageUrl').value "
+                                [alt]="profileService.formProfile.get('imageUrl').value"
+                                class="mr-4 w-7rem h-7rem" />
+                            <p-fileUpload id="avatar" mode="basic" name="avatar" url="./upload.php" accept="image/*" maxFileSize="1000000" styleClass="p-button-outlined p-button-plain" chooseLabel="Upload Image"></p-fileUpload>
+                        </div>
+                    </div>
+
+                    <div class="field mb-4 col-12 md:col-6">
+                        <label for="userFirstName" class="font-medium">First Name</label>
+                        <input id="userFirstName" formControlName="userFirstName" type="text" pInputText>
+                    </div>
+
+                    <div class="field mb-4 col-12 md:col-6">
+                        <label for="userLastName" class="font-medium">Last Name</label>
+                        <input id="userLastName" formControlName="userLastName" type="text" pInputText>
+                    </div>
+
+                    <div class="surface-100 mb-3 col-12" style="height:2px"></div>
+                    <div class="field mb-4 col-12 md:col-6">
+                        <label for="email" class="font-medium">Email</label>
+                        <input id="email" formControlName="email" type="text" pInputText>
+                    </div>
+                    <div class="field mb-4 col-12 md:col-6">
+                        <label class="font-medium">Country</label>
+                        <p-dropdown inputId="country" optionLabel="name" [filter]="true" filterBy="name"
+                                    [showClear]="true" placeholder="Select a Country">
+                            <ng-template let-country pTemplate="item">
+                                <div class="flex align-items-center">
+                                    <img src="assets/images/blocks/flag/flag_placeholder.png"
+                                         [class]="'mr-2 flag flag-' + country.code.toLowerCase()" style="width:18px"/>
+                                    <div>{{country.name}}</div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                    </div>
+                    <div class="field mb-4 col-12 md:col-6">
+                        <label for="city" class="font-medium">City</label>
+                        <input id="city" type="text" pInputText>
+                    </div>
+                    <div class="field mb-4 col-12 md:col-6">
+                        <label for="state" class="font-medium">State</label>
+                        <input id="state" type="text" pInputText>
+                    </div>
+                    <div class="surface-100 mb-3 col-12" style="height:2px"></div>
+                    <div class="col-12">
+                        <button pButton pRipple label="Save Changes" class="w-auto mt-3"></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
