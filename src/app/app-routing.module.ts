@@ -1,6 +1,5 @@
 import {RouterModule, Routes} from '@angular/router';
 import {NgModule} from '@angular/core';
-import {DashboardComponent} from './components/dashboard/dashboard.component';
 import {FormLayoutComponent} from './components/formlayout/formlayout.component';
 import {PanelsComponent} from './components/panels/panels.component';
 import {OverlaysComponent} from './components/overlays/overlays.component';
@@ -39,6 +38,7 @@ import {ProductCategoryComponent} from "./controllers/product/product-category/p
 import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.component";
 import {SalesReportComponent} from "./controllers/sales-report/sales-report.component";
 import {ProfileComponent} from "./controllers/profile/profile.component";
+import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
 
 const routes: Routes = [
     {path: '', redirectTo: 'detail', pathMatch: 'full'},

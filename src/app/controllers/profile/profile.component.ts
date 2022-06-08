@@ -4,6 +4,7 @@ import {environment} from "../../../environments/environment";
 import {MessageService} from "primeng/api";
 import {firstValueFrom, lastValueFrom} from "rxjs";
 import {UserService} from "../../service/user.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-profile',
@@ -21,6 +22,7 @@ export class ProfileComponent implements OnInit {
 
     constructor(
         public profileService: ProfileService,
+        private router : Router,
         private userService: UserService,
         private messageService: MessageService
     ) {
@@ -35,13 +37,9 @@ export class ProfileComponent implements OnInit {
 
             this.isButtonSaveChangesLoading = true;
 
-            console.log("saving profile...");
-
             const res: any = await lastValueFrom(this.userService.updateUser(this.profileService.formProfile.value)).catch(() => {
                 this.isButtonSaveChangesLoading = false;
             });
-
-            console.log("uploading image...");
 
             if (this.uploadedFiles !== undefined) {
                 // upload user image
@@ -55,7 +53,12 @@ export class ProfileComponent implements OnInit {
             }
 
             this.isButtonSaveChangesLoading = false;
-            console.log(res);
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Profile updated', life: 3000
+            });
+            await this.router.navigate(['/']);
 
 
         } else {

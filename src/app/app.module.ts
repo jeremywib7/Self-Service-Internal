@@ -97,7 +97,6 @@ import {AppConfigComponent} from './app.config.component';
 import {AppMenuComponent} from './app.menu.component';
 import {AppMenuitemComponent} from './app.menuitem.component';
 
-import {DashboardComponent} from './components/dashboard/dashboard.component';
 import {FormLayoutComponent} from './components/formlayout/formlayout.component';
 import {FloatLabelComponent} from './components/floatlabel/floatlabel.component';
 import {InvalidStateComponent} from './components/invalidstate/invalidstate.component';
@@ -175,6 +174,7 @@ import localeId from '@angular/common/locales/id';
 import { SalesReportComponent } from './controllers/sales-report/sales-report.component';
 import { ProfileComponent } from './controllers/profile/profile.component';
 import {EncryptDecryptService} from "./service/encrypt-decrypt.service";
+import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
 registerLocaleData(localeId, 'id');
 
 // AoT requires an exported function for factories
@@ -303,7 +303,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         AppConfigComponent,
         AppMenuComponent,
         AppMenuitemComponent,
-        DashboardComponent,
         UserComponent,
         FormLayoutComponent,
         FloatLabelComponent,
@@ -338,6 +337,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         ErrorComponent,
         NotfoundComponent,
         AccessComponent,
+        DashboardComponent,
         ProductComponent,
         ProductDetailComponent,
         ProductPriceComponent,
