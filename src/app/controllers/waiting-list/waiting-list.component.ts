@@ -41,10 +41,13 @@ export class WaitingListComponent implements OnInit {
 
     isOnHttpRequest: boolean = false;
 
+    showEditWaitingListDialog: boolean = false;
+
 
     customerOrder: CustomerOrder[] = [];
 
     waitingListFg: FormGroup;
+    editCustomerOrderFg: FormGroup;
 
     waitingLists: WaitingList[] = [];
 
@@ -84,20 +87,15 @@ export class WaitingListComponent implements OnInit {
             estHour: [0, [RxwebValidators.required()]],
             estMinute: [0, [RxwebValidators.required()]],
             estSecond: [0, [RxwebValidators.required()]],
+        }, {updateOn: 'change'});
+
+        // form to modify time
+        this.editCustomerOrderFg = this.fb.group({
+            estHour: [0, [RxwebValidators.required()]],
+            estMinute: [0, [RxwebValidators.required()]],
+            estSecond: [0, [RxwebValidators.required()]],
+            customerId: ['', [RxwebValidators.required()]],
         }, {updateOn: 'change'})
-    }
-
-    onTimerFinished(e: CountdownEvent, status: string, id: string) {
-        if (e["action"] == "done") {
-            if (status !== "PROCESSING") {
-                // this.waitingListService.update_WaitingListStatus(id, "PROCESSING");
-            }
-        }
-    }
-
-    // WL = Waiting List
-    updateStatusWL(id, status) {
-        // this.waitingListService.update_WaitingListStatus(id, status);
     }
 
     showAddOrEditDialogWaitingList() {
@@ -109,38 +107,19 @@ export class WaitingListComponent implements OnInit {
         this.showPaymentDialog = true;
     }
 
-    submit() {
-        this.waitingListFg.get('status').setValue("PREPARING");
+    async onOpenEditTimerDialog(waitingList: WaitingList) {
+        this.showEditWaitingListDialog = true
+        this.editCustomerOrderFg.get("customerId").setValue(waitingList.id);
+    }
 
-        if (this.waitingListFg.valid) {
-            this.isSendingWaitingList = true; // for loading button effect
-
-            // convert estimated time in seconds and total them
-            const hourToSecond: number = (this.waitingListFg.get('estHour').value * 60) * 60;
-            const minuteToSecond: number = this.waitingListFg.get('estMinute').value * 60;
-            const estSecond: number = this.waitingListFg.get('estSecond').value;
-
-            const totalSecond: number = (1000 * ((hourToSecond) +
-                (minuteToSecond) + (Number(estSecond))));
-            //
-
-            this.waitingListFg.get('estTime').setValue(new Date().getTime() + totalSecond);
-            this.waitingListService.create_NewWaitingList(this.waitingListFg.value).then(r => {
-
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: 'Waiting list added'
-                });
-
-                this.showPaymentDialog = false;
-                this.isSendingWaitingList = false;
-                this.waitingList = null;
-            });
-
-        } else {
-            this.validateFormFields(this.waitingListFg);
-        }
+    async submitEditTimer() {
+        const res = await firstValueFrom(this.waitingListService.updateTimer(this.editCustomerOrderFg.value));
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Timer updated successfully',
+            life: 3000
+        });
     }
 
     validateFormFields(formGroup: FormGroup) {

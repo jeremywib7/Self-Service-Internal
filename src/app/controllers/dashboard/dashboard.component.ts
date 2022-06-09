@@ -7,6 +7,7 @@ import {ProductService} from "../../service/productservice";
 import {ConfigService} from "../../service/app.config.service";
 import {DashboardService} from "../../service/dashboard.service";
 import {Dashboard} from "../../model/Dashboard";
+import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
 
 @Component({
     selector: 'app-dashboard',
@@ -18,6 +19,8 @@ export class DashboardComponent implements OnInit {
     items: MenuItem[];
 
     products: Product[];
+
+    recentSales: CustomerOrder[] = [];
 
     chartData: any;
 
@@ -93,6 +96,7 @@ export class DashboardComponent implements OnInit {
     async loadDashboardData() {
         const res = await firstValueFrom(this.dashboardService.loadDashboardData());
         this.dashboardData = res.data;
+        this.recentSales = res.data.recentOrder;
         console.log(res.data);
         this.isDoneLoadDashboardData = true;
     }

@@ -15,5 +15,8 @@ export abstract class CustomerOrder {
     totalPaid: number;
     totalChange: number;
     totalPrice: number;
+    estHour: number;
+    estMinute: number;
+    estSecond: number;
     estTime: string;
 }

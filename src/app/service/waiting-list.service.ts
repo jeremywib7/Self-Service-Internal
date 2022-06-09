@@ -6,6 +6,7 @@ import {User} from "../model/User";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {Note} from "../model/Note";
+import {CustomerOrder} from "../model/customerOrder/CustomerOrder";
 
 @Injectable({
     providedIn: 'root'
@@ -57,6 +58,11 @@ export class WaitingListService {
     updateStatusToReadyToPickup(waitingList: WaitingList) {
         return this.httpClient.put(`${this.apiServerUrl}/${this.project}/waitingList/update/status/ready-to-pickup`,
             waitingList);
+    }
+
+    updateTimer(customerOrder: CustomerOrder) {
+        return this.httpClient.put(`${this.apiServerUrl}/${this.project}/waitingList/update/timer`,
+            customerOrder);
     }
 
     completeOrder(params: HttpParams) {

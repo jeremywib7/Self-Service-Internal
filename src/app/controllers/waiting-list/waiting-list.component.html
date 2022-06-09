@@ -11,9 +11,7 @@
                             <div class="flex-1 text-center md:text-left">
                                 <div class="font-bold text-2xl">{{waitingList.number}}</div>
                                 <div class="mb-3">
-                                    <countdown [config]="{ stopTime: waitingList.estTime}"
-                                               (event)="onTimerFinished($event, waitingList.status.toUpperCase(), waitingList.id)">
-                                    </countdown>
+                                    <countdown [config]="{ stopTime: waitingList.estTime}"></countdown>
                                 </div>
                                 <div class="flex align-items-center mt-2">
                                     <i class="pi pi-user mr-2"></i>
@@ -23,20 +21,26 @@
                             <div
                                 class="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
                                 <div class="mb-2">
-                                    <button pButton pRipple pTooltip="Edit" tooltipPosition="bottom" [loading]="isOnHttpRequest"
-                                            [disabled]="waitingList.status.toUpperCase() != 'WAITING FOR CONFIRMATION'" icon="pi pi-pencil"
+                                    <button pButton pRipple pTooltip="Edit" tooltipPosition="bottom"
+                                            [loading]="isOnHttpRequest"
+                                            (click)="onOpenEditTimerDialog(waitingList)"
+                                            [disabled]="waitingList.status.toUpperCase() != 'WAITING FOR CONFIRMATION'"
+                                            icon="pi pi-pencil"
                                             class="p-button-rounded p-button-warning mr-2"></button>
                                     <button pButton pRipple pTooltip="Set ready to pickup" tooltipPosition="bottom"
                                             (click)="onSetOrderStatus(waitingList)"
-                                            [disabled]="waitingList.status.toUpperCase() != 'WAITING FOR CONFIRMATION'" [loading]="isOnHttpRequest"
+                                            [disabled]="waitingList.status.toUpperCase() != 'WAITING FOR CONFIRMATION'"
+                                            [loading]="isOnHttpRequest"
                                             icon="pi pi-box" class="p-button-rounded mr-2">
                                     </button>
-                                    <button pButton pRipple pTooltip="Message" tooltipPosition="bottom" [loading]="isOnHttpRequest"
+                                    <button pButton pRipple pTooltip="Message" tooltipPosition="bottom"
+                                            [loading]="isOnHttpRequest"
                                             [disabled]="waitingList.steps != 3"
                                             icon="pi pi-volume-up" (click)="onNotifyCustomer(waitingList)"
                                             class="p-button-rounded p-button-info mr-2">
                                     </button>
-                                    <button pButton pRipple pTooltip="Complete" tooltipPosition="bottom" [loading]="isOnHttpRequest"
+                                    <button pButton pRipple pTooltip="Complete" tooltipPosition="bottom"
+                                            [loading]="isOnHttpRequest"
                                             [disabled]="waitingList.steps != 3"
                                             icon="pi pi-check" (click)="onCompleteOrder(waitingList.id)"
                                             class="p-button-rounded p-button-success">
@@ -56,3 +60,69 @@
 
     </div>
 </div>
+
+<p-dialog [(visible)]="showEditWaitingListDialog" [style]="{width: '450px'}" [resizable]="false" [draggable]="false"
+          header="Edit Timer" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">
+        <form [formGroup]="editCustomerOrderFg">
+            <div class="grid grid-nogutter">
+                <div class="p-fluid p-formgrid grid">
+
+                    <div class="col-12">
+                        <label>Estimated Time</label>
+                    </div>
+
+                    <div class=" col-4 mb-4">
+                        <p-inputNumber [showButtons]="true" formControlName="estHour" [min]="0" [max]="24"
+                                       (onInput)="$event.value > 24 || $event.value < 0 ?
+                                                   null: editCustomerOrderFg.get('estHour').setValue($event.value)"
+                                       buttonLayout="vertical" inputId="vertical"
+                                       suffix=" Hour" decrementButtonClass="p-button-secondary"
+                                       incrementButtonClass="p-button-secondary"
+                                       incrementButtonIcon="pi pi-plus"
+                                       decrementButtonIcon="pi pi-minus">
+                        </p-inputNumber>
+                    </div>
+
+                    <div class=" col-4">
+                        <p-inputNumber [showButtons]="true" formControlName="estMinute" [min]="0" [max]="60"
+                                       (onInput)="$event.value > 60 || $event.value < 0 ?
+                                                   null: editCustomerOrderFg.get('estMinute').setValue($event.value)"
+                                       buttonLayout="vertical" inputId="vertical" suffix=" Minute"
+                                       decrementButtonClass="p-button-secondary"
+                                       incrementButtonClass="p-button-secondary"
+                                       incrementButtonIcon="pi pi-plus"
+                                       decrementButtonIcon="pi pi-minus">
+                        </p-inputNumber>
+                    </div>
+
+                    <div class=" col-4">
+                        <p-inputNumber [showButtons]="true" formControlName="estSecond" [min]="0" [max]="60"
+                                       (onInput)="$event.value > 60 || $event.value < 0 ?
+                                                   null: editCustomerOrderFg.get('estSecond').setValue($event.value)"
+                                       buttonLayout="vertical" inputId="vertical" suffix=" Second"
+                                       decrementButtonClass="p-button-secondary"
+                                       incrementButtonClass="p-button-secondary"
+                                       incrementButtonIcon="pi pi-plus"
+                                       decrementButtonIcon="pi pi-minus">
+                        </p-inputNumber>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <button pButton pRipple *ngIf="editMode" label="Reset Password"
+                icon="pi pi-refresh"
+                class="p-button-danger"></button>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple (click)="showEditWaitingListDialog = false" label="Cancel" icon="pi pi-times"
+                class="p-button-text"></button>
+        <button pButton pRipple
+                (click)="submitEditTimer()"
+                label="Save" icon="pi pi-check" class="p-button-text"></button>
+    </ng-template>
+</p-dialog>
+
