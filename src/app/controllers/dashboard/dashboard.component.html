@@ -15,7 +15,7 @@
                             <p-skeleton size="3rem" styleClass="mr-2"></p-skeleton>
                         </div>
                     </div>
-<!--                    <p-skeleton width="8rem"></p-skeleton>-->
+                    <!--                    <p-skeleton width="8rem"></p-skeleton>-->
                 </div>
             </div>
 
@@ -105,8 +105,8 @@
                             <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
                         </div>
                     </div>
-<!--                    <span class="text-green-500 font-medium">24 new </span>-->
-<!--                    <span class="text-500">since last visit</span>-->
+                    <!--                    <span class="text-green-500 font-medium">24 new </span>-->
+                    <!--                    <span class="text-500">since last visit</span>-->
                 </div>
             </div>
             <div class="col-12 lg:col-6 xl:col-3">
@@ -116,15 +116,15 @@
                             <span class="block text-500 font-medium mb-3">{{currentMonthName}} Revenue</span>
                             <div
                                 class="text-900 font-medium text-xl">{{dashboardData.totalRevenue | currency:
-                                'Rp. ':'symbol':"1.0-2"}}</div>
+                                'Rp. ':'symbol':"2.0-2"}}</div>
                         </div>
                         <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
                              [ngStyle]="{width: '2.5rem', height: '2.5rem'}">
                             <i class="pi pi-map-marker text-orange-500 text-xl"></i>
                         </div>
                     </div>
-<!--                    <span class="text-green-500 font-medium">%52+ </span>-->
-<!--                    <span class="text-500">since last week</span>-->
+                    <!--                    <span class="text-green-500 font-medium">%52+ </span>-->
+                    <!--                    <span class="text-500">since last week</span>-->
                 </div>
             </div>
             <div class="col-12 lg:col-6 xl:col-3">
@@ -139,8 +139,8 @@
                             <i class="pi pi-inbox text-cyan-500 text-xl"></i>
                         </div>
                     </div>
-<!--                    <span class="text-green-500 font-medium">520  </span>-->
-<!--                    <span class="text-500">newly registered</span>-->
+                    <!--                    <span class="text-green-500 font-medium">520  </span>-->
+                    <!--                    <span class="text-500">newly registered</span>-->
                 </div>
             </div>
             <div class="col-12 lg:col-6 xl:col-3">
@@ -155,39 +155,47 @@
                             <i class="pi pi-comment text-purple-500 text-xl"></i>
                         </div>
                     </div>
-<!--                    <span class="text-green-500 font-medium">85 </span>-->
-<!--                    <span class="text-500">responded</span>-->
+                    <!--                    <span class="text-green-500 font-medium">85 </span>-->
+                    <!--                    <span class="text-500">responded</span>-->
                 </div>
             </div>
 
             <div class="col-12 xl:col-6">
                 <div class="card">
                     <h5>Recent Sales</h5>
-                    <p-table [value]="recentSales" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+                    <p-table [value]="recentSales" [paginator]="true" [rows]="5" responsiveLayout="scroll"
+                             [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} recent sales">
                         <ng-template pTemplate="header">
                             <tr>
-                                <th pSortableColumn="dateTimeCreated">
-                                    Date Time
-                                    <p-sortIcon field="dateTimeCreated"></p-sortIcon>
-                                </th>
                                 <th pSortableColumn="orderFinished">
-                                    Order Number
+                                    Date Time
                                     <p-sortIcon field="orderFinished"></p-sortIcon>
                                 </th>
-                                <th pSortableColumn="price">Customer Username
-                                    <p-sortIcon field="price"></p-sortIcon>
+                                <th pSortableColumn="number">
+                                    Order Number
+                                    <p-sortIcon field="number"></p-sortIcon>
                                 </th>
-                                <th>Profit</th>
+                                <th pSortableColumn="customerProfile.username">Customer Username
+                                    <p-sortIcon field="customerProfile.username"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="totalPrice">Profit
+                                    <p-sortIcon field="totalPrice"></p-sortIcon>
+                                </th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-recentSales>
                             <tr>
                                 <td>{{recentSales.orderFinished}}</td>
-                                <td>{{recentSales.name}}</td>
-                                <td>{{recentSales.price | currency:'USD'}}</td>
-                                <td>
-                                    <button pButton pRipple type="button" icon="pi pi-search"
-                                            class="p-button p-component p-button-text p-button-icon-only"></button>
+                                <td>{{recentSales.number}}</td>
+                                <td>{{recentSales.customerProfile.username}}</td>
+                                <td>{{recentSales.totalPrice | currency : 'Rp. ' : 'symbol' : '2.0-2'}}</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td [attr.colspan]="6" class="text-center">
+                                    No recent sale
                                 </td>
                             </tr>
                         </ng-template>

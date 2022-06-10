@@ -8,6 +8,7 @@ import {ConfigService} from "../../service/app.config.service";
 import {DashboardService} from "../../service/dashboard.service";
 import {Dashboard} from "../../model/Dashboard";
 import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
+import {TotalSalesProduct} from "../../model/TotalSalesProduct";
 
 @Component({
     selector: 'app-dashboard',
@@ -18,9 +19,11 @@ export class DashboardComponent implements OnInit {
 
     items: MenuItem[];
 
-    products: Product[];
 
     recentSales: CustomerOrder[] = [];
+
+    top5BestSales: TotalSalesProduct[] = [];
+
 
     chartData: any;
 

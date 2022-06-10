@@ -172,7 +172,7 @@ export class PaymentComponent implements OnInit {
 
     patchData(value: any) {
         this.currentCustomerProfile = value.data.customerProfile;
-        this.dateCreated = value.data.dateCreated;
+        this.dateCreated = value.data.dateTimeCreated;
         this.productList = value.data.historyProductOrders;
         this.customerId = value.data.customerProfile.id;
         this.customerOrderFg.get("totalPrice").setValue(value.data.totalPrice);
