@@ -5,4 +5,5 @@ export class TotalSalesProduct {
     productDetail: Product;
     createdOn: number;
     totalProfit: number;
+    percentageProfit: number;S
 }

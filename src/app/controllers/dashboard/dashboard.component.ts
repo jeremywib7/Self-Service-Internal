@@ -96,10 +96,51 @@ export class DashboardComponent implements OnInit {
         }
     }
 
+    topSalesColorBg(index: number) {
+        switch (index) {
+            case 1:
+                return "bg-orange-500";
+            case 2:
+                return "bg-cyan-500";
+            case 3:
+                return "bg-pink-500";
+            case 4:
+                return "bg-green-500";
+            case 5:
+                return "bg-purple-500";
+            case 6:
+                return "bg-teal-500";
+            default:
+                return "bg-teal-500";
+        }
+    }
+
+    topSalesColorText(index: number) {
+        switch (index) {
+            case 1:
+                return "text-orange-500";
+            case 2:
+                return "text-cyan-500";
+            case 3:
+                return "text-pink-500";
+            case 4:
+                return "text-green-500";
+            case 5:
+                return "text-purple-500";
+            case 6:
+                return "text-teal-500";
+            default:
+                return "text-teal-500";
+        }
+    }
+
+
     async loadDashboardData() {
         const res = await firstValueFrom(this.dashboardService.loadDashboardData());
         this.dashboardData = res.data;
         this.recentSales = res.data.recentOrder;
+        this.top5BestSales = res.data.top5BestSales;
+
         console.log(res.data);
         this.isDoneLoadDashboardData = true;
     }
