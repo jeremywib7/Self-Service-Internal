@@ -2,7 +2,7 @@
     <div class="col-12">
         <div class="card">
             <h4>Profile</h4>
-            <form *ngIf="profileService.formProfile.value" [formGroup]="profileService.formProfile">
+            <form *ngIf="this.profileService.formProfile" [formGroup]="this.profileService.formProfile">
                 <div class="grid formgrid p-fluid">
                     <div class="field mb-4 col-12">
                         <label for="username" class="font-medium">Username</label>

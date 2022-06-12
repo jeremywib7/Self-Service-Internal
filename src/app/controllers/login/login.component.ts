@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     previousUrl: string = '';
 
-    constructor(public configService: ConfigService, public userService: UserService, private profileService: ProfileService,
+    constructor(public configService: ConfigService, public userService: UserService,
                 public userAuthService: UserAuthService, public router: Router, public messageService: MessageService,
                 private historyRouteService: HistoryRouteService, private encryptDecryptService: EncryptDecryptService) {
 
@@ -46,6 +46,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
         //
 
+
+
         this.previousUrl = this.historyRouteService.previousUrl;
     }
 
@@ -58,8 +60,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     async login(loginForm: NgForm) {
         await firstValueFrom(this.userService.login(loginForm.value)).then(
             (response: any) => {
-                this.profileService.formProfile =  response.data;
-
                 // set in cookies
                 this.userAuthService.setRoles(response.user.role);
                 this.userAuthService.setToken(response.jwtToken);

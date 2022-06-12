@@ -5,6 +5,8 @@ import {MessageService} from "primeng/api";
 import {firstValueFrom, lastValueFrom} from "rxjs";
 import {UserService} from "../../service/user.service";
 import {Router} from "@angular/router";
+import {HttpParams} from "@angular/common/http";
+import {UserAuthService} from "../../service/user-auth.service";
 
 @Component({
     selector: 'app-profile',
@@ -24,11 +26,20 @@ export class ProfileComponent implements OnInit {
         public profileService: ProfileService,
         private router : Router,
         private userService: UserService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private userAuthService: UserAuthService
     ) {
+        console.log(profileService.formProfile.value);
     }
 
     ngOnInit(): void {
+        this.loadUserProfile().then(r => null);
+    }
+
+    async loadUserProfile() {
+        let params = new HttpParams().append("username", this.userAuthService.getUsername());
+        const res: any = await firstValueFrom(this.userService.getUserByUsername(params));
+        this.profileService.formProfile.patchValue(res.data);
     }
 
     async updateProfile() {

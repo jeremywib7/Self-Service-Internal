@@ -29,22 +29,13 @@ import {AccessComponent} from './components/access/access.component';
 import {ProductComponent} from "./controllers/product/product.component";
 import {UserComponent} from "./controllers/user/user.component";
 import {LoginComponent} from "./controllers/login/login.component";
-import {ProductDetailComponent} from "./controllers/product/Steps/product-detail/product-detail.component";
-import {ProductPriceComponent} from "./controllers/product/Steps/product-price/product-price.component";
 import {ProductFormComponent} from "./controllers/product/Form/product-form/product-form.component";
 import {PaymentComponent} from "./controllers/payment/payment.component";
-import {ProductCategory} from "./model/Product/ProductCategory";
 import {ProductCategoryComponent} from "./controllers/product/product-category/product-category.component";
 import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.component";
 import {SalesReportComponent} from "./controllers/sales-report/sales-report.component";
 import {ProfileComponent} from "./controllers/profile/profile.component";
 import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
-
-const routes: Routes = [
-    {path: '', redirectTo: 'detail', pathMatch: 'full'},
-    {path: 'detail', component: ProductDetailComponent},
-    {path: 'price', component: ProductPriceComponent},
-];
 
 @NgModule({
     imports: [

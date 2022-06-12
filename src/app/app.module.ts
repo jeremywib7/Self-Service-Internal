@@ -175,6 +175,7 @@ import { SalesReportComponent } from './controllers/sales-report/sales-report.co
 import { ProfileComponent } from './controllers/profile/profile.component';
 import {EncryptDecryptService} from "./service/encrypt-decrypt.service";
 import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
+import {ProfileService} from "./service/profile.service";
 registerLocaleData(localeId, 'id');
 
 // AoT requires an exported function for factories
@@ -368,6 +369,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             provide: LOADING_BAR_CONFIG,
             useValue: {latencyThreshold: 0}
         },
+        ProfileService,
         ConfirmationService,
         EncryptDecryptService,
         MessageService,
@@ -380,7 +382,8 @@ export function HttpLoaderFactory(http: HttpClient) {
             useClass: HashLocationStrategy
         },
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, MenuService, ConfigService
+        PhotoService, ProductService, MenuService, ConfigService,
+
     ],
     bootstrap: [AppComponent]
 })
