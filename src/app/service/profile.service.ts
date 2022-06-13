@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {RxwebValidators} from "@rxweb/reactive-form-validators";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ProfileService {
 
     public formProfile: FormGroup;
@@ -74,4 +72,5 @@ export class ProfileService {
                     validators: [RxwebValidators.required()]
                 }),
         }, {updateOn: 'change'})
-    }}
+    }
+}

@@ -145,7 +145,7 @@ import {AuthInterceptor} from "./_auth/auth.interceptor";
 import {Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadImageModule} from "ng-lazyload-image";
 import {UserAuthService} from "./service/user-auth.service";
 import {BlockUIModule} from "primeng/blockui";
-import {Router, RouterModule} from "@angular/router";
+import {Router} from "@angular/router";
 import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
 import {RxFormBuilder, RxReactiveFormsModule} from "@rxweb/reactive-form-validators";
@@ -249,7 +249,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         RadioButtonModule,
         RatingModule,
         RippleModule,
-        RouterModule,
         RxReactiveFormsModule,
         ScrollPanelModule,
         ScrollTopModule,

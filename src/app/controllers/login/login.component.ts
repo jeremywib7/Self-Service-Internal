@@ -46,8 +46,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         });
         //
 
-
-
         this.previousUrl = this.historyRouteService.previousUrl;
     }
 
