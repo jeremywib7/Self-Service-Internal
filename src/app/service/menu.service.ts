@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {UserAuthService} from "./user-auth.service";
 
 @Injectable({
     providedIn: 'root'
@@ -7,10 +8,22 @@ export class MenuService {
 
     model: any[];
 
-    constructor() {
 
-        this.model = [
+    constructor(private userAuthService: UserAuthService) {
+        if (userAuthService.getRoles() == null) {
+            return;
+        }
 
+        if (userAuthService.getRoles() == "Admin") {
+            this.model = this.setAdminRoleRoute();
+        } else if (userAuthService.getRoles() == "Cashier") {
+            this.model = this.setCashierRoleRoute();
+        }
+
+    }
+
+    setAdminRoleRoute() {
+        return [
             {
                 label: 'Home',
                 items: [
@@ -50,6 +63,18 @@ export class MenuService {
                     {label: 'Sales Report', icon: 'pi pi-fw pi-user', routerLink: ['/pages/report']},
                 ]
             }
+        ];
+    }
+
+    setCashierRoleRoute() {
+        return [
+            {
+                label: 'Order',
+                items: [
+                    {label: 'Payment', icon: 'pi pi-fw pi-user', routerLink: ['/pages/payment']},
+                    {label: 'Waiting List', icon: 'pi pi-fw pi-user', routerLink: ['/pages/waitingList']},
+                ]
+            },
         ]
     }
 }

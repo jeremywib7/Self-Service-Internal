@@ -10,6 +10,7 @@ import {MessageService} from "primeng/api";
 import {HistoryRouteService} from "../../service/history.route.service";
 import {ProfileService} from "../../service/profile.service";
 import {EncryptDecryptService} from "../../service/encrypt-decrypt.service";
+import {MenuService} from "../../service/menu.service";
 
 @Component({
     selector: 'app-login',
@@ -29,7 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     previousUrl: string = '';
 
 
-    constructor(public configService: ConfigService, public userService: UserService,
+    constructor(public configService: ConfigService, public userService: UserService, private menuService: MenuService,
                 public userAuthService: UserAuthService, public router: Router, public messageService: MessageService,
                 private historyRouteService: HistoryRouteService, private encryptDecryptService: EncryptDecryptService) {
 
@@ -58,7 +59,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     async login(loginForm: NgForm) {
         await firstValueFrom(this.userService.login(loginForm.value)).then(
-            (response: any) => {
+            (response: any): any => {
                 // set in cookies
                 this.userAuthService.setRoles(response.user.role);
                 this.userAuthService.setToken(response.jwtToken);
@@ -66,20 +67,35 @@ export class LoginComponent implements OnInit, OnDestroy {
 
                 const userRole = response.user.role.roleName;
 
-                if (userRole === "Admin") {
-                    if (this.previousUrl && this.previousUrl != "/pages/login") {
-                        this.router.navigate([this.previousUrl]);
-                    } else {
-                        this.router.navigate(['/']);
-                    }
-                } else if (userRole === "User") {
-                    this.router.navigate(['/']);
+                // check previous url if exists
+                if (this.previousUrl && this.previousUrl != "/pages/login") {
+                    this.router.navigate([this.previousUrl]);
                 }
+
+                if (userRole === "Admin") {
+                    this.menuService.setAdminRoleRoute();
+                    return this.router.navigate(["/"]);
+                }
+
+                if (userRole == "Cashier") {
+                    this.menuService.setCashierRoleRoute();
+                    return this.router.navigate(["/pages/payment"]);
+                }
+
+                return this.router.navigate(["/"]);
             },
             (error) => {
                 this.messageService.add({severity: 'error', summary: 'Sign In Failed', detail: 'Wrong credentials'});
             }
         );
+    }
+
+    checkPreviousUrl() {
+        if (this.previousUrl && this.previousUrl != "/pages/login") {
+            this.router.navigate([this.previousUrl]);
+        } else {
+            this.router.navigate(['/']);
+        }
     }
 
 

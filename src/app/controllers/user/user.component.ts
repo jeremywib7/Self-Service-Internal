@@ -382,8 +382,7 @@ export class UserComponent implements OnInit {
 
             // upload user image
             if (this.uploadedFiles) {
-                await lastValueFrom(this.userService.uploadImageFile(this.uploadedFiles, userId)).then(res => {
-                });
+                await lastValueFrom(this.userService.uploadImageFile(this.uploadedFiles, userId));
             }
 
             if (this.editMode) {
@@ -403,34 +402,6 @@ export class UserComponent implements OnInit {
             }
 
             this.showAddOrEditUserDialog = false;
-
-
-            // this.userService.addOrUpdateUser(this.reactiveForm.value, this.mode, this.uploadedFiles).subscribe({
-            //     next: (userResponse: User) => {
-            //         if (this.editMode) {
-            //             let index = this.users.findIndex(user => user['username'] === userResponse['data']['username']);
-            //             this.users[index] = userResponse['data'];
-            //             this.users = [...this.users]; // refresh table
-            //
-            //             this.messageService.add({
-            //                 severity: 'success',
-            //                 summary: 'Success',
-            //                 detail: 'User updated'
-            //             });
-            //         } else {
-            //             this.users = [...this.users, userResponse['data']]; // insert row
-            //             this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
-            //
-            //             this.messageService.add({
-            //                 severity: 'success',
-            //                 summary: 'Success',
-            //                 detail: 'User registered'
-            //             });
-            //         }
-            //
-            //         this.showAddOrEditUserDialog = false;
-            //     },
-            // });
 
         } else {
             this.validateFormFields(this.reactiveForm);
