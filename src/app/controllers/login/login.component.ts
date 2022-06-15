@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     previousUrl: string = '';
 
+
     constructor(public configService: ConfigService, public userService: UserService,
                 public userAuthService: UserAuthService, public router: Router, public messageService: MessageService,
                 private historyRouteService: HistoryRouteService, private encryptDecryptService: EncryptDecryptService) {

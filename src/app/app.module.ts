@@ -373,6 +373,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         ConfirmationService,
         EncryptDecryptService,
         MessageService,
+        MenuService,
         Product,
         HistoryRouteService,
         RxFormBuilder,

@@ -1,7 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AppMainComponent } from './app.main.component';
 import { Subscription } from 'rxjs';
-import { MenuItem } from 'primeng/api';
+import {ConfirmationService, MenuItem} from 'primeng/api';
+import {UserAuthService} from "./service/user-auth.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-topbar',
@@ -11,5 +13,23 @@ export class AppTopBarComponent {
 
     items: MenuItem[];
 
-    constructor(public appMain: AppMainComponent) { }
+    constructor(
+        public appMain: AppMainComponent,
+        public confirmationService: ConfirmationService,
+        private userAuthService: UserAuthService,
+        private router: Router
+
+    ) { }
+
+    onLogout() {
+        this.confirmationService.confirm({
+            header: 'Logout',
+            message: 'Are you sure that you want to logout?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.userAuthService.clear();
+                this.router.navigate(['/pages/login'])
+            },
+        });
+    }
 }

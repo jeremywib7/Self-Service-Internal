@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {AppMainComponent} from './app.main.component';
+import {MenuService} from "./service/menu.service";
 
 @Component({
     selector: 'app-menu',
     template: `
         <div class="layout-menu-container">
             <ul class="layout-menu" role="menu" (keydown)="onKeydown($event)">
-                <li app-menu class="layout-menuitem-category" *ngFor="let item of model; let i = index;" [item]="item"
+                <li app-menu class="layout-menuitem-category" *ngFor="let item of menuService.model; let i = index;" [item]="item"
                     [index]="i" [root]="true" role="none">
                     <div class="layout-menuitem-root-text" [attr.aria-label]="item.label">{{item.label}}</div>
                     <ul role="menu">
@@ -26,10 +27,10 @@ export class AppMenuComponent implements OnInit {
 
     model: any[];
 
-    constructor(public appMain: AppMainComponent) {
-    }
-
-    ngOnInit() {
+    constructor(
+        public appMain: AppMainComponent,
+        public menuService: MenuService
+    ) {
         this.model = [
 
             {
@@ -187,6 +188,9 @@ export class AppMenuComponent implements OnInit {
             //     ]
             // }
         ];
+    }
+
+    ngOnInit() {
     }
 
     onKeydown(event: KeyboardEvent) {
