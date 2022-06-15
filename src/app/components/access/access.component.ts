@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {HistoryRouteService} from "../../service/history.route.service";
 import {Router} from "@angular/router";
 import {UserAuthService} from "../../service/user-auth.service";
 
 @Component({
-  selector: 'app-access',
-  templateUrl: './access.component.html',
+    selector: 'app-access',
+    templateUrl: './access.component.html',
 })
 export class AccessComponent {
 
@@ -23,9 +23,12 @@ export class AccessComponent {
         //     console.log("test");
         //     return this.router.navigate([this.historyRouteService.previousUrl]);
         // }
+        if (this.userAuthService.getRoles() == null) {
+            return this.router.navigate(["/pages/login"]);
+        }
 
         if (this.userAuthService.getRoles() == "Admin") {
-            return this.router.navigate([""]);
+            return this.router.navigate(["/"]);
         }
 
         if (this.userAuthService.getRoles() == "Cashier") {

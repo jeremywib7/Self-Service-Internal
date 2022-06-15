@@ -64,9 +64,9 @@ export class LoginComponent implements OnInit, OnDestroy {
                 const userRole = response.user.role.roleName;
 
                 // check previous url if exists
-                // if (this.previousUrl && this.previousUrl != "/pages/login") {
-                //     this.router.navigate([this.previousUrl]);
-                // }
+                if (this.previousUrl && this.previousUrl != "/pages/login") {
+                    this.router.navigate([this.previousUrl]);
+                }
 
                 if (userRole === "Admin") {
                     return this.router.navigate(["/"]);
