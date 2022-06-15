@@ -10,20 +10,7 @@ export class MenuService {
 
 
     constructor(private userAuthService: UserAuthService) {
-        if (userAuthService.getRoles() == null) {
-            return;
-        }
-
-        if (userAuthService.getRoles() == "Admin") {
-            this.model = this.setAdminRoleRoute();
-        } else if (userAuthService.getRoles() == "Cashier") {
-            this.model = this.setCashierRoleRoute();
-        }
-
-    }
-
-    setAdminRoleRoute() {
-        return [
+        this.model = [
             {
                 label: 'Home',
                 items: [
@@ -64,17 +51,6 @@ export class MenuService {
                 ]
             }
         ];
-    }
 
-    setCashierRoleRoute() {
-        return [
-            {
-                label: 'Order',
-                items: [
-                    {label: 'Payment', icon: 'pi pi-fw pi-user', routerLink: ['/pages/payment']},
-                    {label: 'Waiting List', icon: 'pi pi-fw pi-user', routerLink: ['/pages/waitingList']},
-                ]
-            },
-        ]
     }
 }

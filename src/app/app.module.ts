@@ -386,7 +386,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         PhotoService, ProductService, MenuService, ConfigService,
 
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
 })
 export class AppModule extends IntersectionObserverHooks {
 

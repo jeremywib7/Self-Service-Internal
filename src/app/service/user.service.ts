@@ -86,7 +86,6 @@ export class UserService implements OnInit {
 
         if (userRoles != null && userRoles) {
 
-
             if (userRoles.toString() === allowedRoles.toString() || allowedRoles.toString() === "All") {
                 isMatch = true;
             } else {

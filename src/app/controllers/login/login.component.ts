@@ -29,15 +29,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     previousUrl: string = '';
 
-
     constructor(public configService: ConfigService, public userService: UserService, private menuService: MenuService,
                 public userAuthService: UserAuthService, public router: Router, public messageService: MessageService,
                 private historyRouteService: HistoryRouteService, private encryptDecryptService: EncryptDecryptService) {
-
         if (userAuthService.isLoggedIn()) {
             this.router.navigate(['/']).then(r => null);
         }
-
     }
 
     ngOnInit(): void {
@@ -47,7 +44,6 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.config = config;
         });
         //
-
         this.previousUrl = this.historyRouteService.previousUrl;
     }
 
@@ -68,17 +64,15 @@ export class LoginComponent implements OnInit, OnDestroy {
                 const userRole = response.user.role.roleName;
 
                 // check previous url if exists
-                if (this.previousUrl && this.previousUrl != "/pages/login") {
-                    this.router.navigate([this.previousUrl]);
-                }
+                // if (this.previousUrl && this.previousUrl != "/pages/login") {
+                //     this.router.navigate([this.previousUrl]);
+                // }
 
                 if (userRole === "Admin") {
-                    this.menuService.setAdminRoleRoute();
                     return this.router.navigate(["/"]);
                 }
-
+                //
                 if (userRole == "Cashier") {
-                    this.menuService.setCashierRoleRoute();
                     return this.router.navigate(["/pages/payment"]);
                 }
 

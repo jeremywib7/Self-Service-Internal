@@ -5,7 +5,7 @@ import {filter} from "rxjs/operators";
 @Injectable()
 export class HistoryRouteService {
 
-    previousUrl: string = '';
-    currentUrl: string = '';
+    previousUrl: string = null;
+    currentUrl: string = null;
 
 }

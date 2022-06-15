@@ -36,6 +36,7 @@ import {WaitingListComponent} from "./controllers/waiting-list/waiting-list.comp
 import {SalesReportComponent} from "./controllers/sales-report/sales-report.component";
 import {ProfileComponent} from "./controllers/profile/profile.component";
 import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
+import {AuthGuard} from "./_auth/auth.guard";
 
 @NgModule({
     imports: [
@@ -51,23 +52,38 @@ import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
                 children: [
                     {
                         path: '',
-                        data: {breadcrumb: 'Dashboard'},
-                        component: DashboardComponent
+                        data: {breadcrumb: 'Dashboard', roles: ["Admin"]},
+                        component: DashboardComponent,
+                        canActivate: [AuthGuard]
                     },
 
                     //user
-                    {path: 'pages/user', data: {breadcrumb: 'User'}, component: UserComponent},
+                    {
+                        path: 'pages/user',
+                        data: {breadcrumb: 'User', roles: ["Admin"]},
+                        component: UserComponent,
+                        canActivate: [AuthGuard]
+                    },
 
                     //product
                     {
-                        path: 'pages/product', data: {breadcrumb: 'Product'}, component: ProductComponent,
+                        path: 'pages/product',
+                        data: {breadcrumb: 'Product', roles: ["Admin"]},
+                        component: ProductComponent,
+                        canActivate: [AuthGuard],
                         children: [
                             {
-                                path: 'add', data: {breadcrumb: 'Add Product'}, component: ProductFormComponent,
+                                path: 'add',
+                                data: {breadcrumb: 'Add Product', roles: ["Admin"]},
+                                component: ProductFormComponent,
+                                canActivate: [AuthGuard],
                                 loadChildren: () => import('./controllers/product/product.module').then(p => p.ProductModule)
                             },
                             {
-                                path: 'edit', data: {breadcrumb: 'Edit Product'}, component: ProductFormComponent,
+                                path: 'edit',
+                                data: {breadcrumb: 'Edit Product', roles: ["Admin"]},
+                                component: ProductFormComponent,
+                                canActivate: [AuthGuard],
                                 loadChildren: () => import('./controllers/product/product.module').then(p => p.ProductModule)
                             },
                         ]
@@ -75,19 +91,38 @@ import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
 
                     {
                         path: 'pages/product/category',
-                        data: {breadcrumb: 'Product Category'},
-                        component: ProductCategoryComponent
+                        data: {breadcrumb: 'Product Category', roles: ["Admin"]},
+                        component: ProductCategoryComponent,
+                        canActivate: [AuthGuard]
                     },
 
                     {
                         path: 'pages/profile',
-                        data: {breadcrumb: 'Profile'},
-                        component: ProfileComponent
+                        data: {breadcrumb: 'Profile', roles: ["All"]},
+                        component: ProfileComponent,
+                        canActivate: [AuthGuard]
                     },
 
-                    {path: 'pages/payment', data: {breadcrumb: 'Payment'}, component: PaymentComponent},
-                    {path: 'pages/waitingList', data: {breadcrumb: 'Waiting List'}, component: WaitingListComponent},
-                    {path: 'pages/report', data: {breadcrumb: 'Sales Report'}, component: SalesReportComponent},
+                    {
+                        path: 'pages/payment',
+                        data: {breadcrumb: 'Payment', roles: ["Admin", "Cashier"]},
+                        component: PaymentComponent,
+                        canActivate: [AuthGuard]
+                    },
+
+                    {
+                        path: 'pages/waitingList',
+                        data: {breadcrumb: 'Waiting List', roles: ["Admin", "Cashier"]},
+                        component: WaitingListComponent,
+                        canActivate: [AuthGuard]
+                    },
+
+                    {
+                        path: 'pages/report',
+                        data: {breadcrumb: 'Sales Report', roles: ["Admin"]},
+                        component: SalesReportComponent,
+                        canActivate: [AuthGuard]
+                    },
 
                     {path: 'uikit/formlayout', component: FormLayoutComponent},
                     {path: 'uikit/input', component: InputComponent},
