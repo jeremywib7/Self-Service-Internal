@@ -21,6 +21,7 @@ import {LazyLoadImageModule} from "ng-lazyload-image";
 import {DialogModule} from "primeng/dialog";
 import {CalendarModule} from "primeng/calendar";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {BreadcrumbModule} from "xng-breadcrumb";
 
 @NgModule({
     declarations: [
@@ -31,7 +32,12 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
     imports: [
         CommonModule,
         RouterModule.forChild([
-            {path: '', redirectTo: 'detail', pathMatch: 'full'},
+            // {
+            //     path: '',
+            //     redirectTo: 'detail',
+            //     pathMatch: 'full',
+            //     data: {breadcrumb: 'Detail'},
+            // },
             {
                 path: 'detail',
                 component: ProductDetailComponent,
@@ -53,11 +59,13 @@ import {ConfirmDialogModule} from "primeng/confirmdialog";
                 data: {breadcrumb: 'Confirmation'},
             },
         ]),
+        BreadcrumbModule,
         CardModule,
         ButtonModule,
         FileUploadModule,
         ReactiveFormsModule,
         GalleriaModule,
+        RouterModule,
         ToolbarModule,
         RippleModule,
         TooltipModule,

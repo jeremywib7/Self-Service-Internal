@@ -338,7 +338,7 @@ export class ProductComponent implements OnInit {
 
     openAddProductSteps() {
         this.productModel.resetAddOrEditProductSteps();
-        this.router.navigate(['pages/product/add']);
+        this.router.navigate(['pages/product/add/detail']);
     }
 
     onEditProduct(product: Product) {

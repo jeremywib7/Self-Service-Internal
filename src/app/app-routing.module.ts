@@ -37,6 +37,12 @@ import {SalesReportComponent} from "./controllers/sales-report/sales-report.comp
 import {ProfileComponent} from "./controllers/profile/profile.component";
 import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
 import {AuthGuard} from "./_auth/auth.guard";
+import {ProductDetailComponent} from "./controllers/product/Steps/product-detail/product-detail.component";
+import {ProductPriceComponent} from "./controllers/product/Steps/product-price/product-price.component";
+import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";
+import {
+    ProductConfirmationComponent
+} from "./controllers/product/Steps/product-confirmation/product-confirmation.component";
 
 @NgModule({
     imports: [
@@ -77,14 +83,66 @@ import {AuthGuard} from "./_auth/auth.guard";
                                 data: {breadcrumb: 'Add Product', roles: ["Admin"]},
                                 component: ProductFormComponent,
                                 canActivate: [AuthGuard],
-                                loadChildren: () => import('./controllers/product/product.module').then(p => p.ProductModule)
+                                children: [
+                                    {
+                                        path: '',
+                                        redirectTo: 'detail',
+                                        pathMatch: 'full',
+                                    },
+                                    {
+                                        path: 'detail',
+                                        component: ProductDetailComponent,
+                                        data: {breadcrumb: 'Detail'},
+                                    },
+                                    {
+                                        path: 'price',
+                                        component: ProductPriceComponent,
+                                        data: {breadcrumb: 'Price'},
+                                    },
+                                    {
+                                        path: 'image',
+                                        component: ProductImageComponent,
+                                        data: {breadcrumb: 'Image'},
+                                    },
+                                    {
+                                        path: 'confirmation',
+                                        component: ProductConfirmationComponent,
+                                        data: {breadcrumb: 'Confirmation'},
+                                    }
+                                ]
                             },
                             {
                                 path: 'edit',
                                 data: {breadcrumb: 'Edit Product', roles: ["Admin"]},
                                 component: ProductFormComponent,
                                 canActivate: [AuthGuard],
-                                loadChildren: () => import('./controllers/product/product.module').then(p => p.ProductModule)
+                                children: [
+                                    {
+                                        path: '',
+                                        redirectTo: 'detail',
+                                        pathMatch: 'full',
+                                    },
+                                    {
+                                        path: 'detail',
+                                        component: ProductDetailComponent,
+                                        data: {breadcrumb: 'Detail'},
+                                    },
+                                    {
+                                        path: 'price',
+                                        component: ProductPriceComponent,
+                                        data: {breadcrumb: 'Price'},
+                                    },
+                                    {
+                                        path: 'image',
+                                        component: ProductImageComponent,
+                                        data: {breadcrumb: 'Image'},
+                                    },
+                                    {
+                                        path: 'confirmation',
+                                        component: ProductConfirmationComponent,
+                                        data: {breadcrumb: 'Confirmation'},
+                                    }
+                                ]
                             },
                         ]
                     },

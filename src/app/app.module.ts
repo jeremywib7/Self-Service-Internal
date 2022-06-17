@@ -176,6 +176,10 @@ import { ProfileComponent } from './controllers/profile/profile.component';
 import {EncryptDecryptService} from "./service/encrypt-decrypt.service";
 import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
 import {ProfileService} from "./service/profile.service";
+import {ProductCategoryComponent} from "./controllers/product/product-category/product-category.component";
+import {
+    ProductConfirmationComponent
+} from "./controllers/product/Steps/product-confirmation/product-confirmation.component";
 registerLocaleData(localeId, 'id');
 
 // AoT requires an exported function for factories
@@ -291,8 +295,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         // loading bar http progress bar:
         LoadingBarHttpClientModule,
         BreadcrumbModule,
-        BreadcrumbModule,
-        BreadcrumbModule,
         ProgressSpinnerModule,
         ZXingScannerModule,
     ],
@@ -341,6 +343,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         DashboardComponent,
         ProductComponent,
         ProductDetailComponent,
+        ProductCategoryComponent,
+        ProductConfirmationComponent,
         ProductPriceComponent,
         ProductFormComponent,
         ProductImageComponent,
