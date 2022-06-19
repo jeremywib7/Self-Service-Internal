@@ -40,28 +40,26 @@ export class SalesReportComponent implements OnInit {
         this.dateTill = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth() + 1, 0);
     }
 
-    dateFromChanged() {
+    async dateFromChanged() {
         if (this.dateFrom == null) {
             this.dateFrom = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth(), 1);
         }
 
         this.isTblSalesReportLoading = true;
-        this.loadSalesReportBetweenDate().then(() => {
-                this.isTblSalesReportLoading = false;
-            }
-        );
+        await this.loadSalesReportBetweenDate();
+        this.isTblSalesReportLoading = false;
+
 
     }
 
-    dateTillChanged() {
+    async dateTillChanged() {
         if (this.dateTill == null) {
             this.dateTill = new Date(this.todayDate.getFullYear(), this.todayDate.getMonth() + 1, 0);
         }
 
         this.isTblSalesReportLoading = true;
-        this.loadSalesReportBetweenDate().then(() =>
-            this.isTblSalesReportLoading = false
-        );
+        await this.loadSalesReportBetweenDate();
+        this.isTblSalesReportLoading = false
     }
 
     async loadSalesReport() {
@@ -86,14 +84,13 @@ export class SalesReportComponent implements OnInit {
             .append("dateFrom", dateFromFormatted)
             .append("dateTill", dateTillFormatted);
 
-        await lastValueFrom(this.reportService.loadSalesReport(params)).then((res: any) => {
-            this.customerOrders = res.data;
+        const res:any = await lastValueFrom(this.reportService.loadSalesReport(params));
+        this.customerOrders = res.data;
+        this.totalsProfit = 0;
+        this.customerOrders.forEach((customerOrder) => {
+            this.totalsProfit += customerOrder.totalPrice
+        });
 
-            this.customerOrders.forEach((customerOrder) => {
-                this.totalsProfit += customerOrder.totalPrice
-            });
-
-        })
     }
 
     async downloadSalesReport() {
