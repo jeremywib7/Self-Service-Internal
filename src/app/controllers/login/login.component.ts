@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     async login(loginForm: NgForm) {
         await firstValueFrom(this.userService.login(loginForm.value)).then(
             (response: any): any => {
-                // set in cookies
+                // set in local storage
                 this.userAuthService.setRoles(response.user.role);
                 this.userAuthService.setToken(response.jwtToken);
                 this.userAuthService.setUsername(this.encryptDecryptService.encrypt(response.user.username));

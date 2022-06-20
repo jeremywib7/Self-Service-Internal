@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "self-service-4820d"
+  },
+  "targets": {
+    "self-service-4820d": {
+      "hosting": {
+        "en": [
+          "adminselfservice"
+        ]
+      }
+    }
+  }
+}
