@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ProfileService} from "../../service/profile.service";
 import {environment} from "../../../environments/environment";
 import {MessageService} from "primeng/api";
@@ -7,6 +7,7 @@ import {UserService} from "../../service/user.service";
 import {Router} from "@angular/router";
 import {HttpParams} from "@angular/common/http";
 import {UserAuthService} from "../../service/user-auth.service";
+import {FileUpload} from "primeng/fileupload";
 
 @Component({
     selector: 'app-profile',
@@ -18,13 +19,13 @@ export class ProfileComponent implements OnInit {
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
 
-    uploadedFiles: File;
+    @ViewChild('avatar') avatar: FileUpload;
 
     isButtonSaveChangesLoading: boolean = false;
 
     constructor(
         public profileService: ProfileService,
-        private router : Router,
+        private router: Router,
         private userService: UserService,
         private messageService: MessageService,
         private userAuthService: UserAuthService
@@ -48,20 +49,19 @@ export class ProfileComponent implements OnInit {
 
             this.isButtonSaveChangesLoading = true;
 
+            if (this.avatar._files[0] !== undefined) {
+                const ext = this.avatar._files[0].name.substr(this.avatar._files[0].name.lastIndexOf('.') + 1);
+                this.profileService.formProfile.get("imageUrl").setValue("profile_picture." +ext);
+
+                await lastValueFrom(this.userService.uploadImageFile(this.avatar._files[0],
+                    this.profileService.formProfile.get('id').value)).finally(() => {
+                    this.isButtonSaveChangesLoading = false;
+                });
+            }
+
             const res: any = await lastValueFrom(this.userService.updateUser(this.profileService.formProfile.value)).catch(() => {
                 this.isButtonSaveChangesLoading = false;
             });
-
-            if (this.uploadedFiles !== undefined) {
-                // upload user image
-                if (this.uploadedFiles) {
-                    await lastValueFrom(this.userService.uploadImageFile(this.uploadedFiles,
-                        this.profileService.formProfile.get('id').value)).then(() => {
-                    }).catch(() => {
-                        this.isButtonSaveChangesLoading = false;
-                    });
-                }
-            }
 
             this.isButtonSaveChangesLoading = false;
             this.messageService.add({
@@ -69,20 +69,19 @@ export class ProfileComponent implements OnInit {
                 summary: 'Success',
                 detail: 'Profile updated', life: 3000
             });
+
+            this.profileService.formProfile.reset();
             await this.router.navigate(['/']);
 
 
         } else {
+            console.log(this.avatar?._files);
             this.messageService.add({
                 severity: 'error',
                 summary: 'Failed',
                 detail: 'Please check all required fields', life: 3000
             });
         }
-    }
-
-    onSelectedImage(event) {
-        this.uploadedFiles = event.currentFiles[0];
     }
 
 }

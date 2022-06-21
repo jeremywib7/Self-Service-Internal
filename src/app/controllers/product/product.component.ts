@@ -4,17 +4,7 @@ import {ConfirmationService, LazyLoadEvent, MenuItem, MessageService} from "prim
 import {HttpEvent, HttpEventType, HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";
 import {environment} from "../../../environments/environment";
-import {
-    catchError,
-    debounceTime,
-    firstValueFrom,
-    lastValueFrom,
-    map,
-    of,
-    shareReplay,
-    Subscription,
-    switchMap
-} from "rxjs";
+import {debounceTime, lastValueFrom, Subscription} from "rxjs";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -38,11 +28,7 @@ export class ProductComponent implements OnInit {
 
     dataTblProducts: Product[];
 
-    showAddOrEditProductDialog: boolean = false;
-
     cols: any[];
-
-    categoryDropdown: any[] = [];
 
     statusDropdown: any[];
 
