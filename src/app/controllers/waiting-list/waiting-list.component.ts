@@ -76,7 +76,6 @@ export class WaitingListComponent implements OnInit {
         });
     }
 
-
     initForm() {
         this.waitingListFg = this.fb.group({
             id: ['', [RxwebValidators.required()]],
@@ -98,15 +97,6 @@ export class WaitingListComponent implements OnInit {
         }, {updateOn: 'change'})
     }
 
-    showAddOrEditDialogWaitingList() {
-        this.waitingListFg.patchValue({
-            estHour: 0,
-            estMinute: 0,
-            estSecond: 0
-        });
-        this.showPaymentDialog = true;
-    }
-
     async onOpenEditTimerDialog(waitingList: WaitingList) {
         this.showEditWaitingListDialog = true
         this.editCustomerOrderFg.get("customerId").setValue(waitingList.id);
@@ -120,59 +110,6 @@ export class WaitingListComponent implements OnInit {
             detail: 'Timer updated successfully',
             life: 3000
         });
-    }
-
-    validateFormFields(formGroup: FormGroup) {
-        formGroup.markAllAsTouched();
-
-        for (const key of Object.keys(formGroup.controls)) {
-
-            if (formGroup.controls[key].invalid) {
-                const invalidControl = this.el.nativeElement.querySelector('[formcontrolname="' + key + '"]');
-                if (invalidControl) {
-                    invalidControl.focus();
-                }
-                break;
-            }
-        }
-    }
-
-    onCheckingCamera(cameraAvl: any) {
-        this.isCameraAvl = cameraAvl;
-        this.isDoneCheckingCamera = true;
-    }
-
-    onResetQrCode() {
-        this.customerId = null;
-        this.waitingListFg.reset();
-        console.log(this.waitingListFg.value);
-    }
-
-    onConfirmPaymentByQrCode(customerId: string) {
-        this.searchByUsernameMsg = [];
-
-        this.waitingListService.getCustomerById(customerId).subscribe({
-            next: (value: any) => {
-                this.customerId = customerId;
-                this.waitingListFg.get("id").setValue(customerId);
-            }
-        })
-
-    }
-
-    onConfirmPaymentByUsername(username: string) {
-
-        // check order by this customer username
-        this.waitingListService.getCustomerByUsername(username).subscribe({
-            next: (value: any) => {
-                this.customerId = value.data.customerProfile.id;
-                this.waitingListFg.patchValue(value.data.customerProfile);
-                this.customerOrder = value.data.historyProductOrders;
-
-                console.log(value.data);
-            }
-        })
-
     }
 
     async onSetOrderStatus(waitingList: WaitingList) {

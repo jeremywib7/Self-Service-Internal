@@ -49,7 +49,6 @@ export class SalesReportComponent implements OnInit {
         await this.loadSalesReportBetweenDate();
         this.isTblSalesReportLoading = false;
 
-
     }
 
     async dateTillChanged() {
@@ -90,7 +89,6 @@ export class SalesReportComponent implements OnInit {
         this.customerOrders.forEach((customerOrder) => {
             this.totalsProfit += customerOrder.totalPrice
         });
-
     }
 
     async downloadSalesReport() {
