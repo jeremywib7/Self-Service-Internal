@@ -1,6 +1,6 @@
 <div class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
     <div class="grid justify-content-center p-2 lg:p-0" style="min-width:80%">
-        <div class="col-12 mt-5 xl:mt-0 text-center">
+        <div class="col-12  xl:mt-0 text-center">
             <img src="assets/layout/images/{{config.dark ? 'logo-white' : 'logo-dark'}}.svg" alt="Sakai logo"
                  class="mb-5" style="width:81px; height:60px;">
         </div>
@@ -14,35 +14,44 @@
                 </div>
 
                 <form [formGroup]="loginForm">
+                    <div class="p-fluid p-formgrid grid md:w-10 mx-auto">
+                        <div class="col-12">
+                            <label for="userName" class="block text-900 text-xl font-medium mb-2">Username</label>
+                            <input id="userName" type="text" placeholder="Username"
+                                   formControlName="userName"
+                                   pInputText class="w-full mb-2"
+                                   style="padding:1rem;">
+                            <div *ngIf="loginForm.controls.userName.errors && (loginForm.controls.userName.touched ||
+                                       loginForm.controls.userName.dirty) ">
+                                <div *ngIf="loginForm.hasError('required','userName')">
+                                    <small class="p-error">Username is required.</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="userPassword" class="block text-900 font-medium text-xl mb-2">Password</label>
+                            <p-password id="userPassword" placeholder="Password"
+                                        formControlName="userPassword"
+                                        [toggleMask]="true"
+                                        styleClass="p-password p-component p-inputwrapper p-input-icon-right w-full mb-2"></p-password>
+                            <div *ngIf="loginForm.controls.userPassword.errors && (loginForm.controls.userPassword.touched ||
+                                       loginForm.controls.userPassword.dirty) ">
+                                <div *ngIf="loginForm.hasError('required','userPassword')">
+                                    <small class="p-error">Password is required.</small>
+                                </div>
+                            </div>
+
+                            <p-messages [value]="resetPasswordMsg"></p-messages>
+
+                        </div>
+
+                        <div class="field col-12">
+                            <button (click)="login()" [loading]="isButtonLoading"
+                                    pButton pRipple label="Sign In" class="w-full p-3 text-xl"></button>
+                        </div>
+                    </div>
 
                 </form>
-
-
-                <div class="w-full md:w-10 mx-auto">
-                    <label for="userName" class="block text-900 text-xl font-medium mb-2">Username</label>
-                    <input id="userName" type="text" placeholder="Username"
-                           ngModel
-                           name="userName"
-                           pInputText class="w-full mb-3"
-                           style="padding:1rem;">
-
-                    <label for="userPassword" class="block text-900 font-medium text-xl mb-2">Password</label>
-                    <p-password id="userPassword" placeholder="Password"
-                                ngModel
-                                name="userPassword"
-                                [toggleMask]="true"
-                                styleClass="p-password p-component p-inputwrapper p-input-icon-right w-full mb-3"></p-password>
-
-                    <div class="flex align-items-center justify-content-between mb-5">
-                        <div class="flex align-items-center">
-                            <p-checkbox id="rememberme1" [binary]="true" styleClass="mr-2"></p-checkbox>
-                            <label for="rememberme1">Remember me</label>
-                        </div>
-                        <a class="font-medium no-underline ml-2 text-right cursor-pointer"
-                           style="color: var(--primary-color)">Forgot password?</a>
-                    </div>
-                    <button pButton pRipple label="Sign In" class="w-full p-3 text-xl"></button>
-                </div>
 
             </div>
         </div>

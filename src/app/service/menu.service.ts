@@ -5,9 +5,7 @@ import {UserAuthService} from "./user-auth.service";
     providedIn: 'root'
 })
 export class MenuService {
-
     model: any[];
-
 
     constructor(private userAuthService: UserAuthService) {
         this.model = [
