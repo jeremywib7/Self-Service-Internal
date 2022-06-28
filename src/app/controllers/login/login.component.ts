@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             (error) => {
                 this.isButtonLoading = false;
                 this.resetPasswordMsg = [
-                    {severity: 'error', detail: 'Wrong Credentials'},
+                    {severity: 'error', detail: error.error.message},
                 ];
             }
         );

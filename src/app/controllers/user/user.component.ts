@@ -78,10 +78,8 @@ export class UserComponent implements OnInit {
         this.roleDropdown = [
             {label: 'Admin', value: 'Admin'},
             {label: 'Cashier', value: 'Cashier'},
-            {label: 'Chef', value: 'Chef'},
             {label: 'Staff', value: 'Staff'},
             {label: 'User', value: 'User'},
-            {label: 'Customer', value: 'Customer'}
         ]
 
     }
@@ -255,9 +253,6 @@ export class UserComponent implements OnInit {
     // open dialog method
 
     openAddOrEditUserDialog(editMode?: boolean, user?: User) {
-
-        console.log(user);
-
         if (editMode) {
             this.editMode = true;
             this.reactiveForm.patchValue(user);
@@ -364,20 +359,22 @@ export class UserComponent implements OnInit {
 
             if (this.editMode === true) {
                 this.mode = 'edit';
-                await lastValueFrom(this.userService.updateUser(this.reactiveForm.value)).then((res: any) => {
-                    userId = res.data.id;
-                    let index = this.users.findIndex(user => user['username'] === res['data']['username']);
-                    this.users[index] = res['data'];
-                    this.users = [...this.users]; // refresh table
-                })
+                const res: any = await firstValueFrom(this.userService.updateUser(this.reactiveForm.value)).catch((err: any) => {
+                    if (err.error.status === 409) {
+                        return this.reactiveForm.get("username").setErrors({'taken': true});
+                    }
+                });
+                userId = res.data.id;
+                let index = this.users.findIndex(user => user['username'] === res['data']['username']);
+                this.users[index] = res['data'];
+                this.users = [...this.users]; // refresh table
             } else {
                 this.mode = 'add';
                 this.reactiveForm.get('userPassword').setValue("1234");
-                await lastValueFrom(this.userService.addUser(this.reactiveForm.value)).then((res: any) => {
-                    userId = res.data.id;
-                    this.users = [...this.users, res['data']]; // insert row
-                    this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
-                })
+                const res: any = await lastValueFrom(this.userService.addUser(this.reactiveForm.value));
+                userId = res.data.id;
+                this.users = [...this.users, res['data']]; // insert row
+                this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
             }
 
             // upload user image
@@ -386,6 +383,7 @@ export class UserComponent implements OnInit {
             }
 
             if (this.editMode) {
+                console.log("asas");
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Success',

@@ -5,7 +5,7 @@ import {
     HttpInterceptor,
     HttpRequest
 } from "@angular/common/http";
-import {catchError, EMPTY, finalize, Observable} from "rxjs";
+import {catchError, EMPTY, finalize, Observable, throwError} from "rxjs";
 import {Router} from "@angular/router";
 import {Injectable} from "@angular/core";
 import {UserAuthService} from "../service/user-auth.service";
@@ -30,14 +30,12 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
         if (req.headers.get('No-Auth') === 'True') {
-            // this.onFinishLoad();
             return next.handle(req.clone());
         }
 
         const token = this.userAuthService.getToken();
 
         req = this.addToken(req, token);
-
 
         return next.handle(req).pipe(
             catchError(
@@ -61,21 +59,11 @@ export class AuthInterceptor implements HttpInterceptor {
                         });
                     }
 
-                    return EMPTY;
+                    return throwError(() => err);
                 }
             ),
         );
     }
-
-    // private onFinishLoad() {
-    //     this.service_count--;
-    //     if (this.service_count === 0) {
-    //         this.loaderService.value.next(100);
-    //         setTimeout(() => {
-    //             this.loaderService.isLoading.next(false);
-    //         }, 1000);
-    //     }
-    // }
 
     private addToken(request: HttpRequest<any>, token: string) {
         return request.clone(

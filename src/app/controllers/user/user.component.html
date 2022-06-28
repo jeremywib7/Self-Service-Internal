@@ -179,6 +179,9 @@
                             <div *ngIf="reactiveForm.hasError('minlength','username')">
                                 <small class="p-error">Username must be 3 characters or more.</small>
                             </div>
+                            <div *ngIf="reactiveForm.hasError('taken','username')">
+                                <small class="p-error">Username already taken.</small>
+                            </div>
                         </div>
                     </div>
                     <div class="formgrid grid">
