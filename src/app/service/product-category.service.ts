@@ -14,6 +14,8 @@ export class ProductCategoryService {
     private apiServerUrl = environment.apiBaseUrl;
     private project = environment.project;
 
+    categoryDd
+
     constructor(private httpClient: HttpClient) {
     }
 

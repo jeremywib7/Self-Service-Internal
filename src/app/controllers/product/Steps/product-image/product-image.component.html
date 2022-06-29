@@ -21,7 +21,7 @@
         <ng-template pTemplate="footer">
             <div class="grid grid-nogutter justify-content-between">
                 <p-button label="Back" (click)="prevPage()" icon="pi pi-angle-left"></p-button>
-                <p-button label="Next" (click)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+                <p-button label="Next" [disabled]="isDownloadingImage" (click)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
             </div>
         </ng-template>
     </p-card>

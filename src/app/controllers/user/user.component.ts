@@ -58,7 +58,6 @@ export class UserComponent implements OnInit {
 
     users: User[] = [];
     user: User;
-    private mode: string;
 
     ngOnInit(): void {
         this.getUsers();
@@ -358,20 +357,18 @@ export class UserComponent implements OnInit {
             let userId = "";
 
             if (this.editMode === true) {
-                this.mode = 'edit';
                 const res: any = await firstValueFrom(this.userService.updateUser(this.reactiveForm.value)).catch((err: any) => {
-                    if (err.error.status === 409) {
-                        return this.reactiveForm.get("username").setErrors({'taken': true});
-                    }
+                    this.checkErrorCode(err.error.status);
                 });
                 userId = res.data.id;
                 let index = this.users.findIndex(user => user['username'] === res['data']['username']);
                 this.users[index] = res['data'];
                 this.users = [...this.users]; // refresh table
             } else {
-                this.mode = 'add';
                 this.reactiveForm.get('userPassword').setValue("1234");
-                const res: any = await lastValueFrom(this.userService.addUser(this.reactiveForm.value));
+                const res: any = await lastValueFrom(this.userService.addUser(this.reactiveForm.value)).catch((err:any) => {
+                    this.checkErrorCode(err.error.status);
+                });
                 userId = res.data.id;
                 this.users = [...this.users, res['data']]; // insert row
                 this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
@@ -405,6 +402,18 @@ export class UserComponent implements OnInit {
             this.validateFormFields(this.reactiveForm);
         }
 
+    }
+
+    checkErrorCode(errorCode: number) {
+        switch (errorCode) {
+            case 409:
+                const invalidControl = this.el.nativeElement.querySelector('[formcontrolname="' + 'username' + '"]')
+                invalidControl.focus();
+                this.reactiveForm.get("username").setErrors({'taken': true});
+                break;
+            default:
+                return this.validateFormFields(this.reactiveForm);
+        }
     }
 
 

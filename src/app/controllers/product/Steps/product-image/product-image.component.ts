@@ -21,6 +21,7 @@ export class ProductImageComponent implements OnInit {
 
     productFg: FormGroup;
 
+    isDownloadingImage: boolean = false;
     editMode: boolean = false;
 
     productInfo: any;
@@ -55,6 +56,7 @@ export class ProductImageComponent implements OnInit {
                 params = params.append('imageName', imageInformation[index].imageName);
                 params = params.append('productId', id);
 
+                this.isDownloadingImage = true;
                 this.productService.downloadProductImage(params).subscribe({
                     next: (response: any) => {
                         let file = new File([response], imageInformation[index].imageName, { type: "image/jpeg", });
@@ -70,7 +72,10 @@ export class ProductImageComponent implements OnInit {
                         this.productModel.pFileUploadProductImg = [...this.productModel.pFileUploadProductImg];
 
                         // for saving file
-                        // let file: File = FileSaver.saveAs(response, `fuck.jpg`);
+                        // let file: File = FileSaver.saveAs(response, `as.jpg`);
+                    },
+                    complete: () => {
+                        this.isDownloadingImage = false;
                     }
                 });
 

@@ -9,6 +9,7 @@ import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Table} from "primeng/table";
+import {ProductDetailComponent} from "./Steps/product-detail/product-detail.component";
 
 @Component({
     selector: 'app-product',
@@ -77,7 +78,7 @@ export class ProductComponent implements OnInit {
             // return true if url contains /edit
             this.editMode = this.router.url.includes("/edit");
 
-            this.productFg.patchValue(productInformation['detailInformation']);
+            this.productFg.patchValue(this.productService.detailFg.value);
             this.productFg.patchValue(productInformation['priceInformation']);
 
             if (this.productFg.valid) {
@@ -92,7 +93,6 @@ export class ProductComponent implements OnInit {
                 }
 
                 // if no image is selected, then add a random image name
-                // spring can't find the image path and add default product image instead
                 if (this.productModel.pFileUploadProductImg.length == 0) {
                     this.productFg.value.images.push({
                         imageName: this.productFg.value.name
@@ -102,15 +102,12 @@ export class ProductComponent implements OnInit {
                 // patch image name to form in a loop
                 // format imageName = (uuid_index.extension)
                 this.productModel.pFileUploadProductImg.forEach((value, index, array) => {
-
                     // get extension
                     const ext = value.name.substr(value.name.lastIndexOf('.') + 1);
-
                     // push into form image name
                     this.productFg.value.images.push({
                         imageName: this.productFg.value.id + "_" + index + "." + ext
                     });
-
                 });
 
                 // add or edit product
@@ -140,6 +137,16 @@ export class ProductComponent implements OnInit {
                         }
 
                     },
+                    error: err => {
+                        this.productFg.value.images = [];
+                        if (err.status === 409) {
+                            setTimeout(() => {
+                                this.productService.detailFg.get("name").setErrors({'taken': true});
+                                this.productService.detailFg.get("name").markAsTouched();
+                            }, 500);
+                            this.router.navigate(['pages/product/add/detail']).then();
+                        }
+                    }
                 });
 
             } else {
@@ -156,6 +163,7 @@ export class ProductComponent implements OnInit {
     onCompleteAddOrEditProduct() {
         // reset form
         this.productFg.reset();
+        this.productService.detailFg.reset();
 
         // reset global state
         this.productModel.resetAddOrEditProductSteps();
@@ -328,12 +336,11 @@ export class ProductComponent implements OnInit {
     }
 
     onEditProduct(product: Product) {
-
         // reset from previous state
         this.productModel.resetAddOrEditProductSteps();
 
         // fetch into global state from product model
-        this.productModel.productInformation.detailInformation = product;
+        this.productService.detailFg.patchValue(product);
         this.productModel.productInformation.priceInformation = product;
         // @ts-ignore
         this.productModel.productInformation.imageInformation.imageName = product.images;

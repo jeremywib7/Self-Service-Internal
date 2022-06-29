@@ -4,6 +4,8 @@ import {environment} from "../../environments/environment";
 import {map, Observable} from "rxjs";
 import {Product} from "../model/Product/Product";
 import {UnassignedProduct} from "../model/Product/UnassignedProduct";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 
 @Injectable({
     providedIn: 'root'
@@ -13,11 +15,50 @@ export class ProductService {
     private apiServerUrl = environment.apiBaseUrl;
     private project = environment.project;
 
+    detailFg: FormGroup;
+
     requestHeader = new HttpHeaders(
         {"No-Auth": "True"}
     )
 
-    constructor(private httpClient: HttpClient) {
+    constructor(
+        private httpClient: HttpClient,
+        private rxFormBuilder: FormBuilder
+    ) {
+        this.detailFg = this.rxFormBuilder.group({
+            id: [''],
+            name: new FormControl('',
+                {
+                    validators: [
+                        RxwebValidators.required(),
+                        RxwebValidators.minLength({value: 3}),
+                        RxwebValidators.maxLength({value: 20}),],
+                    updateOn: "change"
+                }),
+            active: ['', [RxwebValidators.required()]],
+            category: this.rxFormBuilder.group({
+                id: ['', [RxwebValidators.required()]],
+                categoryName: ['']
+            }),
+            description: ['',
+                [
+                    RxwebValidators.required(),
+                    RxwebValidators.minLength({value: 20}),
+                    RxwebValidators.maxLength({value: 100})
+                ]
+            ],
+            totalCalories: ['',
+                [
+                    RxwebValidators.required(),
+                    RxwebValidators.numeric({
+                        acceptValue: NumericValueType.PositiveNumber,
+                        allowDecimal: false
+                    }),
+                    RxwebValidators.maxNumber({value: 10000})
+                ]
+            ],
+        }, {updateOn: 'change'});
+
     }
 
     public addOrEditProduct(product: Product, editMode: boolean) {
