@@ -60,7 +60,7 @@ export class ProductComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private messageService: MessageService,
         private fb: FormBuilder,
-        private rxFormBuilder: RxFormBuilder) {
+        private rxFormBuilder: FormBuilder) {
     }
 
     ngOnInit(): void {

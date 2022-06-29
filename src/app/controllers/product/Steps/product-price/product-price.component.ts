@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {Product} from "../../../../model/Product/Product";
 import {Router} from "@angular/router";
-import {FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 
 @Component({
@@ -17,7 +17,7 @@ export class ProductPriceComponent implements OnInit {
 
     productInfo: any;
 
-    constructor(private productModel: Product, private router: Router, private rxFormBuilder: RxFormBuilder,
+    constructor(private productModel: Product, private router: Router, private rxFormBuilder: FormBuilder,
                 private el: ElementRef) {
 
         this.productInfo = this.productModel.productInformation;

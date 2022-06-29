@@ -1,5 +1,5 @@
 import {Component, ElementRef, Injectable, OnInit} from '@angular/core';
-import {FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {Product} from "../../../../model/Product/Product";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
@@ -23,7 +23,6 @@ export class ProductDetailComponent implements OnInit {
 
     constructor(public productModel: Product,
                 private router: Router,
-                private rxFormBuilder: RxFormBuilder,
                 private route: ActivatedRoute,
                 private el: ElementRef,
                 public productService: ProductService

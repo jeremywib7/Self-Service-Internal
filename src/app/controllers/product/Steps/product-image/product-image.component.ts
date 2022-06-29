@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {Product} from "../../../../model/Product/Product";
-import {FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {environment} from "../../../../../environments/environment";
 import {RxFormBuilder} from "@rxweb/reactive-form-validators";
@@ -27,7 +27,7 @@ export class ProductImageComponent implements OnInit {
     productInfo: any;
 
     constructor(public productModel: Product, private router: Router, private el: ElementRef, private rxFormBuilder:
-                    RxFormBuilder, private messageService: MessageService, private productService: ProductService,
+                    FormBuilder, private messageService: MessageService, private productService: ProductService,
                 private sanitizer: DomSanitizer) {
 
         this.productInfo = this.productModel.productInformation;

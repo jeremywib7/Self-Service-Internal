@@ -2,7 +2,7 @@ import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
 import {AppConfig} from "../../api/appconfig";
 import {firstValueFrom, lastValueFrom, Subscription} from "rxjs";
 import {ConfigService} from "../../service/app.config.service";
-import {FormGroup, NgForm} from "@angular/forms";
+import {FormBuilder, FormGroup, NgForm} from "@angular/forms";
 import {UserService} from "../../service/user.service";
 import {UserAuthService} from "../../service/user-auth.service";
 import {Router} from "@angular/router";
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     constructor(public configService: ConfigService, public userService: UserService, private menuService: MenuService,
                 public userAuthService: UserAuthService, public router: Router, public messageService: MessageService,
                 private historyRouteService: HistoryRouteService, private encryptDecryptService: EncryptDecryptService,
-                private rxFormBuilder: RxFormBuilder, private formService: FormService, private el: ElementRef) {
+                private rxFormBuilder: FormBuilder, private formService: FormService, private el: ElementRef) {
         if (userAuthService.isLoggedIn()) {
             this.router.navigate(['/']).then(r => null);
         }
@@ -69,6 +69,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     async login() {
+        console.log("clicked");
+
         if (this.loginForm.invalid) {
             return this.formService.validateFormFields(this.loginForm, this.el);
         }

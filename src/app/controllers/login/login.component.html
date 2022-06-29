@@ -13,7 +13,7 @@
                     <span class="text-600 font-medium">Sign in to continue</span>
                 </div>
 
-                <form [formGroup]="loginForm">
+                <form [formGroup]="loginForm" (ngSubmit)="login()">
                     <div class="p-fluid p-formgrid grid md:w-10 mx-auto">
                         <div class="col-12">
                             <label for="userName" class="block text-900 text-xl font-medium mb-2">Username</label>
@@ -46,7 +46,7 @@
                         </div>
 
                         <div class="field col-12">
-                            <button (click)="login()" [loading]="isButtonLoading"
+                            <button [loading]="isButtonLoading"
                                     pButton pRipple label="Sign In" class="w-full p-3 text-xl"></button>
                         </div>
                     </div>
