@@ -44,15 +44,9 @@ export class WaitingListService {
     }
 
     getAllWaitingList() {
-        return this.fireServices.collection('Waiting_List').snapshotChanges();
+        return this.fireServices.collection('Waiting_List', ref => ref.where('status', '!=',
+            'COMPLETED')).snapshotChanges();
     }
-
-    // in firebase
-
-    // updateWaitingListStatus(waitingList: WaitingList) {
-    //     return this.httpClient.put(`${this.apiServerUrl}/${this.project}/waitingList/update/status`,
-    //         waitingList);
-    // }
 
     // in firebase
     updateStatusToReadyToPickup(waitingList: WaitingList) {

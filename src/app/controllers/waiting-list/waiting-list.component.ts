@@ -162,7 +162,6 @@ export class WaitingListComponent implements OnInit {
         let params = new HttpParams().append("customerId", customerId);
         this.waitingListService.completeOrder(params).subscribe({
             next: value => {
-                console.log(value);
             }
         });
     }
