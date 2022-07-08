@@ -57,6 +57,13 @@ export class UserService implements OnInit {
         return this.httpClient.delete<User>(`${this.apiServerUrl}/${this.project}/user/delete/${username}`);
     }
 
+    public resetUserPassword(username: string) {
+        let params = new HttpParams().append("username", username);
+        return this.httpClient.put(`${this.apiServerUrl}/${this.project}/user/reset/password`, null, {
+            params: params
+        });
+    }
+
     public deleteSelectedUsers(params: HttpParams): Observable<User> {
         return this.httpClient.delete<User>(`${this.apiServerUrl}/${this.project}/user/delete/selected`, {params});
     }

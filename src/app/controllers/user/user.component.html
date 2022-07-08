@@ -14,14 +14,14 @@
                     </div>
                 </ng-template>
 
-<!--                <ng-template pTemplate="right">-->
-<!--                    <button type="button" pButton pRipple icon="pi pi-file" (click)="dt.exportCSV()" class="mr-2"-->
-<!--                            pTooltip="CSV" tooltipPosition="bottom"></button>-->
-<!--                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"-->
-<!--                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>-->
-<!--                    <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"-->
-<!--                            class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>-->
-<!--                </ng-template>-->
+                <!--                <ng-template pTemplate="right">-->
+                <!--                    <button type="button" pButton pRipple icon="pi pi-file" (click)="dt.exportCSV()" class="mr-2"-->
+                <!--                            pTooltip="CSV" tooltipPosition="bottom"></button>-->
+                <!--                    <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"-->
+                <!--                            class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>-->
+                <!--                    <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"-->
+                <!--                            class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button>-->
+                <!--                </ng-template>-->
             </p-toolbar>
 
             <p-table #dt [value]="users" [columns]="cols" responsiveLayout="scroll" [loading]="tableUserLoading"
@@ -122,12 +122,18 @@
                             <div class="flex">
                                 <button pButton pRipple
                                         (click)="openAddOrEditUserDialog(true, user)"
-                                        icon="pi pi-pencil"
+                                        pTooltip="Edit" tooltipPosition="bottom" icon="pi pi-pencil"
                                         class="p-button-rounded p-button-success mr-2"
                                 ></button>
                                 <button pButton pRipple *ngIf="user.username.toString() != 'Admin'"
+                                        (click)="openResetPasswordUserDialog(user)"
+                                        pTooltip="Reset Password" tooltipPosition="bottom" icon="pi pi-pencil"
+                                        icon="pi pi-refresh" class="p-button-rounded p-button-warning mr-2"
+                                ></button>
+                                <button pButton pRipple
                                         (click)="openDeleteUserDialog(user)"
-                                        icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                        pTooltip="Delete" tooltipPosition="bottom" icon="pi pi-pencil"
+                                        icon="pi pi-trash" class="p-button-rounded p-button-danger"
                                 ></button>
                             </div>
                         </td>
@@ -393,9 +399,9 @@
                     </div>
                 </form>
 
-                <button pButton pRipple *ngIf="editMode" label="Reset Password"
-                        icon="pi pi-refresh"
-                        class="p-button-danger"></button>
+<!--                <button pButton pRipple *ngIf="editMode" label="Reset Password"-->
+<!--                        icon="pi pi-refresh"-->
+<!--                        class="p-button-danger"></button>-->
 
             </ng-template>
 

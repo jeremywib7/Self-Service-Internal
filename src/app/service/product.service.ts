@@ -23,9 +23,9 @@ export class ProductService {
 
     constructor(
         private httpClient: HttpClient,
-        private rxFormBuilder: FormBuilder
+        private fb: FormBuilder
     ) {
-        this.detailFg = this.rxFormBuilder.group({
+        this.detailFg = this.fb.group({
             id: [''],
             name: new FormControl('',
                 {
@@ -36,7 +36,7 @@ export class ProductService {
                     updateOn: "change"
                 }),
             active: ['', [RxwebValidators.required()]],
-            category: this.rxFormBuilder.group({
+            category: this.fb.group({
                 id: ['', [RxwebValidators.required()]],
                 categoryName: ['']
             }),

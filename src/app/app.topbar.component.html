@@ -21,10 +21,104 @@
             <i class="pi pi-power-off"></i>
             <span>Logout</span>
         </a>
-        <a routerLink="/pages/profile" class="p-link layout-topbar-button">
+        <a (click)="menu.toggle($event)" class="p-link layout-topbar-button">
             <i class="pi pi-user"></i>
             <span>Profile</span>
         </a>
     </div>
 </div>
+
+<p-dialog [(visible)]="showChangePasswordDialog" [style]="{width: '450px'}" [draggable]="false"
+          header="Reset Password" (onHide)="changePasswordForm.reset()"
+          [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">
+        <form *ngIf="changePasswordForm" [formGroup]="changePasswordForm" (ngSubmit)="submit()">
+            <div *ngIf="changePasswordForm.controls.imageUrl.errors && (changePasswordForm.controls.imageUrl.touched ||
+                           changePasswordForm.controls.imageUrl.dirty) ">
+                <div *ngIf="changePasswordForm.hasError('required','imageUrl')">
+                    <div class="text-center p-2 border-round" style="background-color: #FBE8E6">
+                        <small id="imageRequiredMsg" class="p-error">Image is required.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field p-fluid mt-4">
+                <label for="username">Username</label>
+                <input type="text" pInputText id="username" formControlName="username"
+                       [ngClass]="{'ng-invalid ng-dirty' : changePasswordForm.controls.username.errors &&
+                                (changePasswordForm.controls.username.touched || changePasswordForm.controls.username.dirty)}"/>
+                <div *ngIf="changePasswordForm.controls.username.errors && (changePasswordForm.controls.username.touched ||
+                           changePasswordForm.controls.username.dirty) ">
+                    <div *ngIf="changePasswordForm.hasError('required','username')">
+                        <small class="p-error">Username is required.</small>
+                    </div>
+                    <div *ngIf="changePasswordForm.hasError('pattern','username')">
+                        <small class="p-error">Username format is invalid.</small>
+                    </div>
+                    <div *ngIf="changePasswordForm.hasError('minlength','username')">
+                        <small class="p-error">Username must be 3 characters or more.</small>
+                    </div>
+                    <div *ngIf="changePasswordForm.hasError('taken','username')">
+                        <small class="p-error">Username already taken.</small>
+                    </div>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col-12 md:col-6">
+                    <label for="userFirstName">First Name</label>
+                    <input type="text" pInputText id="userFirstName" formControlName="userFirstName"
+                           [ngClass]="{'ng-invalid ng-dirty' : changePasswordForm.controls.userFirstName.errors &&
+                                   (changePasswordForm.controls.userFirstName.touched ||changePasswordForm.controls.userFirstName.dirty)}"/>
+                    <div *ngIf="changePasswordForm.controls.userFirstName.errors && (changePasswordForm.controls.userFirstName.touched ||
+                           changePasswordForm.controls.userFirstName.dirty) ">
+                        <div *ngIf="changePasswordForm.hasError('required','userFirstName')">
+                            <small class="p-error">First Name is required</small>
+                        </div>
+                        <div *ngIf="changePasswordForm.hasError('pattern','userFirstName')">
+                            <small class="p-error">First Name format is invalid</small>
+                        </div>
+                        <div *ngIf="changePasswordForm.hasError('minlength','userFirstName')">
+                            <small class="p-error">First Name must be 3 characters or more</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field col-12 md:col-6">
+                    <label for="userLastName">Last Name</label>
+                    <input type="text" pInputText id="userLastName" formControlName="userLastName"
+                           [ngClass]="{'ng-invalid ng-dirty' : changePasswordForm.controls.userLastName.errors &&
+                                   (changePasswordForm.controls.userLastName.touched || changePasswordForm.controls.userLastName.dirty)}"/>
+                    <div *ngIf="changePasswordForm.controls.userLastName.errors && (changePasswordForm.controls.userLastName.touched ||
+                           changePasswordForm.controls.userLastName.dirty) " style="color: red">
+                        <div *ngIf="changePasswordForm.hasError('required','userLastName')">
+                            <small class="p-error">Last Name is required</small>
+                        </div>
+                        <div *ngIf="changePasswordForm.hasError('pattern','userLastName')">
+                            <small class="p-error">Last Name format is invalid</small>
+                        </div>
+                        <div *ngIf="changePasswordForm.hasError('minlength','userLastName')">
+                            <small class="p-error">Last Name must be 3 characters or more</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!--                <button pButton pRipple *ngIf="editMode" label="Reset Password"-->
+        <!--                        icon="pi pi-refresh"-->
+        <!--                        class="p-button-danger"></button>-->
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple (click)="showChangePasswordDialog = false" label="Cancel" icon="pi pi-times"
+                class="p-button-text"></button>
+        <button pButton pRipple
+                (click)="submit()"
+                label="Save" icon="pi pi-check" class="p-button-text"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-menu #menu [popup]="true" [model]="authMenus"></p-menu>
 

@@ -284,7 +284,26 @@ export class UserComponent implements OnInit {
         });
     }
 
-    //
+    openResetPasswordUserDialog(user: User) {
+        this.user = {...user};
+        this.confirmationService.confirm({
+            message: `Are you sure you want to reset password for user <b> ${user.username} </b>?`,
+            header: 'Reset Password User',
+            accept: () => {
+                this.userService.resetUserPassword(user.username).subscribe({
+                    next: () => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Success',
+                            detail: 'Password reset success!'
+                        });
+                    },
+                });
+            },
+        });
+    }
+
+
 
     //on action method
 
