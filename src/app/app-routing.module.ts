@@ -43,6 +43,35 @@ import {ProductImageComponent} from "./controllers/product/Steps/product-image/p
 import {
     ProductConfirmationComponent
 } from "./controllers/product/Steps/product-confirmation/product-confirmation.component";
+import {QnaComponent} from "./controllers/qna/controllers/qna.component";
+
+const steps: any = [
+    {
+        path: '',
+        redirectTo: 'detail',
+        pathMatch: 'full',
+    },
+    {
+        path: 'detail',
+        component: ProductDetailComponent,
+        data: {breadcrumb: 'Detail'},
+    },
+    {
+        path: 'price',
+        component: ProductPriceComponent,
+        data: {breadcrumb: 'Price'},
+    },
+    {
+        path: 'image',
+        component: ProductImageComponent,
+        data: {breadcrumb: 'Image'},
+    },
+    {
+        path: 'confirmation',
+        component: ProductConfirmationComponent,
+        data: {breadcrumb: 'Confirmation'},
+    }
+]
 
 @NgModule({
     imports: [
@@ -83,66 +112,14 @@ import {
                                 data: {breadcrumb: 'Add Product', roles: ["Admin"]},
                                 component: ProductFormComponent,
                                 canActivate: [AuthGuard],
-                                children: [
-                                    {
-                                        path: '',
-                                        redirectTo: 'detail',
-                                        pathMatch: 'full',
-                                    },
-                                    {
-                                        path: 'detail',
-                                        component: ProductDetailComponent,
-                                        data: {breadcrumb: 'Detail'},
-                                    },
-                                    {
-                                        path: 'price',
-                                        component: ProductPriceComponent,
-                                        data: {breadcrumb: 'Price'},
-                                    },
-                                    {
-                                        path: 'image',
-                                        component: ProductImageComponent,
-                                        data: {breadcrumb: 'Image'},
-                                    },
-                                    {
-                                        path: 'confirmation',
-                                        component: ProductConfirmationComponent,
-                                        data: {breadcrumb: 'Confirmation'},
-                                    }
-                                ]
+                                children: steps
                             },
                             {
                                 path: 'edit',
                                 data: {breadcrumb: 'Edit Product', roles: ["Admin"]},
                                 component: ProductFormComponent,
                                 canActivate: [AuthGuard],
-                                children: [
-                                    {
-                                        path: '',
-                                        redirectTo: 'detail',
-                                        pathMatch: 'full',
-                                    },
-                                    {
-                                        path: 'detail',
-                                        component: ProductDetailComponent,
-                                        data: {breadcrumb: 'Detail'},
-                                    },
-                                    {
-                                        path: 'price',
-                                        component: ProductPriceComponent,
-                                        data: {breadcrumb: 'Price'},
-                                    },
-                                    {
-                                        path: 'image',
-                                        component: ProductImageComponent,
-                                        data: {breadcrumb: 'Image'},
-                                    },
-                                    {
-                                        path: 'confirmation',
-                                        component: ProductConfirmationComponent,
-                                        data: {breadcrumb: 'Confirmation'},
-                                    }
-                                ]
+                                children: steps
                             },
                         ]
                     },
@@ -179,6 +156,14 @@ import {
                         path: 'pages/report',
                         data: {breadcrumb: 'Sales Report', roles: ["Admin"]},
                         component: SalesReportComponent,
+                        canActivate: [AuthGuard]
+                    },
+
+                    // MASTER
+                    {
+                        path: 'pages/qna',
+                        data: {breadcrumb: 'QnA', roles: ["Admin"]},
+                        component: QnaComponent,
                         canActivate: [AuthGuard]
                     },
 

@@ -39,7 +39,7 @@ export class AppTopBarComponent {
                         icon: 'pi pi-fw pi-user',
                     },
                     {
-                        label: 'Reset Password',
+                        label: 'Change Password',
                         command: () => this.onResetPassword(),
                         icon: 'pi pi-fw pi-calendar-times',
                     }
@@ -56,16 +56,14 @@ export class AppTopBarComponent {
         ];
 
         this.changePasswordForm = this.fb.group({
-            name: new FormControl('',
+            username: new FormControl('',
                 {
                     validators: [
-                        RxwebValidators.required(),
-                        RxwebValidators.minLength({value: 3}),
-                        RxwebValidators.maxLength({value: 20}),],
+                        RxwebValidators.required()],
                     updateOn: "change"
                 }),
-            active: ['', [RxwebValidators.required()]],
-            category: this.fb.group({
+            oldPassword: ['', [RxwebValidators.required()]],
+            newPassword: this.fb.group({
                 id: ['', [RxwebValidators.required()]],
                 categoryName: ['']
             }),
