@@ -390,9 +390,11 @@ export function HttpLoaderFactory(http: HttpClient) {
         },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, ConfigService,
-
     ],
     bootstrap: [AppComponent],
+    exports: [
+        BreadcrumbComponent
+    ]
 })
 export class AppModule extends IntersectionObserverHooks {
 

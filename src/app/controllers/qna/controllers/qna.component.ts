@@ -9,9 +9,9 @@ import {QnaService} from "../services/qna.service";
 })
 export class QnaComponent implements OnInit {
 
-  qnaForm: FormGroup;
-
-  constructor(private readonly qnaService: QnaService) { }
+  // qnaForm: FormGroup;
+  //
+  // constructor(private readonly qnaService: QnaService) { }
 
   ngOnInit(): void {
   }

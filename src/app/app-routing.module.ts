@@ -43,7 +43,6 @@ import {ProductImageComponent} from "./controllers/product/Steps/product-image/p
 import {
     ProductConfirmationComponent
 } from "./controllers/product/Steps/product-confirmation/product-confirmation.component";
-import {QnaComponent} from "./controllers/qna/controllers/qna.component";
 
 const steps: any = [
     {
@@ -80,8 +79,12 @@ const steps: any = [
                 path: '',
                 data: {
                     breadcrumb: {
-                        info: 'home'
-                    }
+                        label: 'my home',
+                        info: 'home',
+                        routeInterceptor: (routeLink) => {
+                            return routeLink;
+                        },
+                    },
                 },
                 component: AppMainComponent,
                 children: [
@@ -159,12 +162,11 @@ const steps: any = [
                         canActivate: [AuthGuard]
                     },
 
-                    // MASTER
                     {
                         path: 'pages/qna',
+                        loadChildren: () => import('../app/controllers/qna/qna.module').then(x => x.QnaModule),
                         data: {breadcrumb: 'QnA', roles: ["Admin"]},
-                        component: QnaComponent,
-                        canActivate: [AuthGuard]
+                        // canActivate: [AuthGuard]
                     },
 
                     {path: 'uikit/formlayout', component: FormLayoutComponent},
@@ -200,7 +202,12 @@ const steps: any = [
             {path: 'pages/notfound', component: NotfoundComponent},
             {path: 'pages/access', component: AccessComponent},
             {path: '**', redirectTo: 'pages/notfound'},
-        ], {scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', useHash: true})
+        ], {
+            // scrollPositionRestoration: 'enabled',
+            // anchorScrolling: 'enabled',
+            // useHash: true,
+            relativeLinkResolution: 'legacy'
+        })
     ],
     exports: [RouterModule]
 })
