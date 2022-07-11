@@ -21,7 +21,7 @@ export class MenuService {
                 items: [
                     {label: 'User', icon: 'pi pi-fw pi-user', routerLink: ['/pages/user']},
                     {
-                        label: 'Product', icon: 'pi pi-fw pi-bookmark',
+                        label: 'Product', icon: 'pi pi-fw pi-shopping-bag',
                         items: [
                             {label: 'Product List', icon: 'pi pi-fw pi-shopping-cart', routerLink: ['/pages/product']},
                             {
@@ -31,21 +31,22 @@ export class MenuService {
                             },
                         ]
                     },
+                    {label: 'QnA', icon: 'pi pi-fw pi-comments', routerLink: ['/pages/qna']},
                 ]
             },
 
             {
                 label: 'Order',
                 items: [
-                    {label: 'Payment', icon: 'pi pi-fw pi-user', routerLink: ['/pages/payment']},
-                    {label: 'Waiting List', icon: 'pi pi-fw pi-user', routerLink: ['/pages/waitingList']},
+                    {label: 'Payment', icon: 'pi pi-fw pi-money-bill', routerLink: ['/pages/payment']},
+                    {label: 'Waiting List', icon: 'pi pi-fw pi-clock', routerLink: ['/pages/waitingList']},
                 ]
             },
 
             {
                 label: 'Report',
                 items: [
-                    {label: 'Sales Report', icon: 'pi pi-fw pi-user', routerLink: ['/pages/report']},
+                    {label: 'Sales Report', icon: 'pi pi-fw pi-book', routerLink: ['/pages/report']},
                 ]
             }
         ];
