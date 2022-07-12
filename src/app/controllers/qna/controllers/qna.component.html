@@ -8,7 +8,7 @@
                 <ng-template pTemplate="left">
                     <div class="my-2">
                         <button
-                            (click)="openAddQnaDialog()"
+                            (click)="onAddQnaDialog()"
                             pButton pRipple label="Add QnA" icon="pi pi-plus"
                             class="p-button-success mr-2">
                         </button>
@@ -22,9 +22,9 @@
             </p-toolbar>
 
             <p-table #dt [value]="qnaService.qnaList" responsiveLayout="scroll" [reorderableColumns]="true"
-                     (onRowReorder)="onQnaRowReorder()" [loading]="qnaService.isTableQnaLoading"
-                     [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true"
-                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                     (onRowReorder)="onQnaRowReorder()" [loading]="qnaService.isTableQnaLoading" [lazy]="true"
+                     [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true" (onFilter)="onFilter($event)"
+                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" (onSort)="onFilter($event)"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} "
                      [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
@@ -42,31 +42,31 @@
                 </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="categoryName">
+                        <th pSortableColumn="question">
                             <div class="flex justify-content-between align-items-center">
-                                Name
-                                <p-sortIcon field="categoryName"></p-sortIcon>
-                                <p-columnFilter type="text" field="categoryName" display="menu"
+                                Question
+                                <p-sortIcon field="question"></p-sortIcon>
+                                <p-columnFilter type="text" field="question" display="menu" on
                                                 class="mr-auto"></p-columnFilter>
                             </div>
                         </th>
-                        <th pSortableColumn="totalProduct">
+                        <th pSortableColumn="answer">
                             <div class="flex justify-content-between align-items-center">
-                                Total Product
-                                <p-sortIcon field="totalProduct"></p-sortIcon>
-                                <p-columnFilter type="numeric" field="totalProduct" display="menu"
+                                Answer
+                                <p-sortIcon field="answer"></p-sortIcon>
+                                <p-columnFilter type="numeric" field="answer" display="menu"
                                                 class="mr-auto"></p-columnFilter>
                             </div>
                         </th>
                         <th pSortableColumn="createdOn">
                             <div class="flex justify-content-between align-items-center">
-                                Created On
+                                Date Created
                                 <p-sortIcon field="createdOn"></p-sortIcon>
                                 <p-columnFilter type="date" field="createdOn" display="menu" class="mr-auto">
                                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                        <p-calendar #calendar (onSelect)="filter(calendar.value)"
+                                        <p-calendar #calendar (onInput)="filter(calendar.value)"
                                                     [ngModelOptions]="{standalone: true}" [ngModel]="value"
-                                                    [showSeconds]="true" [showTime]="true">
+                                                    [showTime]="true">
                                         </p-calendar>
                                     </ng-template>
                                 </p-columnFilter>
@@ -74,7 +74,7 @@
                         </th>
                         <th pSortableColumn="updatedOn">
                             <div class="flex justify-content-between align-items-center">
-                                Updated On
+                                Date Updated
                                 <p-sortIcon field="updatedOn"></p-sortIcon>
                                 <p-columnFilter type="date" field="updatedOn" display="menu" class="mr-auto">
                                     <ng-template pTemplate="filter" let-value let-filter="filterCallback">
@@ -97,10 +97,31 @@
                         </td>
                     </tr>
                 </ng-template>
-
             </p-table>
-
-
         </div>
+
+        <p-dialog [(visible)]="showAddOrEditQnaDialog" [style]="{width: '450px'}" [draggable]="false"
+                  header="{{editMode ? 'Edit' : 'Add'}} QnA" (onHide)="qnaService.qnaForm.reset()"
+                  [modal]="true" class="p-fluid">
+            <ng-template pTemplate="content">
+                <form *ngIf="qnaService.qnaForm" [formGroup]="qnaService.qnaForm" (ngSubmit)="submit()">
+
+                </form>
+
+                <!--                <button pButton pRipple *ngIf="editMode" label="Reset Password"-->
+                <!--                        icon="pi pi-refresh"-->
+                <!--                        class="p-button-danger"></button>-->
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple (click)="showAddOrEditQnaDialog = false" label="Cancel" icon="pi pi-times"
+                        class="p-button-text"></button>
+                <button pButton pRipple
+                        (click)="submit()"
+                        label="Save" icon="pi pi-check" class="p-button-text"></button>
+            </ng-template>
+        </p-dialog>
+
     </div>
 </div>

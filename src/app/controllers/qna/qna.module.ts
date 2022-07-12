@@ -4,7 +4,7 @@ import {QnaComponent} from './controllers/qna.component';
 import {QnaService} from "./services/qna.service";
 import {QnaRoutingModule} from "./qna-routing.module";
 import {EditorModule} from "primeng/editor";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ToolbarModule} from "primeng/toolbar";
 import {ButtonModule} from "primeng/button";
 import {RippleModule} from "primeng/ripple";
@@ -12,6 +12,8 @@ import {TooltipModule} from "primeng/tooltip";
 import {TableModule} from "primeng/table";
 import {InputTextModule} from "primeng/inputtext";
 import {CalendarModule} from "primeng/calendar";
+import {DialogModule} from "primeng/dialog";
+import {LazyLoadImageModule} from "ng-lazyload-image";
 
 @NgModule({
     declarations: [
@@ -29,6 +31,9 @@ import {CalendarModule} from "primeng/calendar";
         TableModule,
         InputTextModule,
         CalendarModule,
+        DialogModule,
+        ReactiveFormsModule,
+        LazyLoadImageModule,
     ],
     providers: [
         QnaService
