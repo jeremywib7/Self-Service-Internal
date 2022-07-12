@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../../../model/User";
 import {FormGroup} from "@angular/forms";
+import {QnaList} from "../../../model/QnaList";
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +15,10 @@ export class QnaService {
     private project = environment.project;
 
     qnaForm: FormGroup;
+
+    qnaList: QnaList[] = [];
+
+    isTableQnaLoading: boolean = false;
 
     constructor(private readonly httpClient: HttpClient) {
     }

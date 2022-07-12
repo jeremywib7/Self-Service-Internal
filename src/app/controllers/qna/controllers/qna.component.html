@@ -1,19 +1,106 @@
 <div class="grid">
     <div class="col-12">
         <div class="card">
-            <p-editor [(ngModel)]="text" [style]="{'height':'320px'}" readonly="false">
-                <ng-template pTemplate="header">
-                    <span class="ql-format-group">
-                        <span title="Bold" class="ql-format-button ql-bold"></span>
-                        <span class="ql-format-separator"></span>
-                        <span title="Italic" class="ql-format-button ql-italic"></span>
-                        <span class="ql-format-separator"></span>
-                        <span title="Underline" class="ql-format-button ql-underline"></span>
-                        <span class="ql-format-separator"></span>
-                        <span title="Strikethrough" class="ql-format-button ql-strike"></span>
-                    </span>
+<!--            <p-editor [(ngModel)]="text" [style]="{'height':'320px'}">-->
+<!--                <p-header> </p-header>-->
+<!--            </p-editor>-->
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button
+                            (click)="openAddQnaDialog()"
+                            pButton pRipple label="Add QnA" icon="pi pi-plus"
+                            class="p-button-success mr-2">
+                        </button>
+                    </div>
                 </ng-template>
-            </p-editor>
+
+                <ng-template pTemplate="right">
+                    <button type="button" pButton pRipple icon="pi pi-file" (click)="dt.exportCSV()" class="mr-2"
+                            pTooltip="CSV" tooltipPosition="bottom"></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="qnaService.qnaList" responsiveLayout="scroll" [reorderableColumns]="true"
+                     (onRowReorder)="onQnaRowReorder()" [loading]="qnaService.isTableQnaLoading"
+                     [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true"
+                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+                     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} "
+                     [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Manage QnA</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <!--suppress TypeScriptUnresolvedVariable -->
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                   placeholder="Search..."/>
+                        </span>
+                        <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
+                                (click)="dt.clear()"></button>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="categoryName">
+                            <div class="flex justify-content-between align-items-center">
+                                Name
+                                <p-sortIcon field="categoryName"></p-sortIcon>
+                                <p-columnFilter type="text" field="categoryName" display="menu"
+                                                class="mr-auto"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th pSortableColumn="totalProduct">
+                            <div class="flex justify-content-between align-items-center">
+                                Total Product
+                                <p-sortIcon field="totalProduct"></p-sortIcon>
+                                <p-columnFilter type="numeric" field="totalProduct" display="menu"
+                                                class="mr-auto"></p-columnFilter>
+                            </div>
+                        </th>
+                        <th pSortableColumn="createdOn">
+                            <div class="flex justify-content-between align-items-center">
+                                Created On
+                                <p-sortIcon field="createdOn"></p-sortIcon>
+                                <p-columnFilter type="date" field="createdOn" display="menu" class="mr-auto">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-calendar #calendar (onSelect)="filter(calendar.value)"
+                                                    [ngModelOptions]="{standalone: true}" [ngModel]="value"
+                                                    [showSeconds]="true" [showTime]="true">
+                                        </p-calendar>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                        <th pSortableColumn="updatedOn">
+                            <div class="flex justify-content-between align-items-center">
+                                Updated On
+                                <p-sortIcon field="updatedOn"></p-sortIcon>
+                                <p-columnFilter type="date" field="updatedOn" display="menu" class="mr-auto">
+                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                        <p-calendar #calendar (onSelect)="filter(calendar.value)"
+                                                    [ngModelOptions]="{standalone: true}" [ngModel]="value"
+                                                    [showSeconds]="true" [showTime]="true">
+                                        </p-calendar>
+                                    </ng-template>
+                                </p-columnFilter>
+                            </div>
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td [attr.colspan]="6" class="text-center">
+                            No QnA found
+                        </td>
+                    </tr>
+                </ng-template>
+
+            </p-table>
+
+
         </div>
     </div>
 </div>

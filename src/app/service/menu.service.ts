@@ -17,7 +17,7 @@ export class MenuService {
             },
 
             {
-                label: 'Main Menu',
+                label: 'Master',
                 items: [
                     {label: 'User', icon: 'pi pi-fw pi-user', routerLink: ['/pages/user']},
                     {

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup} from "@angular/forms";
 import {QnaService} from "../services/qna.service";
+import {QnaList} from "../../../model/QnaList";
 
 @Component({
     selector: 'app-qna',
@@ -11,10 +12,19 @@ export class QnaComponent implements OnInit {
 
     text: string;
 
-    constructor(private readonly qnaService: QnaService) {
+
+    constructor(public readonly qnaService: QnaService) {
     }
 
     ngOnInit(): void {
+    }
+
+    openAddQnaDialog() {
+
+    }
+
+    onQnaRowReorder() {
+
     }
 
 }
