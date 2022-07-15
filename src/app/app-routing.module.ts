@@ -90,6 +90,11 @@ const steps: any = [
                 children: [
                     {
                         path: '',
+                        redirectTo: 'pages/dashboard',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'pages/dashboard',
                         data: {breadcrumb: 'Dashboard', roles: ["Admin"]},
                         component: DashboardComponent,
                         canActivate: [AuthGuard]

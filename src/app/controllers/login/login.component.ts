@@ -1,4 +1,12 @@
-import {Component, ElementRef, OnDestroy, OnInit} from '@angular/core';
+import {
+    AfterViewChecked,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    OnDestroy,
+    OnInit, ViewChild
+} from '@angular/core';
 import {AppConfig} from "../../api/appconfig";
 import {firstValueFrom, lastValueFrom, Subscription} from "rxjs";
 import {ConfigService} from "../../service/app.config.service";
@@ -6,13 +14,13 @@ import {FormBuilder, FormGroup, NgForm} from "@angular/forms";
 import {UserService} from "../../service/user.service";
 import {UserAuthService} from "../../service/user-auth.service";
 import {Router} from "@angular/router";
-import {Message, MessageService} from "primeng/api";
 import {HistoryRouteService} from "../../service/history.route.service";
 import {ProfileService} from "../../service/profile.service";
 import {EncryptDecryptService} from "../../service/encrypt-decrypt.service";
 import {MenuService} from "../../service/menu.service";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {FormService} from "../../service/form.service";
+import {Message, MessageService} from "primeng/api";
 
 @Component({
     selector: 'app-login',
@@ -20,6 +28,8 @@ import {FormService} from "../../service/form.service";
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
+
+    @ViewChild('welcome', {static: true}) welcome: ElementRef;   // to access button in ts
 
     valCheck: string[] = ['remember'];
 
@@ -40,7 +50,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     constructor(public configService: ConfigService, public userService: UserService, private menuService: MenuService,
                 public userAuthService: UserAuthService, public router: Router, public messageService: MessageService,
                 private historyRouteService: HistoryRouteService, private encryptDecryptService: EncryptDecryptService,
-                private rxFormBuilder: FormBuilder, private formService: FormService, private el: ElementRef) {
+                private rxFormBuilder: FormBuilder, private formService: FormService, private el: ElementRef,
+                private cdr: ChangeDetectorRef) {
         if (userAuthService.isLoggedIn()) {
             this.router.navigate(['/']).then(r => null);
         }
@@ -55,6 +66,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         // from prime ng
         this.config = this.configService.config;
+        this.welcome.nativeElement.focus();
         this.subscription = this.configService.configUpdate$.subscribe(config => {
             this.config = config;
         });
@@ -68,8 +80,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
+
     async login() {
-        console.log("clicked");
 
         if (this.loginForm.invalid) {
             return this.formService.validateFormFields(this.loginForm, this.el);
@@ -80,11 +92,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         const response: any = await firstValueFrom(this.userService.login(this.loginForm.value)).catch(
             (error) => {
                 this.isButtonLoading = false;
-                this.resetPasswordMsg = [
+                return this.resetPasswordMsg = [
                     {severity: 'error', detail: error.error.message},
                 ];
             }
         );
+
+        console.log("this not running");
 
         // set in local storage
         this.userAuthService.setRoles(response.user.role);

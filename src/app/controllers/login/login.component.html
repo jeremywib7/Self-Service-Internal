@@ -9,11 +9,11 @@
             <div class="h-full w-full m-0 py-7 px-4"
                  style="border-radius:53px; background: linear-gradient(180deg, var(--surface-50) 38.9%, var(--surface-0));">
                 <div class="text-center mb-5">
-                    <div class="text-900 text-3xl font-medium mb-3">Welcome!</div>
+                    <div #welcome class="text-900 text-3xl font-medium mb-3">Welcome!</div>
                     <span class="text-600 font-medium">Sign in to continue</span>
                 </div>
 
-                <form [formGroup]="loginForm" (ngSubmit)="login()">
+                <form [formGroup]="loginForm">
                     <div class="p-fluid p-formgrid grid md:w-10 mx-auto">
                         <div class="col-12">
                             <label for="userName" class="block text-900 text-xl font-medium mb-2">Username</label>
@@ -46,7 +46,7 @@
                         </div>
 
                         <div class="field col-12">
-                            <button [loading]="isButtonLoading"
+                            <button [loading]="isButtonLoading" (click)="login()"
                                     pButton pRipple label="Sign In" class="w-full p-3 text-xl"></button>
                         </div>
                     </div>
