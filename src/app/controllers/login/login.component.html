@@ -13,7 +13,7 @@
                     <span class="text-600 font-medium">Sign in to continue</span>
                 </div>
 
-                <form [formGroup]="loginForm">
+                <form [formGroup]="loginForm" autocomplete="off">
                     <div class="p-fluid p-formgrid grid md:w-10 mx-auto">
                         <div class="col-12">
                             <label for="userName" class="block text-900 text-xl font-medium mb-2">Username</label>
@@ -30,10 +30,9 @@
                         </div>
                         <div class="col-12">
                             <label for="userPassword" class="block text-900 font-medium text-xl mb-2">Password</label>
-                            <p-password id="userPassword" placeholder="Password"
-                                        formControlName="userPassword"
-                                        [toggleMask]="true"
-                                        styleClass="p-password p-component p-inputwrapper p-input-icon-right w-full mb-2"></p-password>
+                            <input id="userPassword" pPassword placeholder="Password"
+                                   formControlName="userPassword"
+                                   pInputText/>
                             <div *ngIf="loginForm.controls.userPassword.errors && (loginForm.controls.userPassword.touched ||
                                        loginForm.controls.userPassword.dirty) ">
                                 <div *ngIf="loginForm.hasError('required','userPassword')">
