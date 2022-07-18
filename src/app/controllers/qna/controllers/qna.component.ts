@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup} from "@angular/forms";
 import {QnaService} from "../services/qna.service";
-import {QnaList} from "../../../model/QnaList";
 import {environment} from "../../../../environments/environment";
+import {FormGroupExtension, RxFormGroup} from '@rxweb/reactive-form-validators';
 
 @Component({
     selector: 'app-qna',
@@ -13,13 +13,16 @@ export class QnaComponent implements OnInit {
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
 
-    text: string;
-
     showAddOrEditQnaDialog: boolean = false;
 
     editMode: boolean = false;
 
-    constructor(public readonly qnaService: QnaService) {
+    qnaForm: FormGroup;
+
+    constructor(
+        public qnaService: QnaService,
+    ) {
+        this.qnaForm = this.qnaService.qnaForm;
     }
 
     ngOnInit(): void {
@@ -31,6 +34,12 @@ export class QnaComponent implements OnInit {
 
     onFilter(event) {
         console.log(event);
+    }
+
+    onReset() {
+        this.qnaForm.reset();
+        this.qnaForm.markAsPristine();
+        this.qnaForm.markAsUntouched();
     }
 
     onAddQnaDialog() {
@@ -46,6 +55,8 @@ export class QnaComponent implements OnInit {
     }
 
     async submit() {
+        console.log(this.qnaForm.value);
+
         if (this.editMode) {
 
         }

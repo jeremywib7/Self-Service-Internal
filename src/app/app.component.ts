@@ -7,6 +7,7 @@ import {AppConfig} from "./api/appconfig";
 import {Toast} from "primeng/toast";
 import {DomHandler} from "primeng/dom";
 import {UserService} from "./service/user.service";
+import {ReactiveFormConfig} from "@rxweb/reactive-form-validators";
 
 @Component({
     selector: 'app-root',
@@ -29,6 +30,37 @@ export class AppComponent {
     }
 
     async ngOnInit() {
+        ReactiveFormConfig.set({
+            "validationMessage": {
+                "alpha": "Only alphabets are allowed.",
+                "alphaNumeric": "Only alphabet and numbers are allowed.",
+                "compare":"inputs are not matched.",
+                "contains":"value is not contains in the input",
+                "creditcard":"Credit card number is not correct",
+                "digit":"Only digit are allowed",
+                "email":"Email is not valid",
+                "greaterThanEqualTo":"please enter greater than or equal to the joining age",
+                "greaterThan":"please enter greater than to the joining age",
+                "hexColor":"please enter hex code",
+                "json":"please enter valid json",
+                "lessThanEqualTo":"please enter less than or equal to the current experience",
+                "lessThan":"please enter less than or equal to the current experience",
+                "lowerCase":"Only lowercase is allowed",
+                "maxLength":"Maximum length is {{1}} digit",
+                "maxNumber":"Enter value less than equal to {{1}}",
+                "minNumber":"Enter value greater than equal to {{1}}",
+                "password":"please enter valid password",
+                "pattern":"please enter valid zipcode",
+                "range":"please enter age between 18 to 60",
+                "required":"This field is required",
+                "time":"Only time format is allowed",
+                "upperCase":"Only uppercase is allowed",
+                "url":"Only url format is allowed",
+                "zipCode":"enter valid zip code",
+                "minLength":"Minimum length is {{1}} digit"
+            }
+        });
+
         this.checkRole();
         // this.checkSettings('lara-dark-indigo', true);
         this.primengConfig.ripple = true;

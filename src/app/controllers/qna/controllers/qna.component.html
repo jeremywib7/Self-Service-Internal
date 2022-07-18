@@ -1,9 +1,6 @@
 <div class="grid">
     <div class="col-12">
         <div class="card">
-<!--            <p-editor [(ngModel)]="text" [style]="{'height':'320px'}">-->
-<!--                <p-header> </p-header>-->
-<!--            </p-editor>-->
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left">
                     <div class="my-2">
@@ -23,7 +20,8 @@
 
             <p-table #dt [value]="qnaService.qnaList" responsiveLayout="scroll" [reorderableColumns]="true"
                      (onRowReorder)="onQnaRowReorder()" [loading]="qnaService.isTableQnaLoading" [lazy]="true"
-                     [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true" (onFilter)="onFilter($event)"
+                     [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true"
+                     (onFilter)="onFilter($event)"
                      [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" (onSort)="onFilter($event)"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} "
                      [rowHover]="true" dataKey="id">
@@ -101,11 +99,28 @@
         </div>
 
         <p-dialog [(visible)]="showAddOrEditQnaDialog" [style]="{width: '450px'}" [draggable]="false"
-                  header="{{editMode ? 'Edit' : 'Add'}} QnA" (onHide)="qnaService.qnaForm.reset()"
+                  header="{{editMode ? 'Edit' : 'Add'}} QnA" (onHide)="onReset()"
                   [modal]="true" class="p-fluid">
             <ng-template pTemplate="content">
-                <form *ngIf="qnaService.qnaForm" [formGroup]="qnaService.qnaForm" (ngSubmit)="submit()">
+                <form *ngIf="qnaForm" [formGroup]="qnaForm" (ngSubmit)="submit()">
+                    <div class="p-fluid p-formgrid grid">
+                        <div class="field col-12">
+                            <label for="question">Question</label>
+                            <input type="text" pInputText id="question" formControlName="question"
+                                   [ngClass]="{'ng-invalid ng-dirty' : qnaForm.get('question').errors &&
+                                     (qnaForm.get('question').touched || qnaForm.get('question').dirty)}"/>
+                            <small *ngIf="qnaForm.controls.question.errors && (qnaForm.controls.question.touched ||
+                                       qnaForm.controls.question.dirty) "
+                                   class="p-error">{{qnaForm.controls.question["errorMessage"]}}</small>
+                        </div>
 
+                        <div class="field col-12">
+                            <label for="answer">Answer</label>
+                            <textarea id="answer" rows="5" formControlName="answer" cols="30" pInputTextarea autoResize="autoResize"
+                                      [ngClass]="{'ng-invalid ng-dirty' : qnaForm.get('answer').errors &&
+                                     (qnaForm.get('answer').touched || qnaForm.get('answer').dirty)}"></textarea>
+                        </div>
+                    </div>
                 </form>
 
                 <!--                <button pButton pRipple *ngIf="editMode" label="Reset Password"-->

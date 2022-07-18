@@ -14,6 +14,7 @@ import {InputTextModule} from "primeng/inputtext";
 import {CalendarModule} from "primeng/calendar";
 import {DialogModule} from "primeng/dialog";
 import {LazyLoadImageModule} from "ng-lazyload-image";
+import {InputTextareaModule} from "primeng/inputtextarea";
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import {LazyLoadImageModule} from "ng-lazyload-image";
         DialogModule,
         ReactiveFormsModule,
         LazyLoadImageModule,
+        InputTextareaModule,
     ],
     providers: [
         QnaService

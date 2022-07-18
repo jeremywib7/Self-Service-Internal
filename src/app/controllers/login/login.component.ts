@@ -1,6 +1,4 @@
 import {
-    AfterViewChecked,
-    AfterViewInit,
     ChangeDetectorRef,
     Component,
     ElementRef,
@@ -8,9 +6,9 @@ import {
     OnInit, ViewChild
 } from '@angular/core';
 import {AppConfig} from "../../api/appconfig";
-import {firstValueFrom, lastValueFrom, Subscription} from "rxjs";
+import {firstValueFrom, Subscription} from "rxjs";
 import {ConfigService} from "../../service/app.config.service";
-import {FormBuilder, FormGroup, NgForm} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {UserService} from "../../service/user.service";
 import {UserAuthService} from "../../service/user-auth.service";
 import {Router} from "@angular/router";

@@ -54,7 +54,7 @@ export class WaitingListService {
             waitingList);
     }
 
-    updateTimer(customerOrder: CustomerOrder) {
+    updateTimer(customerOrder: CustomerOrder): Observable<Object> {
         return this.httpClient.put(`${this.apiServerUrl}/${this.project}/waitingList/update/timer`,
             customerOrder);
     }

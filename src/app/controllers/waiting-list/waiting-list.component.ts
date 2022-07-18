@@ -103,7 +103,7 @@ export class WaitingListComponent implements OnInit {
     }
 
     async submitEditTimer() {
-        const res = await firstValueFrom(this.waitingListService.updateTimer(this.editCustomerOrderFg.value));
+        const res = await lastValueFrom(this.waitingListService.updateTimer(this.editCustomerOrderFg.value));
         this.messageService.add({
             severity: 'success',
             summary: 'Successful',

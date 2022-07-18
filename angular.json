@@ -32,12 +32,13 @@
                         ],
                         "styles": [
                             "src/styles.scss",
+                            "node_modules/primeicons/primeicons.css",
                             "node_modules/quill/dist/quill.core.css",
                             "node_modules/quill/dist/quill.snow.css"
                         ],
                         "scripts": [
                             "node_modules/prismjs/prism.js",
-                            "node_modules/prismjs/components/prism-typescript.js",
+                            "node_modules/pr![](C:/Users/ADMIN1~1/AppData/Local/Temp/980399e4-73d8-4e4a-9da4-0a1850cc7f99.jpg)ismjs/components/prism-typescript.js",
                             "node_modules/quill/dist/quill.js"
 
                         ],
