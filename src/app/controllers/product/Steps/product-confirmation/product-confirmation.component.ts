@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {Product} from "../../../../model/Product/Product";
+import {Product} from "../../../../model/product/Product";
 import {Router} from "@angular/router";
-import {ProductCarrousel} from "../../../../model/Product/ProductCarrousel";
+import {ProductCarrousel} from "../../../../model/product/ProductCarrousel";
 import {Galleria} from "primeng/galleria";
 import {ProductService} from "../../../../service/product.service";
 

@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpEvent, HttpHeaders, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
 import {map, Observable} from "rxjs";
-import {Product} from "../model/Product/Product";
-import {UnassignedProduct} from "../model/Product/UnassignedProduct";
+import {Product} from "../model/product/Product";
+import {UnassignedProduct} from "../model/product/UnassignedProduct";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 

@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {FormGroup} from "@angular/forms";
+import {AbstractControl, FormGroup, ɵTypedOrUntyped} from "@angular/forms";
 import {QnaService} from "../services/qna.service";
 import {environment} from "../../../../environments/environment";
-import {FormGroupExtension, RxFormGroup} from '@rxweb/reactive-form-validators';
+import {firstValueFrom} from "rxjs";
+import {HttpResponse} from "../../../model/util/HttpResponse";
+import {QnaList} from "../models/qna-list";
 
 @Component({
     selector: 'app-qna',
@@ -17,15 +19,28 @@ export class QnaComponent implements OnInit {
 
     editMode: boolean = false;
 
+    qnaCo: any; //qnaForm.controls
+
+    qnaList: QnaList[] = [];
+
+    isTableQnaLoading: boolean = false;
+
     qnaForm: FormGroup;
 
     constructor(
         public qnaService: QnaService,
     ) {
         this.qnaForm = this.qnaService.qnaForm;
+        this.qnaCo = this.qnaForm.controls;
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
+        await this.getAllQna();
+    }
+
+    async getAllQna() {
+        const res: HttpResponse = await firstValueFrom(this.qnaService.getAllQna());
+        console.log(res);
     }
 
     onSort(event) {

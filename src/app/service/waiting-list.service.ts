@@ -5,8 +5,8 @@ import {Observable} from "rxjs";
 import {User} from "../model/User";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {Note} from "../model/Note";
-import {CustomerOrder} from "../model/customerOrder/CustomerOrder";
+import {Note} from "../model/util/Note";
+import {CustomerOrder} from "../model/customer/CustomerOrder";
 
 @Injectable({
     providedIn: 'root'

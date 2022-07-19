@@ -1,5 +1,5 @@
 import {HistoryProductOrder} from "./HistoryProductOrder";
-import {CustomerProfile} from "../CustomerProfile";
+import {CustomerProfile} from "./CustomerProfile";
 
 export abstract class CustomerOrder {
     id: string;

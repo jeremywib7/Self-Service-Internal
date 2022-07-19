@@ -1,9 +1,9 @@
 import {Component, ElementRef, Injectable, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Product} from "../../../../model/Product/Product";
+import {Product} from "../../../../model/product/Product";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
-import {ProductCategory} from "../../../../model/Product/ProductCategory";
+import {ProductCategory} from "../../../../model/product/ProductCategory";
 import {ProductService} from "../../../../service/product.service";
 import {Dropdown} from "primeng/dropdown";
 

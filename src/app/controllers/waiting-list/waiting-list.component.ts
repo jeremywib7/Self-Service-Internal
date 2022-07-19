@@ -1,13 +1,13 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {ConfirmationService, Message, MessageService} from "primeng/api";
-import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
+import {CustomerOrder} from "../../model/customer/CustomerOrder";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {WaitingList} from "../../model/WaitingList";
 import {WaitingListService} from "../../service/waiting-list.service";
 import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {CountdownEvent} from "ngx-countdown";
-import {Note} from "../../model/Note";
+import {Note} from "../../model/util/Note";
 import {firstValueFrom, lastValueFrom} from "rxjs";
 import {HttpParams} from "@angular/common/http";
 

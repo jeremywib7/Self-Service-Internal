@@ -150,7 +150,7 @@ import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
 import {LOADING_BAR_CONFIG} from "@ngx-loading-bar/core";
 import {RxFormBuilder, RxReactiveFormsModule} from "@rxweb/reactive-form-validators";
 import {ProductDetailComponent} from './controllers/product/Steps/product-detail/product-detail.component';
-import {Product} from "./model/Product/Product";
+import {Product} from "./model/product/Product";
 import {ProductPriceComponent} from './controllers/product/Steps/product-price/product-price.component';
 import {ProductFormComponent} from './controllers/product/Form/product-form/product-form.component';
 import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";

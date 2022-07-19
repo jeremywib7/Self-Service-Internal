@@ -1,14 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {MenuItem} from "primeng/api";
-import {Product} from "../../api/product";
 import {firstValueFrom, Subscription} from "rxjs";
 import {AppConfig} from "../../api/appconfig";
 import {ProductService} from "../../service/productservice";
 import {ConfigService} from "../../service/app.config.service";
 import {DashboardService} from "../../service/dashboard.service";
-import {Dashboard} from "../../model/Dashboard";
-import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
-import {TotalSalesProduct} from "../../model/TotalSalesProduct";
+import {Dashboard} from "../../model/dashboard/Dashboard";
+import {CustomerOrder} from "../../model/customer/CustomerOrder";
+import {TotalSalesProduct} from "../../model/dashboard/TotalSalesProduct";
 
 @Component({
     selector: 'app-dashboard',

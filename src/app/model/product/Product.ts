@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Subject} from "rxjs";
 import {ProductCarrousel} from "./ProductCarrousel";
-import {FileStatus} from "../FileStatus";
+import {FileStatus} from "../util/FileStatus";
 
 @Injectable()
 export class Product {

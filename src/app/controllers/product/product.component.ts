@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {Product} from "../../model/Product/Product";
+import {Product} from "../../model/product/Product";
 import {ConfirmationService, LazyLoadEvent, MenuItem, MessageService} from "primeng/api";
 import {HttpEvent, HttpEventType, HttpParams} from "@angular/common/http";
 import {ProductService} from "../../service/product.service";

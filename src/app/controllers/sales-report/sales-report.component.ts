@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
+import {CustomerOrder} from "../../model/customer/CustomerOrder";
 import {ReportService} from "../../service/report.service";
 import {firstValueFrom, lastValueFrom} from "rxjs";
 import * as FileSaver from 'file-saver';

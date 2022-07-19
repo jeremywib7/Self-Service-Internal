@@ -4,12 +4,12 @@ import {RxwebValidators} from "@rxweb/reactive-form-validators";
 import {WaitingListService} from "../../service/waiting-list.service";
 import {ConfirmationService, Message, MessageService} from "primeng/api";
 import {environment} from "../../../environments/environment";
-import {HistoryProductOrder} from "../../model/customerOrder/HistoryProductOrder";
+import {HistoryProductOrder} from "../../model/customer/HistoryProductOrder";
 import * as moment from 'moment';
 import {Router} from "@angular/router";
 import {interval, Subscription} from "rxjs";
 import {DatePipe} from "@angular/common";
-import {CustomerOrder} from "../../model/customerOrder/CustomerOrder";
+import {CustomerOrder} from "../../model/customer/CustomerOrder";
 
 @Component({
     selector: 'app-waiting-list',
