@@ -5,6 +5,8 @@ import {environment} from "../../../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {HttpResponse} from "../../../model/util/HttpResponse";
 import {QnaList} from "../models/qna-list";
+import {Pagination} from "../../../model/util/Pagination";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 @Component({
     selector: 'app-qna',
@@ -29,6 +31,8 @@ export class QnaComponent implements OnInit {
 
     constructor(
         public qnaService: QnaService,
+        private confirmationService: ConfirmationService,
+        private messageService: MessageService,
     ) {
         this.qnaForm = this.qnaService.qnaForm;
         this.qnaCo = this.qnaForm.controls;
@@ -40,7 +44,10 @@ export class QnaComponent implements OnInit {
 
     async getAllQna() {
         const res: HttpResponse = await firstValueFrom(this.qnaService.getAllQna());
-        console.log(res);
+        const data : Pagination = res.data;
+        this.qnaList = data.content;
+        console.log(this.qnaList);
+        // console.log(data.content);
     }
 
     onSort(event) {
@@ -59,6 +66,23 @@ export class QnaComponent implements OnInit {
 
     onAddQnaDialog() {
         this.showAddOrEditQnaDialog = true;
+    }
+
+    onDeleteQnaDialog(id: string) {
+        this.confirmationService.confirm({
+            message: "Confirm delete QnA ?",
+            icon: "pi pi-trash",
+            header: `Delete Qna`,
+            accept: async () => {
+                await firstValueFrom(this.qnaService.deleteQna(id));
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Success',
+                    detail: 'Product successfully added'
+                });
+            },
+        });
+
     }
 
     onEditQnaDialog() {

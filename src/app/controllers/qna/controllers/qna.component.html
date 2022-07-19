@@ -88,6 +88,37 @@
                     </tr>
                 </ng-template>
 
+                <ng-template pTemplate="body" let-qna let-ri="rowIndex">
+                    <tr>
+                        <td style="min-width:10rem;">
+                            {{qna['question']}}
+                        </td>
+                        <td style="min-width:10rem;">
+                            {{qna['answer']}}
+                        </td>
+                        <td style="min-width:10rem;">
+                            {{qna['createdOn']}}
+                        </td>
+                        <td style="min-width:10rem;">
+                            {{qna['updatedOn']}}
+                        </td>
+                        <td>
+                            <div class="flex">
+                                <button pButton pRipple
+                                        (click)="onEditQnaDialog()"
+                                        icon="pi pi-pencil"
+                                        class="p-button-rounded p-button-success mr-2"
+                                ></button>
+                                <button pButton pRipple
+                                        icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                        (click)="onDeleteQnaDialog(qna['id'])"
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+
+
                 <ng-template pTemplate="emptymessage">
                     <tr>
                         <td [attr.colspan]="6" class="text-center">
