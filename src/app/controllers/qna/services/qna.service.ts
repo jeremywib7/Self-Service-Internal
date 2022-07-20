@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from "../../../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {QnaList} from "../models/qna-list";
+import {Qna} from "../models/qna";
 import {FormBuilderConfiguration, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
 import {HttpResponse} from "../../../model/util/HttpResponse";
 import {Observable} from "rxjs";
@@ -18,7 +18,7 @@ export class QnaService {
         private httpClient: HttpClient,
         private fb: RxFormBuilder
     ) {
-        let qnaList = new QnaList();
+        let qnaList = new Qna();
         this.qnaForm = this.fb.formGroup(qnaList, new FormBuilderConfiguration({
             baseAbstractControlOptions: {
                 answer: {
@@ -33,6 +33,14 @@ export class QnaService {
 
     public getAllQna(): Observable<HttpResponse> {
         return this.httpClient.get<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/find-all`);
+    }
+
+    public addQna(qna: Qna): Observable<HttpResponse> {
+        return this.httpClient.post<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/add`, qna);
+    }
+
+    public updateQna(qna: Qna): Observable<HttpResponse> {
+        return this.httpClient.post<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/update`, qna);
     }
 
     public deleteQna(id: string): Observable<HttpResponse> {

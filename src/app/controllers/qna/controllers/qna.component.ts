@@ -4,9 +4,10 @@ import {QnaService} from "../services/qna.service";
 import {environment} from "../../../../environments/environment";
 import {firstValueFrom} from "rxjs";
 import {HttpResponse} from "../../../model/util/HttpResponse";
-import {QnaList} from "../models/qna-list";
+import {Qna} from "../models/qna";
 import {Pagination} from "../../../model/util/Pagination";
 import {ConfirmationService, MessageService} from "primeng/api";
+import {FormService} from "../../../service/form.service";
 
 @Component({
     selector: 'app-qna',
@@ -23,7 +24,7 @@ export class QnaComponent implements OnInit {
 
     qnaCo: any; //qnaForm.controls
 
-    qnaList: QnaList[] = [];
+    qnaList: Qna[] = [];
 
     isTableQnaLoading: boolean = false;
 
@@ -31,6 +32,7 @@ export class QnaComponent implements OnInit {
 
     constructor(
         public qnaService: QnaService,
+        private formService: FormService,
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
     ) {
@@ -44,7 +46,7 @@ export class QnaComponent implements OnInit {
 
     async getAllQna() {
         const res: HttpResponse = await firstValueFrom(this.qnaService.getAllQna());
-        const data : Pagination = res.data;
+        const data: Pagination = res.data;
         this.qnaList = data.content;
         console.log(this.qnaList);
         // console.log(data.content);
@@ -66,6 +68,12 @@ export class QnaComponent implements OnInit {
 
     onAddQnaDialog() {
         this.showAddOrEditQnaDialog = true;
+        this.editMode = false;
+    }
+
+    onEditQnaDialog() {
+        this.showAddOrEditQnaDialog = true;
+        this.editMode = true;
     }
 
     onDeleteQnaDialog(id: string) {
@@ -82,11 +90,6 @@ export class QnaComponent implements OnInit {
                 });
             },
         });
-
-    }
-
-    onEditQnaDialog() {
-
     }
 
     onQnaRowReorder() {
@@ -94,11 +97,17 @@ export class QnaComponent implements OnInit {
     }
 
     async submit() {
-        console.log(this.qnaForm.value);
-
         if (this.editMode) {
-
+            await firstValueFrom(this.qnaService.updateQna(this.qnaForm.value));
+        } else {
+            await firstValueFrom(this.qnaService.addQna(this.qnaForm.value));
         }
+
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: `Qna successfully ${this.editMode ? 'updated' : 'added'}`
+        });
     }
 
 }
