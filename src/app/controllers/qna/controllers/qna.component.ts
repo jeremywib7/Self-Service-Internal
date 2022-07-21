@@ -8,6 +8,7 @@ import {Qna} from "../models/qna";
 import {Pagination} from "../../../model/util/Pagination";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FormService} from "../../../service/form.service";
+import {ReactiveFormConfig} from "@rxweb/reactive-form-validators";
 
 @Component({
     selector: 'app-qna',
@@ -70,9 +71,11 @@ export class QnaComponent implements OnInit {
         this.editMode = false;
     }
 
-    onEditQnaDialog() {
+    onEditQnaDialog(qna: Qna) {
         this.showAddOrEditQnaDialog = true;
         this.editMode = true;
+        this.qnaForm.patchValue(qna);
+        console.log(qna);
     }
 
     onDeleteQnaDialog(id: string) {
@@ -81,12 +84,16 @@ export class QnaComponent implements OnInit {
             icon: "pi pi-trash",
             header: `Delete Qna`,
             accept: async () => {
-                await firstValueFrom(this.qnaService.deleteQna(id));
+                await firstValueFrom(this.qnaService.deleteQna(id)).catch(err => {
+                    console.log(err);
+                });
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Success',
                     detail: 'Product successfully added'
                 });
+                this.qnaList = this.qnaList.filter(val => val.id !== id);
+                this.qnaList = [...this.qnaList];
             },
         });
     }
@@ -101,12 +108,22 @@ export class QnaComponent implements OnInit {
         }
 
         if (this.editMode) {
-            await firstValueFrom(this.qnaService.updateQna(this.qnaForm.value));
+            await firstValueFrom(this.qnaService.updateQna(this.qnaForm.value)).catch(err => {
+                console.log(err);
+            });
         } else {
-            const res : HttpResponse = await firstValueFrom(this.qnaService.addQna(this.qnaForm.value));
-            console.log(res.data);
-            this.qnaList = [...this.qnaList, res.data]; // insert row
+            const res = await firstValueFrom(this.qnaService.addQna(this.qnaForm.value)).catch(err => {
+                const invalidControl = this.el.nativeElement.querySelector('[formcontrolname="' + 'question' + '"]');
+                if (invalidControl) {
+                    invalidControl.focus();
+                }
+                this.qnaForm.get('question').setErrors({'qnaQuestionExists': true});
+            });
+            const httpResponse = res as HttpResponse;
+            this.qnaList = [...this.qnaList, httpResponse.data]; // insert row
         }
+
+        this.showAddOrEditQnaDialog = false;
 
         return this.messageService.add({
             severity: 'success',

@@ -1,6 +1,8 @@
 import {maxLength, minLength, required} from "@rxweb/reactive-form-validators";
 
 export class Qna {
+    id: string;
+
     @required()
     @minLength({value: 5})
     @maxLength({value: 50})

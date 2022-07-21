@@ -21,7 +21,7 @@
             <p-table #dt [value]="qnaList" responsiveLayout="scroll" [reorderableColumns]="true"
                      (onRowReorder)="onQnaRowReorder()" [loading]="isTableQnaLoading" [lazy]="true"
                      [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true"
-                     (onFilter)="onFilter($event)"
+                     (onFilter)="onFilter($event)" [totalRecords]="qnaList.length"
                      [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" (onSort)="onFilter($event)"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} "
                      [rowHover]="true" dataKey="id">
@@ -105,7 +105,7 @@
                         <td>
                             <div class="flex">
                                 <button pButton pRipple
-                                        (click)="onEditQnaDialog()"
+                                        (click)="onEditQnaDialog(qna)"
                                         icon="pi pi-pencil"
                                         class="p-button-rounded p-button-success mr-2"
                                 ></button>
