@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
 import {AbstractControl, FormGroup, ɵTypedOrUntyped} from "@angular/forms";
 import {QnaService} from "../services/qna.service";
 import {environment} from "../../../../environments/environment";
@@ -34,6 +34,7 @@ export class QnaComponent implements OnInit {
         public qnaService: QnaService,
         private formService: FormService,
         private confirmationService: ConfirmationService,
+        private el: ElementRef,
         private messageService: MessageService,
     ) {
         this.qnaForm = this.qnaService.qnaForm;
@@ -48,8 +49,6 @@ export class QnaComponent implements OnInit {
         const res: HttpResponse = await firstValueFrom(this.qnaService.getAllQna());
         const data: Pagination = res.data;
         this.qnaList = data.content;
-        console.log(this.qnaList);
-        // console.log(data.content);
     }
 
     onSort(event) {
@@ -97,17 +96,25 @@ export class QnaComponent implements OnInit {
     }
 
     async submit() {
+        if (this.qnaForm.invalid) {
+            return this.formService.validateFormFields(this.qnaForm, this.el);
+        }
+
         if (this.editMode) {
             await firstValueFrom(this.qnaService.updateQna(this.qnaForm.value));
         } else {
-            await firstValueFrom(this.qnaService.addQna(this.qnaForm.value));
+            const res : HttpResponse = await firstValueFrom(this.qnaService.addQna(this.qnaForm.value));
+            console.log(res.data);
+            this.qnaList = [...this.qnaList, res.data]; // insert row
         }
 
-        this.messageService.add({
+        return this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: `Qna successfully ${this.editMode ? 'updated' : 'added'}`
         });
+
+
     }
 
 }

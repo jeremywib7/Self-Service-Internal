@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {environment} from "../../../../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormGroup} from "@angular/forms";
 import {Qna} from "../models/qna";
-import {FormBuilderConfiguration, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
+import {FormBuilderConfiguration, RxFormBuilder} from "@rxweb/reactive-form-validators";
 import {HttpResponse} from "../../../model/util/HttpResponse";
 import {Observable} from "rxjs";
 
@@ -40,7 +40,7 @@ export class QnaService {
     }
 
     public updateQna(qna: Qna): Observable<HttpResponse> {
-        return this.httpClient.post<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/update`, qna);
+        return this.httpClient.put<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/update`, qna);
     }
 
     public deleteQna(id: string): Observable<HttpResponse> {
