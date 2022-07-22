@@ -145,15 +145,6 @@ export class ProductCategoryComponent implements OnInit {
         this.showAddOrEditProductCategoryDialog = true;
     }
 
-    // example if 3 switch map
-    // this.productCategoryService.deleteProductCategory(httpParams).pipe(
-    //     switchMap(address => this.productCategoryService.loadProductCategories().pipe(
-    //         switchMap(addresss => this.productCategoryService.loadProductCategories().pipe(
-    //             map(cities => ({cities, address, addresss}))
-    //         ))
-    //     ))
-    // );
-
     onDeleteProductCategory(deletedIndex, categoryName: string) {
         this.confirmationService.confirm({
             message: `

@@ -375,10 +375,8 @@ export class UserComponent implements OnInit {
                     this.checkErrorCode(err.error.status);
                 });
                 userId = res.data.id;
-                console.log(res.data);
-                let index = this.users.findIndex(user => user['username'] === res['data']['username']);
+                let index = this.users.findIndex(user => user.id === res.data.id);
                 this.users[index] = res['data'];
-                this.users = [...this.users]; // refresh table
             } else {
                 this.reactiveForm.get('userPassword').setValue("1234");
                 const res: any = await lastValueFrom(this.userService.addUser(this.reactiveForm.value)).catch((err:any) => {
@@ -386,7 +384,6 @@ export class UserComponent implements OnInit {
                 });
                 userId = res.data.id;
                 this.users.push(res['data']);
-                // this.users = [...this.users, res['data']]; // insert row
                 this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
             }
 

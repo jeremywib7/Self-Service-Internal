@@ -9,6 +9,7 @@ import {Pagination} from "../../../model/util/Pagination";
 import {ConfirmationService, MessageService} from "primeng/api";
 import {FormService} from "../../../service/form.service";
 import {ReactiveFormConfig} from "@rxweb/reactive-form-validators";
+import {DatePipe} from "@angular/common";
 
 @Component({
     selector: 'app-qna',
@@ -36,6 +37,7 @@ export class QnaComponent implements OnInit {
         private formService: FormService,
         private confirmationService: ConfirmationService,
         private el: ElementRef,
+        public datePipe: DatePipe,
         private messageService: MessageService,
     ) {
         this.qnaForm = this.qnaService.qnaForm;
@@ -58,7 +60,7 @@ export class QnaComponent implements OnInit {
     }
 
     onFilter(event) {
-        console.log(event);
+        // console.log(event);
     }
 
     onReset() {
@@ -76,7 +78,7 @@ export class QnaComponent implements OnInit {
         this.showAddOrEditQnaDialog = true;
         this.editMode = true;
         this.qnaForm.patchValue(qna);
-        console.log(qna);
+        // console.log(qna);
     }
 
     onDeleteQnaDialog(id: string) {
@@ -111,7 +113,8 @@ export class QnaComponent implements OnInit {
                 this.qnaForm.get('question').setErrors({'qnaQuestionExists': true});
             });
             const httpRes = res as HttpResponse;
-            let index = this.qnaList.findIndex(qna => qna.question === this.qnaForm.get('question').value);
+            console.log(httpRes.data);
+            let index = this.qnaList.findIndex(qna => qna.id === this.qnaForm.get('id').value);
             this.qnaList[index] = httpRes.data;
         } else {
             const res = await firstValueFrom(this.qnaService.addQna(this.qnaForm.value)).catch(() => {
@@ -119,11 +122,8 @@ export class QnaComponent implements OnInit {
                 this.qnaForm.get('question').setErrors({'qnaQuestionExists': true});
             });
             const httpRes = res as HttpResponse;
-            this.qnaList = [...this.qnaList, httpRes.data]; // insert row
-
-            // this.qnaList.push(httpRes.data);
+            this.qnaList.push(httpRes.data);
         }
-        this.qnaList = [...this.qnaList]; // refresh table
         this.showAddOrEditQnaDialog = false;
         this.qnaForm.reset();
         return this.messageService.add({

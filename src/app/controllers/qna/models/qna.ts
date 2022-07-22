@@ -17,7 +17,9 @@ export class Qna {
     @maxLength({value: 100})
     answer: string;
 
-    createdOn: Date;
-    updatedOn: Date;
+    @prop()
+    createdOn: string;
+
+    updatedOn: string;
 }
 
