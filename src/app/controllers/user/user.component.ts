@@ -80,7 +80,6 @@ export class UserComponent implements OnInit {
             {label: 'Staff', value: 'Staff'},
             {label: 'User', value: 'User'},
         ]
-
     }
 
     //pdf column settings
@@ -352,9 +351,7 @@ export class UserComponent implements OnInit {
     //
 
     async submit() {
-
         if (this.reactiveForm.valid) {
-
             // get extension
             if (this.uploadedFiles) {
                 const ext = this.uploadedFiles.name.substr(this.uploadedFiles.name.lastIndexOf('.') + 1);
@@ -362,7 +359,6 @@ export class UserComponent implements OnInit {
             }
 
             this.reactiveForm.patchValue({
-
                 // to check if the date format already dd/MM/yyyy by length
                 dateJoined: this.reactiveForm.value.dateJoined.length === 10 ?
                     this.reactiveForm.value.dateJoined :
@@ -374,12 +370,12 @@ export class UserComponent implements OnInit {
             });
 
             let userId = "";
-
             if (this.editMode === true) {
                 const res: any = await firstValueFrom(this.userService.updateUser(this.reactiveForm.value)).catch((err: any) => {
                     this.checkErrorCode(err.error.status);
                 });
                 userId = res.data.id;
+                console.log(res.data);
                 let index = this.users.findIndex(user => user['username'] === res['data']['username']);
                 this.users[index] = res['data'];
                 this.users = [...this.users]; // refresh table
@@ -389,7 +385,8 @@ export class UserComponent implements OnInit {
                     this.checkErrorCode(err.error.status);
                 });
                 userId = res.data.id;
-                this.users = [...this.users, res['data']]; // insert row
+                this.users.push(res['data']);
+                // this.users = [...this.users, res['data']]; // insert row
                 this.users.sort((a, b) => (a.username > b.username) ? 1 : -1); // sort
             }
 
@@ -398,27 +395,16 @@ export class UserComponent implements OnInit {
                 await lastValueFrom(this.userService.uploadImageFile(this.uploadedFiles, userId));
             }
 
-            if (this.editMode) {
-                console.log("asas");
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: 'User updated'
-                });
-            }
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: `User ${this.editMode ? 'updated' : 'registered'}`
+            });
 
-            if (!this.editMode) {
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Success',
-                    detail: 'User registered'
-                });
-            }
-
-            this.showAddOrEditUserDialog = false;
+            return this.showAddOrEditUserDialog = false;
 
         } else {
-            this.validateFormFields(this.reactiveForm);
+            return this.validateFormFields(this.reactiveForm);
         }
 
     }

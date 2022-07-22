@@ -19,9 +19,9 @@
             </p-toolbar>
 
             <p-table #dt [value]="qnaList" responsiveLayout="scroll" [reorderableColumns]="true"
-                     (onRowReorder)="onQnaRowReorder()" [loading]="isTableQnaLoading" [lazy]="true"
+                     (onRowReorder)="onQnaRowReorder()" [loading]="isTableQnaLoading"
                      [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true"
-                     (onFilter)="onFilter($event)" [totalRecords]="qnaList.length"
+                     (onFilter)="onFilter($event)"
                      [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" (onSort)="onFilter($event)"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} "
                      [rowHover]="true" dataKey="id">
@@ -155,10 +155,6 @@
                         </div>
                     </div>
                 </form>
-
-                <!--                <button pButton pRipple *ngIf="editMode" label="Reset Password"-->
-                <!--                        icon="pi pi-refresh"-->
-                <!--                        class="p-button-danger"></button>-->
 
             </ng-template>
 

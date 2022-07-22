@@ -27,7 +27,7 @@ export class QnaComponent implements OnInit {
 
     qnaList: Qna[] = [];
 
-    isTableQnaLoading: boolean = false;
+    isTableQnaLoading: boolean = true;
 
     qnaForm: FormGroup;
 
@@ -50,6 +50,7 @@ export class QnaComponent implements OnInit {
         const res: HttpResponse = await firstValueFrom(this.qnaService.getAllQna());
         const data: Pagination = res.data;
         this.qnaList = data.content;
+        this.isTableQnaLoading = false;
     }
 
     onSort(event) {
@@ -84,17 +85,15 @@ export class QnaComponent implements OnInit {
             icon: "pi pi-trash",
             header: `Delete Qna`,
             accept: async () => {
-                await firstValueFrom(this.qnaService.deleteQna(id)).catch(err => {
-                    console.log(err);
-                });
+                await firstValueFrom(this.qnaService.deleteQna(id));
                 this.messageService.add({
                     severity: 'success',
                     summary: 'Success',
                     detail: 'Product successfully added'
                 });
-                this.qnaList = this.qnaList.filter(val => val.id !== id);
-                this.qnaList = [...this.qnaList];
-            },
+                let index = this.qnaList.findIndex(qna => qna.id === id);
+                this.qnaList.splice(index, 1);
+            }
         });
     }
 
@@ -106,32 +105,31 @@ export class QnaComponent implements OnInit {
         if (this.qnaForm.invalid) {
             return this.formService.validateFormFields(this.qnaForm, this.el);
         }
-
         if (this.editMode) {
-            await firstValueFrom(this.qnaService.updateQna(this.qnaForm.value)).catch(err => {
-                console.log(err);
-            });
-        } else {
-            const res = await firstValueFrom(this.qnaService.addQna(this.qnaForm.value)).catch(err => {
-                const invalidControl = this.el.nativeElement.querySelector('[formcontrolname="' + 'question' + '"]');
-                if (invalidControl) {
-                    invalidControl.focus();
-                }
+            const res = await firstValueFrom(this.qnaService.updateQna(this.qnaForm.value)).catch(() => {
+                this.formService.validateFormFields(this.qnaForm, this.el);
                 this.qnaForm.get('question').setErrors({'qnaQuestionExists': true});
             });
-            const httpResponse = res as HttpResponse;
-            this.qnaList = [...this.qnaList, httpResponse.data]; // insert row
+            const httpRes = res as HttpResponse;
+            let index = this.qnaList.findIndex(qna => qna.question === this.qnaForm.get('question').value);
+            this.qnaList[index] = httpRes.data;
+        } else {
+            const res = await firstValueFrom(this.qnaService.addQna(this.qnaForm.value)).catch(() => {
+                this.formService.validateFormFields(this.qnaForm, this.el);
+                this.qnaForm.get('question').setErrors({'qnaQuestionExists': true});
+            });
+            const httpRes = res as HttpResponse;
+            this.qnaList = [...this.qnaList, httpRes.data]; // insert row
+
+            // this.qnaList.push(httpRes.data);
         }
-
+        this.qnaList = [...this.qnaList]; // refresh table
         this.showAddOrEditQnaDialog = false;
-
+        this.qnaForm.reset();
         return this.messageService.add({
             severity: 'success',
             summary: 'Success',
             detail: `Qna successfully ${this.editMode ? 'updated' : 'added'}`
         });
-
-
     }
-
 }
