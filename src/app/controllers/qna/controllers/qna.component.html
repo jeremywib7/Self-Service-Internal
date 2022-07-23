@@ -20,9 +20,9 @@
 
             <p-table #dt [value]="qnaList" responsiveLayout="scroll" [reorderableColumns]="true"
                      (onRowReorder)="onQnaRowReorder()" [loading]="isTableQnaLoading"
+                     [lazy]="true" (onSort)="onSort($event)" (onFilter)="onFilter($event)"
                      [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true"
-                     (onFilter)="onFilter($event)"
-                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" (onSort)="onFilter($event)"
+                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} "
                      [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">

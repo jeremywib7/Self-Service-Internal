@@ -32,7 +32,10 @@ export class QnaService {
     }
 
     public getAllQna(): Observable<HttpResponse> {
-        return this.httpClient.get<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/find-all`);
+        let params = new HttpParams().append("","").append("", "");
+        return this.httpClient.get<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/find-all`, {
+            params: params
+        });
     }
 
     public addQna(qna: Qna): Observable<HttpResponse> {

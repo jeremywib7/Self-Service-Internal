@@ -181,6 +181,7 @@ import {
     ProductConfirmationComponent
 } from "./controllers/product/Steps/product-confirmation/product-confirmation.component";
 import {FormService} from "./service/form.service";
+import {TableLazyService} from "./service/table-lazy.service";
 registerLocaleData(localeId, 'id');
 
 // AoT requires an exported function for factories
@@ -379,6 +380,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         EncryptDecryptService,
         MessageService,
         FormService,
+        TableLazyService,
         MenuService,
         Product,
         HistoryRouteService,

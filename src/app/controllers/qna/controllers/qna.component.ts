@@ -56,11 +56,11 @@ export class QnaComponent implements OnInit {
     }
 
     onSort(event) {
-
+        console.log(event);
     }
 
     onFilter(event) {
-        // console.log(event);
+        console.log(event);
     }
 
     onReset() {
@@ -113,7 +113,6 @@ export class QnaComponent implements OnInit {
                 this.qnaForm.get('question').setErrors({'qnaQuestionExists': true});
             });
             const httpRes = res as HttpResponse;
-            console.log(httpRes.data);
             let index = this.qnaList.findIndex(qna => qna.id === this.qnaForm.get('id').value);
             this.qnaList[index] = httpRes.data;
         } else {
