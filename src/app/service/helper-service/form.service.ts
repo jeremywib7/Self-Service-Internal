@@ -9,6 +9,11 @@ export class FormService {
   constructor(
   ) { }
 
+    uppercaseFirstInput(value: any) {
+        value ? value = value[0].toUpperCase() + value.slice(1): null;
+        return value;
+    }
+
     public validateFormFields(formGroup: FormGroup, el : ElementRef) {
         formGroup.markAllAsTouched();
 

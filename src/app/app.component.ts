@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {MessageService, PrimeNGConfig} from 'primeng/api';
-import {UserAuthService} from "./service/user-auth.service";
+import {UserAuthService} from "./service/auth-service/user-auth.service";
 import {Router} from "@angular/router";
 import {ConfigService} from "./service/app.config.service";
 import {AppConfig} from "./api/appconfig";

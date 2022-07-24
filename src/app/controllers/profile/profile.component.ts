@@ -6,7 +6,7 @@ import {firstValueFrom, lastValueFrom} from "rxjs";
 import {UserService} from "../../service/user.service";
 import {Router} from "@angular/router";
 import {HttpParams} from "@angular/common/http";
-import {UserAuthService} from "../../service/user-auth.service";
+import {UserAuthService} from "../../service/auth-service/user-auth.service";
 import {FileUpload} from "primeng/fileupload";
 
 @Component({

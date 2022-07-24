@@ -10,14 +10,14 @@ import {firstValueFrom, Subscription} from "rxjs";
 import {ConfigService} from "../../service/app.config.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {UserService} from "../../service/user.service";
-import {UserAuthService} from "../../service/user-auth.service";
+import {UserAuthService} from "../../service/auth-service/user-auth.service";
 import {Router} from "@angular/router";
 import {HistoryRouteService} from "../../service/history.route.service";
 import {ProfileService} from "../../service/profile.service";
 import {EncryptDecryptService} from "../../service/encrypt-decrypt.service";
 import {MenuService} from "../../service/menu.service";
 import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-form-validators";
-import {FormService} from "../../service/form.service";
+import {FormService} from "../../service/helper-service/form.service";
 import {Message, MessageService} from "primeng/api";
 
 @Component({

@@ -1,6 +1,6 @@
 import {Injectable, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {UserAuthService} from "./user-auth.service";
+import {UserAuthService} from "./auth-service/user-auth.service";
 import {environment} from "../../environments/environment";
 import {lastValueFrom, Observable, of, switchMap} from "rxjs";
 import {User} from "../model/User";

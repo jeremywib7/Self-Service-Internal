@@ -126,7 +126,6 @@ import {LandingComponent} from './components/landing/landing.component';
 
 import {CountryService} from './service/countryservice';
 import {CustomerService} from './service/customerservice';
-import {EventService} from './service/eventservice';
 import {IconService} from './service/iconservice';
 import {NodeService} from './service/nodeservice';
 import {PhotoService} from './service/photoservice';
@@ -143,7 +142,7 @@ import {ConfirmationService, MessageService, SharedModule} from "primeng/api";
 import {AuthGuard} from "./_auth/auth.guard";
 import {AuthInterceptor} from "./_auth/auth.interceptor";
 import {Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadImageModule} from "ng-lazyload-image";
-import {UserAuthService} from "./service/user-auth.service";
+import {UserAuthService} from "./service/auth-service/user-auth.service";
 import {BlockUIModule} from "primeng/blockui";
 import {Router} from "@angular/router";
 import {LoadingBarHttpClientModule} from "@ngx-loading-bar/http-client";
@@ -180,8 +179,8 @@ import {ProductCategoryComponent} from "./controllers/product/product-category/p
 import {
     ProductConfirmationComponent
 } from "./controllers/product/Steps/product-confirmation/product-confirmation.component";
-import {FormService} from "./service/form.service";
-import {TableLazyService} from "./service/table-lazy.service";
+import {FormService} from "./service/helper-service/form.service";
+import {TableLazyService} from "./service/helper-service/table-lazy.service";
 registerLocaleData(localeId, 'id');
 
 // AoT requires an exported function for factories
@@ -390,7 +389,7 @@ export function HttpLoaderFactory(http: HttpClient) {
             provide: LocationStrategy,
             useClass: HashLocationStrategy
         },
-        CountryService, CustomerService, EventService, IconService, NodeService,
+        CountryService, CustomerService, IconService, NodeService,
         PhotoService, ProductService, MenuService, ConfigService,
     ],
     bootstrap: [AppComponent],

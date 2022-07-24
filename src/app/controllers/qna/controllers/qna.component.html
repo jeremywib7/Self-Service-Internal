@@ -18,11 +18,11 @@
                 </ng-template>
             </p-toolbar>
 
-            <p-table #dt [value]="qnaList" responsiveLayout="scroll" [reorderableColumns]="true"
-                     (onRowReorder)="onQnaRowReorder()" [loading]="isTableQnaLoading"
-                     [lazy]="true" (onSort)="onSort($event)" (onFilter)="onFilter($event)"
-                     [globalFilterFields]="['question','answer']" [rows]="10" [paginator]="true"
-                     [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
+            <p-table #dt [value]="qnaList" [columns]="this.qnaService.tableColumn" responsiveLayout="scroll"
+                     [reorderableColumns]="true"
+                     (onRowReorder)="onQnaRowReorder()" [loading]="isTableQnaLoading" [filterDelay]="1000"
+                     [lazy]="true" (onLazyLoad)="onFilter($event)" [totalRecords]="qnaList.length" [rows]="10"
+                     [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} "
                      [rowHover]="true" dataKey="id">
                 <ng-template pTemplate="caption">
@@ -32,7 +32,7 @@
                             <i class="pi pi-search"></i>
                             <!--suppress TypeScriptUnresolvedVariable -->
                             <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
-                                   placeholder="Search..."/>
+                                   placeholder="Search questions..."/>
                         </span>
                         <button pButton label="Clear" class="p-button-outlined" icon="pi pi-filter-slash"
                                 (click)="dt.clear()"></button>
@@ -44,44 +44,24 @@
                             <div class="flex justify-content-between align-items-center">
                                 Question
                                 <p-sortIcon field="question"></p-sortIcon>
-                                <p-columnFilter type="text" field="question" display="menu" on
-                                                class="mr-auto"></p-columnFilter>
                             </div>
                         </th>
                         <th pSortableColumn="answer">
                             <div class="flex justify-content-between align-items-center">
                                 Answer
                                 <p-sortIcon field="answer"></p-sortIcon>
-                                <p-columnFilter type="numeric" field="answer" display="menu"
-                                                class="mr-auto"></p-columnFilter>
                             </div>
                         </th>
                         <th pSortableColumn="createdOn">
                             <div class="flex justify-content-between align-items-center">
                                 Date Created
                                 <p-sortIcon field="createdOn"></p-sortIcon>
-                                <p-columnFilter type="date" field="createdOn" display="menu" class="mr-auto">
-                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                        <p-calendar #calendar (onInput)="filter(calendar.value)"
-                                                    [ngModelOptions]="{standalone: true}" [ngModel]="value"
-                                                    [showTime]="true">
-                                        </p-calendar>
-                                    </ng-template>
-                                </p-columnFilter>
                             </div>
                         </th>
                         <th pSortableColumn="updatedOn">
                             <div class="flex justify-content-between align-items-center">
                                 Date Updated
                                 <p-sortIcon field="updatedOn"></p-sortIcon>
-                                <p-columnFilter type="date" field="updatedOn" display="menu" class="mr-auto">
-                                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                                        <p-calendar #calendar (onSelect)="filter(calendar.value)"
-                                                    [ngModelOptions]="{standalone: true}" [ngModel]="value"
-                                                    [showSeconds]="true" [showTime]="true">
-                                        </p-calendar>
-                                    </ng-template>
-                                </p-columnFilter>
                             </div>
                         </th>
                         <th></th>
@@ -137,7 +117,8 @@
                     <div class="p-fluid p-formgrid grid">
                         <div class="field col-12">
                             <label for="question">Question</label>
-                            <input type="text" pInputText id="question" formControlName="question"
+                            <input type="text"
+                                   pInputText id="question" formControlName="question"
                                    [ngClass]="{'ng-invalid ng-dirty' : qnaCo.question.errors &&
                                    (qnaCo.question.touched || qnaCo.question.dirty)}"/>
                             <small *ngIf="qnaCo.question.errors &&  (qnaCo.question.touched || qnaCo.question.dirty)"

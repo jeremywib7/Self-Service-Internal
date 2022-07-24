@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, TitleCasePipe} from '@angular/common';
 import {QnaComponent} from './controllers/qna.component';
 import {QnaService} from "./services/qna.service";
 import {QnaRoutingModule} from "./qna-routing.module";
@@ -38,7 +38,8 @@ import {InputTextareaModule} from "primeng/inputtextarea";
         InputTextareaModule,
     ],
     providers: [
-        QnaService
+        QnaService,
+        TitleCasePipe
     ],
 })
 export class QnaModule {

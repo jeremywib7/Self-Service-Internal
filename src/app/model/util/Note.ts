@@ -6,5 +6,4 @@ export class Note {
     // data: Map<string, string>;
     // image: string;
     // link: string;
-
 }

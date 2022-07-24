@@ -1,11 +1,9 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component} from '@angular/core';
 import {AppMainComponent} from './app.main.component';
-import {Subscription} from 'rxjs';
 import {ConfirmationService, MenuItem} from 'primeng/api';
-import {UserAuthService} from "./service/user-auth.service";
+import {UserAuthService} from "./service/auth-service/user-auth.service";
 import {Router} from "@angular/router";
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
-import {NumericValueType, RxwebValidators} from "@rxweb/reactive-form-validators";
+import {FormBuilder} from "@angular/forms";
 
 @Component({
     selector: 'app-topbar',
@@ -17,16 +15,13 @@ export class AppTopBarComponent {
 
     authMenus: MenuItem[];
 
-    showChangePasswordDialog : boolean = false;
-
-    changePasswordForm: FormGroup;
+    showChangePasswordDialog: boolean = false;
 
     constructor(
         public appMain: AppMainComponent,
         public confirmationService: ConfirmationService,
-        private userAuthService: UserAuthService,
+        public authS: UserAuthService,
         private router: Router,
-        private fb: FormBuilder
     ) {
         this.authMenus = [
             {
@@ -55,20 +50,6 @@ export class AppTopBarComponent {
             // }
         ];
 
-        this.changePasswordForm = this.fb.group({
-            username: new FormControl('',
-                {
-                    validators: [
-                        RxwebValidators.required()],
-                    updateOn: "change"
-                }),
-            oldPassword: ['', [RxwebValidators.required()]],
-            newPassword: this.fb.group({
-                id: ['', [RxwebValidators.required()]],
-                categoryName: ['']
-            }),
-        }, {updateOn: 'change'});
-
     }
 
     onResetPassword() {
@@ -81,7 +62,7 @@ export class AppTopBarComponent {
             message: 'Are you sure that you want to logout?',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
-                this.userAuthService.clear();
+                this.authS.clear();
                 this.router.navigate(['/pages/login'])
             },
         });

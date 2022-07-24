@@ -1,4 +1,8 @@
 import {Injectable} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Qna} from "../../controllers/qna/models/qna";
+import {FormBuilderConfiguration, RxFormBuilder} from "@rxweb/reactive-form-validators";
+import {ChangePassword} from "../../model/auth/ChangePassword";
 
 
 @Injectable({
@@ -8,7 +12,19 @@ export class UserAuthService {
 
     public secretKey = "o9szYIOq1rRMiouNhNvaq96lqUvCekxR";
 
-    constructor() {
+    changePasswordForm: FormGroup;
+
+    constructor(
+        private fb: RxFormBuilder
+    ) {
+        let changePassword = new ChangePassword();
+        this.changePasswordForm = this.fb.formGroup(changePassword, new FormBuilderConfiguration({
+            baseAbstractControlOptions: {
+                // global: {
+                //     updateOn: 'blur'
+                // }
+            }
+        }))
     }
 
     public setRoles(roles: []) {

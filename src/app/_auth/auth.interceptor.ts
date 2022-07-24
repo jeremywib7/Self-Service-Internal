@@ -8,7 +8,7 @@ import {
 import {catchError, EMPTY, finalize, Observable, throwError} from "rxjs";
 import {Router} from "@angular/router";
 import {Injectable} from "@angular/core";
-import {UserAuthService} from "../service/user-auth.service";
+import {UserAuthService} from "../service/auth-service/user-auth.service";
 import {MessageService} from "primeng/api";
 import {LoaderService} from "../service/loader.service";
 

@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {HistoryRouteService} from "../../service/history.route.service";
 import {Router} from "@angular/router";
-import {UserAuthService} from "../../service/user-auth.service";
+import {UserAuthService} from "../../service/auth-service/user-auth.service";
 
 @Component({
     selector: 'app-access',

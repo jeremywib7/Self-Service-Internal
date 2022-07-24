@@ -6,16 +6,22 @@ import {Qna} from "../models/qna";
 import {FormBuilderConfiguration, RxFormBuilder} from "@rxweb/reactive-form-validators";
 import {HttpResponse} from "../../../model/util/HttpResponse";
 import {Observable} from "rxjs";
+import {LazyLoadEvent} from "primeng/api";
+import {TableLazyService} from "../../../service/helper-service/table-lazy.service";
+import {TableColumn} from "../../../model/util/TableColumn";
 
 @Injectable()
 export class QnaService {
     private apiServerUrl = environment.apiBaseUrl;
     private project = environment.project;
 
+    tableColumn: TableColumn[] = [];
+
     qnaForm: FormGroup;
 
     constructor(
         private httpClient: HttpClient,
+        private tableLazyService: TableLazyService,
         private fb: RxFormBuilder
     ) {
         let qnaList = new Qna();
@@ -29,12 +35,17 @@ export class QnaService {
                 // }
             }
         }))
+
+        //init table columns for export csv
+        this.tableColumn = [
+            {field: 'username', header: 'Username'},
+            {field: 'role.roleName', header: 'Role'},
+        ];
     }
 
-    public getAllQna(): Observable<HttpResponse> {
-        let params = new HttpParams().append("","").append("", "");
+    public getAllQna(lazyLoadEvent?: LazyLoadEvent): Observable<HttpResponse> {
         return this.httpClient.get<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/find-all`, {
-            params: params
+            params: lazyLoadEvent ? this.tableLazyService.createParams(lazyLoadEvent) : null
         });
     }
 
@@ -47,7 +58,7 @@ export class QnaService {
     }
 
     public deleteQna(id: string): Observable<HttpResponse> {
-        let params = new HttpParams().append("id",id);
+        let params = new HttpParams().append("id", id);
         return this.httpClient.delete<HttpResponse>(`${this.apiServerUrl}/${this.project}/v1/qna/delete`,
             {params: params});
     }

@@ -10,6 +10,7 @@ import {NumericValueType, RxFormBuilder, RxwebValidators} from "@rxweb/reactive-
 import {ActivatedRoute, Router} from "@angular/router";
 import {Table} from "primeng/table";
 import {ProductDetailComponent} from "./Steps/product-detail/product-detail.component";
+import {TableLazyService} from "../../service/helper-service/table-lazy.service";
 
 @Component({
     selector: 'app-product',
@@ -57,6 +58,7 @@ export class ProductComponent implements OnInit {
         private confirmationService: ConfirmationService,
         private router: Router,
         private el: ElementRef,
+        private tableLazyService: TableLazyService,
         private activatedRoute: ActivatedRoute,
         private messageService: MessageService,
         private fb: FormBuilder,
@@ -291,23 +293,9 @@ export class ProductComponent implements OnInit {
         // return this.router.url === '/';
     }
 
-    loadProducts(event: LazyLoadEvent) {
-
+    loadProducts(lazyLoadEvent: LazyLoadEvent) {
         this.tblProductLoading = true;
-
-        let params = new HttpParams();
-        params = params.append("page", event.first / event.rows);
-
-        if (event.globalFilter) {
-            params = params.append("searchKeyword", event.globalFilter);
-        }
-
-        if (event.sortField) {
-            params = params.append("sortedFieldName", event.sortField);
-        }
-
-        params = params.append("order", event.sortOrder);
-        params = params.append("size", event.rows);
+        const params: HttpParams = this.tableLazyService.createParams(lazyLoadEvent);
 
         setTimeout(() => {
             this.productService.loadAllProducts(params).subscribe({
