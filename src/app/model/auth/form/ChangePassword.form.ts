@@ -1,6 +1,6 @@
 import {compare, prop, required} from "@rxweb/reactive-form-validators";
 
-export class ChangePassword {
+export class ChangePasswordForm {
     @prop()
     id: string;
 
@@ -10,7 +10,7 @@ export class ChangePassword {
     @required()
     newPassword: string;
 
-    @compare({fieldName: 'newPassword'})
+    @compare({fieldName: 'newPassword', message: 'Password not matched'})
     @required()
-    confirmationNewPassword: string;
+    confirmNewPassword: string;
 }

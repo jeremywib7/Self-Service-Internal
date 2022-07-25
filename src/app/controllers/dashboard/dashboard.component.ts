@@ -139,8 +139,6 @@ export class DashboardComponent implements OnInit {
         this.dashboardData = res.data;
         this.recentSales = res.data.recentOrder;
         this.top5BestSales = res.data.top5BestSales;
-
-        console.log(res.data);
         this.isDoneLoadDashboardData = true;
     }
 

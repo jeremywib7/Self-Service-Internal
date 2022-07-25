@@ -30,7 +30,6 @@ export class ProfileComponent implements OnInit {
         private messageService: MessageService,
         private userAuthService: UserAuthService
     ) {
-        console.log(profileService.formProfile.value);
     }
 
     ngOnInit(): void {

@@ -5,6 +5,8 @@
         <p-progressSpinner></p-progressSpinner>
     </div>
 
+    <button pButton (click)="payUsingGopay()"></button>
+
     <div [ngSwitch]="customerId">
         <form [formGroup]="customerOrderFg">
 

@@ -1,9 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef} from '@angular/core';
 import {AppMainComponent} from './app.main.component';
 import {ConfirmationService, MenuItem} from 'primeng/api';
 import {UserAuthService} from "./service/auth-service/user-auth.service";
 import {Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
+import {FormService} from "./service/helper-service/form.service";
+import {firstValueFrom} from "rxjs";
+import {UserService} from "./service/user.service";
+import {ChangePasswordInterface} from "./model/auth/interface/ChangePassword.interface";
 
 @Component({
     selector: 'app-topbar',
@@ -21,6 +24,9 @@ export class AppTopBarComponent {
         public appMain: AppMainComponent,
         public confirmationService: ConfirmationService,
         public authS: UserAuthService,
+        private userS: UserService,
+        private el: ElementRef,
+        private formS: FormService,
         private router: Router,
     ) {
         this.authMenus = [
@@ -68,7 +74,12 @@ export class AppTopBarComponent {
         });
     }
 
-    submit() {
+    async submit() {
+        if (this.authS.changePasswordForm.invalid) {
+            return this.formS.validateFormFields(this.authS.changePasswordForm, this.el);
+        }
+
+        await firstValueFrom(this.userS.changePassword(this.authS.changePasswordForm.value));
 
     }
 }

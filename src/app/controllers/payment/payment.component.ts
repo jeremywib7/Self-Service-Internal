@@ -7,7 +7,7 @@ import {environment} from "../../../environments/environment";
 import {HistoryProductOrder} from "../../model/customer/HistoryProductOrder";
 import * as moment from 'moment';
 import {Router} from "@angular/router";
-import {interval, Subscription} from "rxjs";
+import {firstValueFrom, interval, Subscription} from "rxjs";
 import {DatePipe} from "@angular/common";
 import {CustomerOrder} from "../../model/customer/CustomerOrder";
 
@@ -57,6 +57,7 @@ export class PaymentComponent implements OnInit {
         private waitingListService: WaitingListService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
+        private window: Window,
         private router: Router,
         public datePipe: DatePipe,
         private el: ElementRef) {
@@ -67,9 +68,30 @@ export class PaymentComponent implements OnInit {
 
 
     ngOnInit(): void {
+        // this.onInit();
         //emit value in sequence every 1 second
         const source = interval(1000);
         this.subscription = source.subscribe(val => this.calculateEstimatedTime());
+
+
+    }
+
+    onInit() {
+        //change this to the script source you want to load, for example this is snap.js sandbox env
+        const midtransScriptUrl = 'https://app.sandbox.midtrans.com/snap/snap.js';
+        //change this according to your client-key
+        const myMidtransClientKey = 'your-client-key-goes-here';
+
+        let scriptTag = document.createElement('script');
+        scriptTag.src = midtransScriptUrl;
+        // optional if you want to set script attribute
+        // for example snap.js have data-client-key attribute
+        scriptTag.setAttribute('data-client-key', myMidtransClientKey);
+
+        document.body.appendChild(scriptTag);
+        return () => {
+            document.body.removeChild(scriptTag);
+        }
     }
 
     calculateEstimatedTime() {
@@ -177,6 +199,25 @@ export class PaymentComponent implements OnInit {
         this.customerId = value.data.customerProfile.id;
         this.customerOrderFg.get("totalPrice").setValue(value.data.totalPrice);
         this.customerOrderFg.get("customerProfile").get("id").setValue(value.data.customerProfile.id);
+    }
+
+    async payUsingGopay() {
+        // @ts-ignore
+        snap.pay("a6dd034d-604d-407e-8b0b-14653ee95533", {
+            onSuccess: result => {
+                console.log("YOU GOT AN SUCCESS");
+            },
+            onPending: result => {
+                console.log("YOU GOT AN PENDING");
+            },
+            onError: result => {
+                console.log("YOU GOT AN ERROR");
+            },
+            onClose: () => {
+
+            }
+        });
+
     }
 
     showPaymentDialog() {

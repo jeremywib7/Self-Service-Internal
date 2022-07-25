@@ -29,16 +29,15 @@
 </div>
 
 <p-dialog [(visible)]="showChangePasswordDialog" [style]="{width: '450px'}" [draggable]="false"
-          header="Change Password" (onHide)="authS.changePasswordForm.reset()"
-          [modal]="true" class="p-fluid">
+          header="Change Password" (onHide)="authS.resetChangePasswordForm()" [modal]="true" class="p-fluid">
+
     <ng-template pTemplate="content">
-        <form *ngIf="authS.changePasswordForm" [formGroup]="authS.changePasswordForm"
-              (ngSubmit)="submit()">
+        <form *ngIf="authS.changePasswordForm" [formGroup]="authS.changePasswordForm">
             <div class="p-fluid p-formgrid grid">
                 <div class="field col-12">
-                    <label for="question">Current Password</label>
-                    <input type="text"
-                           pInputText id="question" formControlName="oldPassword"
+                    <label for="oldPassword">Current Password</label>
+                    <input type="password"
+                           pInputText id="oldPassword" formControlName="oldPassword"
                            [ngClass]="{'ng-invalid ng-dirty' : authS.changePasswordForm.get('oldPassword').errors &&
                                    authS.changePasswordForm.get('oldPassword').touched
                                    || authS.changePasswordForm.get('oldPassword').dirty}"/>
@@ -47,15 +46,41 @@
                                 authS.changePasswordForm.get('oldPassword').dirty)"
                            class="p-error">{{authS.changePasswordForm.get('oldPassword')["errorMessage"]}}</small>
                 </div>
-            </div>
+                <div class="field col-12">
+                    <label for="question">New Password</label>
+                    <input type="password"
+                           pInputText id="question" formControlName="newPassword"
+                           [ngClass]="{'ng-invalid ng-dirty' : authS.changePasswordForm.get('newPassword').errors &&
+                                   authS.changePasswordForm.get('newPassword').touched
+                                   || authS.changePasswordForm.get('newPassword').dirty}"/>
+                    <small *ngIf="authS.changePasswordForm.get('newPassword').errors
+                                &&  (authS.changePasswordForm.get('newPassword').touched ||
+                                authS.changePasswordForm.get('newPassword').dirty)"
+                           class="p-error">{{authS.changePasswordForm.get('newPassword')["errorMessage"]}}</small>
+                </div>
+                <div class="field col-12">
+                    <label for="confirmNewPassword">Confirm New Password</label>
+                    <input type="password"
+                           pInputText id="confirmNewPassword" formControlName="confirmNewPassword"
+                           [ngClass]="{'ng-invalid ng-dirty' : authS.changePasswordForm.get('confirmNewPassword').errors &&
+                                   authS.changePasswordForm.get('confirmNewPassword').touched
+                                   || authS.changePasswordForm.get('confirmNewPassword').dirty}"/>
+                    <small *ngIf="authS.changePasswordForm.get('confirmNewPassword').errors
+                                &&  (authS.changePasswordForm.get('confirmNewPassword').touched ||
+                                authS.changePasswordForm.get('confirmNewPassword').dirty)"
+                           class="p-error">{{authS.changePasswordForm.get('confirmNewPassword')["errorMessage"]}}</small>
+                </div>
 
+            </div>
         </form>
     </ng-template>
 
     <ng-template pTemplate="footer">
         <button pButton pRipple (click)="showChangePasswordDialog = false" label="Cancel" icon="pi pi-times"
+                type="reset"
                 class="p-button-text"></button>
         <button pButton pRipple
+                type="submit"
                 (click)="submit()"
                 label="Save" icon="pi pi-check" class="p-button-text"></button>
     </ng-template>

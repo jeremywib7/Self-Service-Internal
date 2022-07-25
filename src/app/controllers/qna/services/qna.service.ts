@@ -34,7 +34,7 @@ export class QnaService {
                 //     updateOn: 'blur'
                 // }
             }
-        }))
+        }));
 
         //init table columns for export csv
         this.tableColumn = [

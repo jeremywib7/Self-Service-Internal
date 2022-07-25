@@ -4,6 +4,8 @@ import {UserAuthService} from "./auth-service/user-auth.service";
 import {environment} from "../../environments/environment";
 import {lastValueFrom, Observable, of, switchMap} from "rxjs";
 import {User} from "../model/User";
+import {ChangePasswordInterface} from "../model/auth/interface/ChangePassword.interface";
+import {ChangePasswordForm} from "../model/auth/form/ChangePassword.form";
 
 @Injectable({
     providedIn: 'root'
@@ -34,6 +36,10 @@ export class UserService implements OnInit {
             loginData, {headers: this.requestHeader});
     }
 
+    public changePassword(changePassword: ChangePasswordForm) {
+        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/user/change/password`, changePassword);
+    }
+
     public addUser(user: User): Observable<User> {
         return this.httpClient.post<User>(`${this.apiServerUrl}/${this.project}/user/register`, user);
     }
@@ -42,7 +48,7 @@ export class UserService implements OnInit {
         return this.httpClient.put<User>(`${this.apiServerUrl}/${this.project}/user/update`, user);
     }
 
-    public uploadImageFile(selectedFile: File, id: string) : Observable<any> {
+    public uploadImageFile(selectedFile: File, id: string): Observable<any> {
         const formData: FormData = new FormData();
         formData.append('file', selectedFile);
 

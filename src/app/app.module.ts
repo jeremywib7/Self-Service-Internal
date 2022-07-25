@@ -154,7 +154,7 @@ import {ProductPriceComponent} from './controllers/product/Steps/product-price/p
 import {ProductFormComponent} from './controllers/product/Form/product-form/product-form.component';
 import {ProductImageComponent} from "./controllers/product/Steps/product-image/product-image.component";
 import {HistoryRouteService} from "./service/history.route.service";
-import { PaymentComponent } from './controllers/payment/payment.component';
+import {PaymentComponent} from './controllers/payment/payment.component';
 import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environment";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
@@ -163,15 +163,15 @@ import {CountdownModule} from "ngx-countdown";
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {BreadcrumbModule} from "xng-breadcrumb";
-import { BreadcrumbComponent } from './controllers/breadcrumb/breadcrumb.component';
-import { WaitingListComponent } from './controllers/waiting-list/waiting-list.component';
+import {BreadcrumbComponent} from './controllers/breadcrumb/breadcrumb.component';
+import {WaitingListComponent} from './controllers/waiting-list/waiting-list.component';
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {ZXingScannerModule} from "@zxing/ngx-scanner";
 
-import { registerLocaleData } from '@angular/common';
+import {registerLocaleData} from '@angular/common';
 import localeId from '@angular/common/locales/id';
-import { SalesReportComponent } from './controllers/sales-report/sales-report.component';
-import { ProfileComponent } from './controllers/profile/profile.component';
+import {SalesReportComponent} from './controllers/sales-report/sales-report.component';
+import {ProfileComponent} from './controllers/profile/profile.component';
 import {EncryptDecryptService} from "./service/encrypt-decrypt.service";
 import {DashboardComponent} from "./controllers/dashboard/dashboard.component";
 import {ProfileService} from "./service/profile.service";
@@ -181,6 +181,7 @@ import {
 } from "./controllers/product/Steps/product-confirmation/product-confirmation.component";
 import {FormService} from "./service/helper-service/form.service";
 import {TableLazyService} from "./service/helper-service/table-lazy.service";
+
 registerLocaleData(localeId, 'id');
 
 // AoT requires an exported function for factories
@@ -358,6 +359,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     providers: [
         AuthGuard,
         DatePipe,
+        {provide: Window, useValue: window},
         {
             provide: LAZYLOAD_IMAGE_HOOKS,
             useClass: AppModule
