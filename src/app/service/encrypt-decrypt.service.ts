@@ -17,11 +17,4 @@ export class EncryptDecryptService {
         let encrypted = CryptoJS.AES.encrypt(srcs, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7});
         return encrypted.toString();
     }
-
-    // decrypt(textToDecrypt: string) {
-    //     let key = CryptoJS.enc.Base64.parse(this.secretKey).toString();
-    //     let srcs = CryptoJS.enc.Utf8.parse(textToDecrypt);
-    //     let encrypted = CryptoJS.AES.decrypt(srcs, key, {mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7});
-    //     return encrypted.toString();
-    // }
 }

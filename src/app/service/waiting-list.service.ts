@@ -26,8 +26,12 @@ export class WaitingListService {
         return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/customer/profile/${id}`);
     }
 
-    public getCustomerByUsername(username: string): Observable<User> {
-        return this.httpClient.get<User>(`${this.apiServerUrl}/${this.project}/order/view/byUsername/${username}`);
+    public getCustomerOrderById(id: string) {
+        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/order/view/byId/${id}`);
+    }
+
+    public getCustomerOrderByUsername(username: string) {
+        return this.httpClient.get(`${this.apiServerUrl}/${this.project}/order/view/byUsername/${username}`);
     }
 
     public notifyCustomer(note: Note) {
@@ -35,8 +39,12 @@ export class WaitingListService {
             note);
     }
 
-    public completePayment(waitingList: WaitingList) {
-        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/order/pay`, waitingList);
+    public completePayment(customerOrder: CustomerOrder) {
+        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/order/pay`, customerOrder);
+    }
+
+    public getSnapToken(customerOrder: CustomerOrder) {
+        return this.httpClient.post(`${this.apiServerUrl}/${this.project}/charge`, customerOrder);
     }
 
     create_NewWaitingList(waitingList: WaitingList) {

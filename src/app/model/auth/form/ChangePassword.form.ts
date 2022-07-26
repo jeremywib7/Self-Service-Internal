@@ -2,7 +2,7 @@ import {compare, prop, required} from "@rxweb/reactive-form-validators";
 
 export class ChangePasswordForm {
     @prop()
-    id: string;
+    username: string;
 
     @required()
     oldPassword: string;

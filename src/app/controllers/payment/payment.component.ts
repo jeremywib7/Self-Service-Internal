@@ -22,6 +22,10 @@ export class PaymentComponent implements OnInit {
     apiBaseUrl = environment.apiBaseUrl;
     projectName = environment.project;
 
+    isOnline: boolean = false;
+
+    snapToken: string;
+
     estimatedTime: string;
 
     dateCreated: string;
@@ -54,7 +58,7 @@ export class PaymentComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private waitingListService: WaitingListService,
+        public waitingListService: WaitingListService,
         private messageService: MessageService,
         private confirmationService: ConfirmationService,
         private window: Window,
@@ -171,7 +175,7 @@ export class PaymentComponent implements OnInit {
     onConfirmPaymentByQrCode(customerId: string) {
         this.searchByUsernameMsg = [];
 
-        this.waitingListService.getCustomerById(customerId).subscribe({
+        this.waitingListService.getCustomerOrderById(customerId).subscribe({
             next: (value: any) => {
                 this.patchData(value);
             }
@@ -184,12 +188,16 @@ export class PaymentComponent implements OnInit {
 
         if (username.length != 0) {
             // check order by this customer username
-            this.waitingListService.getCustomerByUsername(username).subscribe({
+            this.waitingListService.getCustomerOrderByUsername(username).subscribe({
                 next: (value: any) => {
                     this.patchData(value);
                 }
             })
         }
+    }
+
+    generateSnapAccessToken() {
+
     }
 
     patchData(value: any) {
@@ -201,38 +209,29 @@ export class PaymentComponent implements OnInit {
         this.customerOrderFg.get("customerProfile").get("id").setValue(value.data.customerProfile.id);
     }
 
-    async payUsingGopay() {
-        // @ts-ignore
-        snap.pay("a6dd034d-604d-407e-8b0b-14653ee95533", {
-            onSuccess: result => {
-                console.log("YOU GOT AN SUCCESS");
-            },
-            onPending: result => {
-                console.log("YOU GOT AN PENDING");
-            },
-            onError: result => {
-                console.log("YOU GOT AN ERROR");
-            },
-            onClose: () => {
-
-            }
-        });
-
+    async payUsingMidtrans() {
+        this.onSnapPay(this.snapToken);
     }
 
-    showPaymentDialog() {
-        if (this.customerOrderFg.valid) {
-            this.showConfirmPaymentDialog = true;
-        } else {
-            this.customerOrderFg.markAllAsTouched();
+    showPaymentDialog(isOnline: boolean) {
+        // invalid and cash payment
+        if (this.customerOrderFg.invalid && !isOnline) {
+            return this.customerOrderFg.markAllAsTouched();
         }
 
+        // online payment and already has snap token
+        this.customerOrderFg.markAsUntouched();
+        if (this.snapToken) {
+            return this.onSnapPay(this.snapToken);
+        }
+
+        // dont have snap token yet
+        this.isOnline = isOnline;
+        this.showConfirmPaymentDialog = true;
     }
 
-    onPaymentConfirmed() {
-        this.onPaymentConfirmedButtonLoading = true;
-
-        this.waitingListService.completePayment(this.customerOrderFg.value).subscribe({
+    onCompletePayment() {
+        return this.waitingListService.completePayment(this.customerOrderFg.value).subscribe({
             next: (value: any) => {
                 this.messageService.add({
                     severity: 'success',
@@ -248,5 +247,44 @@ export class PaymentComponent implements OnInit {
             this.onPaymentConfirmedButtonLoading = false;
             this.showConfirmPaymentDialog = false;
         })
+    }
+
+    onSnapPay(snapToken: string) {
+        // @ts-ignore
+        return snap.pay(snapToken, {
+            onSuccess: result => {
+                console.log("YOU GOT AN SUCCESS");
+            },
+            onPending: result => {
+                console.log("YOU GOT AN PENDING");
+            },
+            onError: result => {
+                if (result.status_message == "transaction has been succeed") {
+                    this.onCompletePayment();
+                }
+            },
+            onClose: () => {
+
+            }
+        });
+    }
+
+    async onPaymentConfirmed() {
+        this.onPaymentConfirmedButtonLoading = true;
+
+        // if cash payment
+        if (!this.isOnline) {
+            return this.onCompletePayment();
+        }
+
+        // if online payment
+        if (this.snapToken == null) {
+            const token: any = await firstValueFrom(this.waitingListService.getSnapToken(this.customerOrderFg.value));
+            this.snapToken = token.snap_token;
+        }
+        await this.payUsingMidtrans();
+
+        this.showConfirmPaymentDialog = false;
+        this.onPaymentConfirmedButtonLoading = false;
     }
 }

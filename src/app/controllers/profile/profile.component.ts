@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ProfileService} from "../../service/profile.service";
 import {environment} from "../../../environments/environment";
 import {MessageService} from "primeng/api";

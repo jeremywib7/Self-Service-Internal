@@ -1,12 +1,16 @@
 import {Component, ElementRef} from '@angular/core';
 import {AppMainComponent} from './app.main.component';
-import {ConfirmationService, MenuItem} from 'primeng/api';
+import {ConfirmationService, MenuItem, MessageService} from 'primeng/api';
 import {UserAuthService} from "./service/auth-service/user-auth.service";
 import {Router} from "@angular/router";
 import {FormService} from "./service/helper-service/form.service";
-import {firstValueFrom} from "rxjs";
+import {firstValueFrom, lastValueFrom} from "rxjs";
 import {UserService} from "./service/user.service";
 import {ChangePasswordInterface} from "./model/auth/interface/ChangePassword.interface";
+import {ProfileService} from "./service/profile.service";
+import {EncryptDecryptService} from "./service/encrypt-decrypt.service";
+import {HttpParams} from "@angular/common/http";
+import {HttpResponse} from "./model/util/HttpResponse";
 
 @Component({
     selector: 'app-topbar',
@@ -24,6 +28,9 @@ export class AppTopBarComponent {
         public appMain: AppMainComponent,
         public confirmationService: ConfirmationService,
         public authS: UserAuthService,
+        private encryptDecryptS: EncryptDecryptService,
+        private profileS: ProfileService,
+        private messageS: MessageService,
         private userS: UserService,
         private el: ElementRef,
         private formS: FormService,
@@ -58,8 +65,11 @@ export class AppTopBarComponent {
 
     }
 
-    onResetPassword() {
+    async onResetPassword() {
         this.showChangePasswordDialog = true;
+        let params = new HttpParams().append("username", this.authS.getUsername());
+        const res: any = await firstValueFrom(this.userS.getUserByUsername(params));
+        this.authS.changePasswordForm.get('username').setValue(res.data.username);
     }
 
     onLogout() {
@@ -79,7 +89,19 @@ export class AppTopBarComponent {
             return this.formS.validateFormFields(this.authS.changePasswordForm, this.el);
         }
 
-        await firstValueFrom(this.userS.changePassword(this.authS.changePasswordForm.value));
+        await firstValueFrom(this.userS.changePassword(this.authS.changePasswordForm.value)).catch(err => {
+            if (err.error.message == 'Password is incorrect') {
+                this.authS.changePasswordForm.get('oldPassword').setErrors({"oldPasswordFalse": true});
+            }
+        });
+
+        this.showChangePasswordDialog = false;
+
+        this.messageS.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Change password success!'
+        });
 
     }
 }

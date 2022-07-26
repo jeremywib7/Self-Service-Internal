@@ -54,12 +54,14 @@ export class AppComponent {
                 "range": "please enter age between 18 to 60",
                 "required": "This field is required",
                 "time": "Only time format is allowed",
-
-                "qnaQuestionExists": "This question already exists",
                 "upperCase": "Only uppercase is allowed",
                 "url": "Only url format is allowed",
                 "zipCode": "enter valid zip code",
-                "minLength": "Minimum length is {{1}} digit"
+                "minLength": "Minimum length is {{1}} digit",
+
+                //custom
+                "qnaQuestionExists": "This question already exists",
+                "oldPasswordFalse": "Current Password is incorrect",
             }
         });
 

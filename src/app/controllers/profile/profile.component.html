@@ -55,7 +55,7 @@
                          'userId='+ profileService.formProfile.get('id').value + '&'+ 'imageName=' + profileService.formProfile.get('imageUrl').value "
                                 [alt]="profileService.formProfile.get('imageUrl').value"
                                 class="mr-4 w-7rem h-7rem" style="border-radius: 50%"/>
-                            <p-fileUpload id="avatar" #avatar mode="basic" multiple="multiple" accept="image/*" (onSelect)="onSelectedImage($event)"
+                            <p-fileUpload id="avatar" #avatar mode="basic" multiple="multiple" accept="image/*"
                                           [cancelLabel]="'Clear'" [showCancelButton]="true" maxFileSize="1000000" styleClass="p-button-outlined p-button-plain"
                                           chooseLabel="Upload Image"></p-fileUpload>
                         </div>
